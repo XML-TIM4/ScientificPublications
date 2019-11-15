@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="https://github.com/XML-TIM4/ScientificPublications"
+    xmlns="https://github.com/XML-TIM4/ScientificPublications">
+    <xs:element name="scientific-paper" type="TScientificPaper"/>
+    <xs:complexType name="TScientificPaper">
+        <xs:sequence>
+            <xs:element name="metadata" type="TMetadata"/>
+            <xs:element name="title">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="100"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="authors">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="author" type="TAuthor"
+                        />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="abstract" type="TAbstract"/>
+            <xs:element name="content">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="section" type="TSection"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="references">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="reference" type="TReference"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute default="en" name="language" type="xs:language"/>
+        <xs:attribute ref="id" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="TAuthor">
+        <xs:sequence>
+            <xs:element name="name" type="TName"/>
+            <xs:element name="email">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="[^@]+@[^\.]+\..+"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="affiliation" type="TAffiliation"/>
+        </xs:sequence>
+        <xs:attribute ref="id" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="TMetadata">
+        <xs:sequence>
+            <xs:element name="received" nillable="false" type="xs:date"/>
+            <xs:element name="revised" nillable="true" type="xs:date"/>
+            <xs:element name="accepted" nillable="true" type="xs:date"/>
+            <xs:element default="1.0" name="version">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="[1-9]\d*.\d{1,2}"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="status">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="accepted"/>
+                        <xs:enumeration value="rejected"/>
+                        <xs:enumeration value="revision"/>
+                        <xs:enumeration value="withdrawn"/>
+                        <xs:enumeration value="uploaded"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element default="research-paper" name="category">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="research-paper"/>
+                        <xs:enumeration value="viewpoint"/>
+                        <xs:enumeration value="technical-paper"/>
+                        <xs:enumeration value="conceptual-paper"/>
+                        <xs:enumeration value="case-study"/>
+                        <xs:enumeration value="literature-review"/>
+                        <xs:enumeration value="general-review"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="keywords">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="keyword">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:minLength value="1"/>
+                                    <xs:maxLength value="50"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TName">
+        <xs:sequence>
+            <xs:element name="first-name">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="middle-name">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="last-name">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TAffiliation">
+        <xs:sequence>
+            <xs:element name="university">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="city">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="state">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="country">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TAbstract">
+        <xs:sequence>
+            <xs:element maxOccurs="7" minOccurs="4" name="abstract-item" type="TAbstractItem"/>
+        </xs:sequence>
+        <xs:attribute ref="id" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="TAbstractItem">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="title">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="purpose"/>
+                            <xs:enumeration value="methodology"/>
+                            <xs:enumeration value="findings"/>
+                            <xs:enumeration value="implications"/>
+                            <xs:enumeration value="practical-implications"/>
+                            <xs:enumeration value="social-implications"/>
+                            <xs:enumeration value="originality"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="TSection">
+        <xs:sequence>
+            <xs:element name="title" nillable="false">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="paragraph" type="TParagraph"/>
+        </xs:sequence>
+        <xs:attribute ref="id" use="required"/>
+    </xs:complexType>
+    <xs:complexType mixed="true" name="TParagraph">
+        <xs:choice>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="figure" type="TFigure"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="table" type="TTable"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="list" type="TList"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="decorator" type="TDecorator"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="quote" type="TQuote"/>
+        </xs:choice>
+        <xs:attribute ref="id" use="required"/>
+    </xs:complexType>
+    <xs:complexType mixed="true" name="TFigure">
+        <xs:choice>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="image" type="xs:base64Binary"/>
+        </xs:choice>
+        <xs:attribute name="type">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="figure"/>
+                    <xs:enumeration value="box"/>
+                    <xs:enumeration value="equation"/>
+                    <xs:enumeration value="chart"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute ref="id" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="TTable">
+        <xs:sequence>
+            <xs:element name="header">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="row" type="TRow"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="body">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="row" type="TRow"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="title">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:minLength value="1"/>
+                    <xs:maxLength value="50"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute ref="id" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="TRow">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="column" type="TColumn"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="TColumn">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="50"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="TList">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="list-item">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="0"/>
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute default="false" name="ordered" type="xs:boolean"/>
+    </xs:complexType>
+    <xs:complexType mixed="true" name="TDecorator">
+        <xs:choice>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="bold" type="TDecorator"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="italic" type="TDecorator"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="underline" type="TDecorator"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType mixed="true" name="TQuote">
+        <xs:attribute name="author">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:minLength value="1"/>
+                    <xs:maxLength value="50"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="TReference">
+        <xs:sequence>
+            <xs:element name="authors">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="name" type="TName"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="year">
+                <xs:simpleType>
+                    <xs:restriction base="xs:positiveInteger">
+                        <xs:maxInclusive value="2019"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="title">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="100"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="publisher">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="100"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="place">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:attribute name="id" type="xs:ID"/>
+</xs:schema>
