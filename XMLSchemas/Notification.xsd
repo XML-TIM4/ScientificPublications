@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="https://github.com/XML-TIM4/ScientificPublications"
+    xmlns="https://github.com/XML-TIM4/ScientificPublications">
+    <xs:include schemaLocation="ScientificPaper.xsd"/>
+    <xs:element name="notification" type="TNotification"/>
+    <xs:complexType name="TNotification">
+        <xs:sequence>
+            <xs:element name="notification-metadata" type="TNotificationMetadata"/>
+            <xs:element name="content" type="TParagraph"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TNotificationMetadata">
+        <xs:sequence>
+            <xs:element name="author" type="TAuthor"/>
+            <xs:element name="date" type="xs:date"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

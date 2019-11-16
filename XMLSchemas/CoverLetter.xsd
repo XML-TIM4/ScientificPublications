@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="https://github.com/XML-TIM4/ScientificPublications"
+    xmlns="https://github.com/XML-TIM4/ScientificPublications">
+    <xs:include schemaLocation="ScientificPaper.xsd"/>
+    <xs:complexType name="TCoverLetterMetadata">
+        <xs:sequence>
+            <xs:element name="author" type="TAuthor"/>
+            <xs:element name="editor" type="TAuthor"/>
+            <xs:element name="date" type="xs:date"/>
+            <xs:element name="scientific-paper-reference" type="xs:IDREF"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TCoverLetter">
+        <xs:sequence>
+            <xs:element name="cover-letter-metadata" type="TCoverLetterMetadata"/>
+            <xs:element name="content">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="paragraph" type="TParagraph"/>
+                        <xs:element name="signature" type="xs:base64Binary"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="CoverLetter">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="TCoverLetter">
+                    <xs:attribute name="language" type="xs:language"/>
+                    <xs:attribute ref="id"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

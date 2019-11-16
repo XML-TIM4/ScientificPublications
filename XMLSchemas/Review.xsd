@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="https://github.com/XML-TIM4/ScientificPublications"
+    xmlns="https://github.com/XML-TIM4/ScientificPublications">
+    <xs:include schemaLocation="ScientificPaper.xsd"/>
+    <xs:complexType name="TQuestion">
+        <xs:sequence>
+            <xs:element name="question-text" type="xs:string"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="answer">
+                <xs:complexType>
+                    <xs:attribute name="selected" type="xs:boolean"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="type">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="text"/>
+                    <xs:enumeration value="multiple-choice"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:element name="review" type="TReview"/>
+    <xs:complexType name="TReview">
+        <xs:sequence>
+            <xs:element name="review-metadata" type="TReviewMetadata"/>
+            <xs:element name="questionnaire">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="question"
+                            type="TQuestion"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="author-comments">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="author-comment" type="TComment"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="editor-comments">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="editor-comment" type="TComment"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute default="en" name="language" type="xs:language"/>
+        <xs:attribute ref="id"/>
+    </xs:complexType>
+    <xs:complexType name="TReviewMetadata">
+        <xs:sequence>
+            <xs:element name="reviewer" type="TAuthor"/>
+            <xs:element name="date" type="xs:date"/>
+            <xs:element name="recommendation">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="accept"/>
+                        <xs:enumeration value="reject"/>
+                        <xs:enumeration value="major-revisions"/>
+                        <xs:enumeration value="minor-revisions"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TComment">
+        <xs:sequence>
+            <xs:element name="review-reference" type="xs:IDREF"/>
+            <xs:element name="comment-text">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="300"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
