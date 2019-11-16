@@ -16,23 +16,24 @@
             </xs:element>
             <xs:element name="authors">
                 <xs:complexType>
-                    <xs:sequence maxOccurs="unbounded" minOccurs="1">
-                        <xs:element name="author" type="TAuthor"/>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="author" type="TAuthor"
+                        />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="abstract" type="TAbstract"/>
             <xs:element name="content">
                 <xs:complexType>
-                    <xs:sequence maxOccurs="unbounded">
-                        <xs:element name="section" type="TSection"/>
+                    <xs:sequence>
+                        <xs:element name="section" type="TSection" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="references">
                 <xs:complexType>
-                    <xs:sequence maxOccurs="unbounded">
-                        <xs:element name="reference" type="TReference"/>
+                    <xs:sequence>
+                        <xs:element name="reference" type="TReference" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
