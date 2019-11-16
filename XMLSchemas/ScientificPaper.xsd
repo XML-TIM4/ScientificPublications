@@ -92,8 +92,8 @@
             </xs:element>
             <xs:element name="keywords">
                 <xs:complexType>
-                    <xs:sequence maxOccurs="unbounded">
-                        <xs:element name="keyword">
+                    <xs:sequence>
+                        <xs:element name="keyword" maxOccurs="unbounded" minOccurs="1">
                             <xs:simpleType>
                                 <xs:restriction base="xs:string">
                                     <xs:minLength value="1"/>
@@ -171,8 +171,8 @@
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="TAbstract">
-        <xs:sequence maxOccurs="7" minOccurs="4">
-            <xs:element name="abstract-item" type="TAbstractItem"/>
+        <xs:sequence>
+            <xs:element name="abstract-item" type="TAbstractItem" maxOccurs="7" minOccurs="4"/>
         </xs:sequence>
         <xs:attribute ref="id" use="required"/>
     </xs:complexType>
@@ -205,7 +205,7 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="paragraph" type="TParagraph"/>
+            <xs:element name="paragraph" type="TParagraph" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute ref="id" use="required"/>
     </xs:complexType>
@@ -220,9 +220,9 @@
         <xs:attribute ref="id" use="required"/>
     </xs:complexType>
     <xs:complexType mixed="true" name="TFigure">
-        <xs:choice maxOccurs="unbounded" minOccurs="1">
-            <xs:element name="image" type="xs:base64Binary"/>
-        </xs:choice>
+        <xs:sequence>
+            <xs:element name="image" type="xs:base64Binary" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
         <xs:attribute name="type">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
@@ -239,15 +239,15 @@
         <xs:sequence>
             <xs:element name="header">
                 <xs:complexType>
-                    <xs:sequence maxOccurs="unbounded" minOccurs="0">
-                        <xs:element name="row" type="TRow"/>
+                    <xs:sequence>
+                        <xs:element name="row" type="TRow" maxOccurs="unbounded" minOccurs="0"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="body">
                 <xs:complexType>
-                    <xs:sequence maxOccurs="unbounded" minOccurs="0">
-                        <xs:element name="row" type="TRow"/>
+                    <xs:sequence>
+                        <xs:element name="row" type="TRow" maxOccurs="unbounded" minOccurs="0"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -263,8 +263,8 @@
         <xs:attribute ref="id" use="required"/>
     </xs:complexType>
     <xs:complexType name="TRow">
-        <xs:sequence maxOccurs="unbounded" minOccurs="0">
-            <xs:element name="column" type="TColumn"/>
+        <xs:sequence>
+            <xs:element name="column" type="TColumn" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:simpleType name="TColumn">
@@ -274,8 +274,8 @@
         </xs:restriction>
     </xs:simpleType>
     <xs:complexType name="TList">
-        <xs:sequence maxOccurs="unbounded" minOccurs="0">
-            <xs:element name="list-item">
+        <xs:sequence>
+            <xs:element name="list-item" maxOccurs="unbounded" minOccurs="0">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:minLength value="0"/>
@@ -307,8 +307,8 @@
         <xs:sequence>
             <xs:element name="authors">
                 <xs:complexType>
-                    <xs:sequence maxOccurs="unbounded" minOccurs="1">
-                        <xs:element name="name" type="TName"/>
+                    <xs:sequence>
+                        <xs:element name="name" type="TName" maxOccurs="unbounded" minOccurs="1"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
