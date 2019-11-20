@@ -295,14 +295,17 @@
         </xs:choice>
     </xs:complexType>
     <xs:complexType mixed="true" name="TQuote">
-        <xs:attribute name="author">
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:minLength value="1"/>
-                    <xs:maxLength value="50"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
+        <xs:sequence>
+            <xs:element name="quote-text">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="30"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="publication" type="TPublication"/>
+        </xs:sequence>
     </xs:complexType>
     <xs:complexType name="TReference">
         <xs:sequence>
@@ -313,18 +316,23 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element minOccurs="0" name="year">
-                <xs:simpleType>
-                    <xs:restriction base="xs:positiveInteger">
-                        <xs:maxInclusive value="2019"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
+            <xs:element name="publication" type="TPublication"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TPublication">
+        <xs:sequence>
             <xs:element name="title">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:minLength value="1"/>
                         <xs:maxLength value="100"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element minOccurs="0" name="year">
+                <xs:simpleType>
+                    <xs:restriction base="xs:positiveInteger">
+                        <xs:maxInclusive value="2019"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
@@ -346,5 +354,13 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    <xs:attribute name="id" type="xs:ID"/>
+    <xs:attribute name="id">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:pattern
+                    value="(([a-zA-Z][0-9a-zA-Z+\\-\\.]*:)?/{0,2}[0-9a-zA-Z;/?:@&amp;=+$\\.\\-_!~*'()%]+)?( #[0-9a-zA-Z;/?:@&amp;=+$\\.\\-_!~*'()%]+)?"
+                />
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
 </xs:schema>
