@@ -39,7 +39,7 @@
             </xs:element>
         </xs:sequence>
         <xs:attribute default="en" name="language" type="xs:language"/>
-        <xs:attribute ref="id" use="required"/>
+        <xs:attribute ref="id"/>
     </xs:complexType>
     <xs:complexType name="TAuthor">
         <xs:sequence>
@@ -53,7 +53,7 @@
             </xs:element>
             <xs:element name="affiliation" type="TAffiliation"/>
         </xs:sequence>
-        <xs:attribute ref="id" use="required"/>
+        <xs:attribute ref="id"/>
     </xs:complexType>
     <xs:complexType name="TMetadata">
         <xs:sequence>
@@ -175,7 +175,7 @@
         <xs:sequence>
             <xs:element name="abstract-item" type="TAbstractItem" maxOccurs="7" minOccurs="4"/>
         </xs:sequence>
-        <xs:attribute ref="id" use="required"/>
+        <xs:attribute ref="id"/>
     </xs:complexType>
     <xs:complexType name="TAbstractItem">
         <xs:simpleContent>
@@ -208,7 +208,7 @@
             </xs:element>
             <xs:element name="paragraph" type="TParagraph" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute ref="id" use="required"/>
+        <xs:attribute ref="id"/>
     </xs:complexType>
     <xs:complexType mixed="true" name="TParagraph">
         <xs:choice maxOccurs="unbounded">
@@ -218,7 +218,7 @@
             <xs:element name="decorator" type="TDecorator"/>
             <xs:element name="quote" type="TQuote"/>
         </xs:choice>
-        <xs:attribute ref="id" use="required"/>
+        <xs:attribute ref="id"/>
     </xs:complexType>
     <xs:complexType mixed="true" name="TFigure">
         <xs:sequence>
@@ -234,7 +234,7 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute ref="id" use="required"/>
+        <xs:attribute ref="id"/>
     </xs:complexType>
     <xs:complexType name="TTable">
         <xs:sequence>
@@ -261,7 +261,7 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute ref="id" use="required"/>
+        <xs:attribute ref="id"/>
     </xs:complexType>
     <xs:complexType name="TRow">
         <xs:sequence>

@@ -49,7 +49,7 @@
             </xs:element>
         </xs:sequence>
         <xs:attribute default="en" name="language" type="xs:language"/>
-        <xs:attribute ref="id"/>
+        <xs:attribute name="id" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="TReviewMetadata">
         <xs:sequence>
@@ -69,7 +69,7 @@
     </xs:complexType>
     <xs:complexType name="TComment">
         <xs:sequence>
-            <xs:element name="review-reference" type="xs:IDREF"/>
+            <xs:element name="review-reference" type="xs:string" nillable="false"/>
             <xs:element name="comment-text">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">

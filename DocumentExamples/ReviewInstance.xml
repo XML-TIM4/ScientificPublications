@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<review xmlns="https://github.com/XML-TIM4/ScientificPublications"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/XMLSchemas/Review.xsd">
+    <review-metadata>
+        <reviewer>
+            <name>
+                <first-name>first-name0</first-name>
+                <last-name>last-name0</last-name>
+            </name>
+            <email> @ .a</email>
+            <affiliation>
+                <university>university0</university>
+                <city>city0</city>
+                <state>state0</state>
+                <country>country0</country>
+            </affiliation>
+        </reviewer>
+        <date>2006-05-04</date>
+        <recommendation>accept</recommendation>
+    </review-metadata>
+    <questionnaire>
+        <question>
+            <question-text>question-text0</question-text>
+        </question>
+        <question>
+            <question-text>question-text1</question-text>
+        </question>
+    </questionnaire>
+    <author-comments>
+        <author-comment>
+            <review-reference>review-reference0</review-reference>
+            <comment-text>comment-text0</comment-text>
+        </author-comment>
+        <author-comment>
+            <review-reference>review-reference1</review-reference>
+            <comment-text>comment-text1</comment-text>
+        </author-comment>
+    </author-comments>
+    <editor-comments>
+        <editor-comment>
+            <review-reference>review-reference2</review-reference>
+            <comment-text>comment-text2</comment-text>
+        </editor-comment>
+        <editor-comment>
+            <review-reference>review-reference3</review-reference>
+            <comment-text>comment-text3</comment-text>
+        </editor-comment>
+    </editor-comments>
+</review>

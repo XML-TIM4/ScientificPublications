@@ -8,7 +8,7 @@
             <xs:element name="author" type="TAuthor"/>
             <xs:element name="editor" type="TAuthor"/>
             <xs:element name="date" type="xs:date"/>
-            <xs:element name="scientific-paper-reference" type="xs:IDREF"/>
+            <xs:element name="scientific-paper-reference" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="TCoverLetter">
@@ -29,7 +29,7 @@
             <xs:complexContent>
                 <xs:extension base="TCoverLetter">
                     <xs:attribute name="language" type="xs:language"/>
-                    <xs:attribute ref="id"/>
+                    <xs:attribute name="id" type="xs:string"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>

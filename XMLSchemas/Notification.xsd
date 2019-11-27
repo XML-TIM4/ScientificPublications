@@ -14,7 +14,7 @@
         <xs:sequence>
             <xs:element name="author" type="TAuthor"/>
             <xs:element name="date" type="xs:date"/>
-            <xs:element name="scientific-paper-id" type="xs:IDREF"/>
+            <xs:element name="scientific-paper-id" type="xs:string" nillable="false"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>
