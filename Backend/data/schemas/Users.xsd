@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="https://github.com/XML-TIM4/ScientificPublications"
+    xmlns="https://github.com/XML-TIM4/ScientificPublications">
+
+    <xs:complexType name="TUser">
+        <xs:sequence>
+            <xs:element name="username" type="xs:string"/>
+            <xs:element name="password">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="^([a-zA-Z0-9@*#]{8,15})$"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="email">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="[^@]+@[^\.]+\..+"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="publication-roles" type="TPublicationRoles"/>
+        </xs:sequence>
+        <xs:attribute name="author-id">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern
+                        value="(([a-zA-Z][0-9a-zA-Z+\\-\\.]*:)?/{0,2}[0-9a-zA-Z;/?:@&amp;amp;=+$\\.\\-_!~*'()%]+)?( #[0-9a-zA-Z;/?:@&amp;amp;=+$\\.\\-_!~*'()%]+)?"
+                    />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute default="false" name="is-editor" type="xs:boolean"/>
+    </xs:complexType>
+    <xs:complexType name="TUsers">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="TUser"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TPublicationRole">
+        <xs:attribute name="document-id" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern
+                        value="(([a-zA-Z][0-9a-zA-Z+\\-\\.]*:)?/{0,2}[0-9a-zA-Z;/?:@&amp;amp;=+$\\.\\-_!~*'()%]+)?( #[0-9a-zA-Z;/?:@&amp;amp;=+$\\.\\-_!~*'()%]+)?"
+                    />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="role" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="REVIEWER"/>
+                    <xs:enumeration value="AUTHOR"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="TPublicationRoles">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="publication-role"
+                type="TPublicationRole"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="users" type="TUsers"/>
+</xs:schema>
