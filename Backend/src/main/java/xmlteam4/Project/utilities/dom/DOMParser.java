@@ -1,12 +1,12 @@
-package xmlteam4.Project.utilities;
+package xmlteam4.Project.utilities.dom;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import xmlteam4.Project.exceptions.DocumentParsingFailedException;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,19 +18,16 @@ import java.io.StringReader;
 
 @Component
 public class DOMParser {
+    @Autowired
+    private DocumentBuilderFactory documentBuilderFactory;
+
+    @Autowired
+    private SchemaFactory schemaFactory;
 
     public Document buildDocument(String xml, String schemaPath) throws SAXException, ParserConfigurationException, IOException, DocumentParsingFailedException {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setIgnoringComments(true);
-        documentBuilderFactory.setValidating(true);
-
-        Schema schema = loadSchema(schemaPath);
-
-        documentBuilderFactory.setSchema(schema);
+        documentBuilderFactory.setSchema(loadSchema(schemaPath));
 
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        documentBuilder.setErrorHandler(new DOMErrorHandlerImpl());
 
         Document document = documentBuilder.parse(new InputSource(new StringReader(xml)));
 
@@ -41,9 +38,6 @@ public class DOMParser {
     }
 
     private Schema loadSchema(String schemaPath) throws SAXException {
-        File schemaFile = new File(schemaPath);
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-
-        return schemaFactory.newSchema(schemaFile);
+        return schemaFactory.newSchema(new File(schemaPath));
     }
 }
