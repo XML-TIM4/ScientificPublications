@@ -1,6 +1,8 @@
 
 package xmlteam4.Project.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -33,7 +35,17 @@ import javax.xml.bind.annotation.XmlType;
  *             &lt;/restriction>
  *           &lt;/simpleType>
  *         &lt;/element>
- *         &lt;element name="publication-roles" type="{https://github.com/XML-TIM4/ScientificPublications}TPublicationRoles"/>
+ *         &lt;element name="publication-roles">
+ *           &lt;complexType>
+ *             &lt;complexContent>
+ *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *                 &lt;sequence>
+ *                   &lt;element name="publication-role" type="{https://github.com/XML-TIM4/ScientificPublications}TPublicationRole" maxOccurs="unbounded" minOccurs="0"/>
+ *                 &lt;/sequence>
+ *               &lt;/restriction>
+ *             &lt;/complexContent>
+ *           &lt;/complexType>
+ *         &lt;/element>
  *       &lt;/sequence>
  *       &lt;attribute name="author-id">
  *         &lt;simpleType>
@@ -66,7 +78,7 @@ public class TUser {
     @XmlElement(namespace = "https://github.com/XML-TIM4/ScientificPublications", required = true)
     protected String email;
     @XmlElement(name = "publication-roles", namespace = "https://github.com/XML-TIM4/ScientificPublications", required = true)
-    protected TPublicationRoles publicationRoles;
+    protected TUser.PublicationRoles publicationRoles;
     @XmlAttribute(name = "author-id")
     protected String authorId;
     @XmlAttribute(name = "is-editor")
@@ -149,10 +161,10 @@ public class TUser {
      * 
      * @return
      *     possible object is
-     *     {@link TPublicationRoles }
+     *     {@link TUser.PublicationRoles }
      *     
      */
-    public TPublicationRoles getPublicationRoles() {
+    public TUser.PublicationRoles getPublicationRoles() {
         return publicationRoles;
     }
 
@@ -161,10 +173,10 @@ public class TUser {
      * 
      * @param value
      *     allowed object is
-     *     {@link TPublicationRoles }
+     *     {@link TUser.PublicationRoles }
      *     
      */
-    public void setPublicationRoles(TPublicationRoles value) {
+    public void setPublicationRoles(TUser.PublicationRoles value) {
         this.publicationRoles = value;
     }
 
@@ -218,6 +230,66 @@ public class TUser {
      */
     public void setIsEditor(Boolean value) {
         this.isEditor = value;
+    }
+
+
+    /**
+     * <p>Java class for anonymous complex type.
+     * 
+     * <p>The following schema fragment specifies the expected content contained within this class.
+     * 
+     * <pre>
+     * &lt;complexType>
+     *   &lt;complexContent>
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+     *       &lt;sequence>
+     *         &lt;element name="publication-role" type="{https://github.com/XML-TIM4/ScientificPublications}TPublicationRole" maxOccurs="unbounded" minOccurs="0"/>
+     *       &lt;/sequence>
+     *     &lt;/restriction>
+     *   &lt;/complexContent>
+     * &lt;/complexType>
+     * </pre>
+     * 
+     * 
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "publicationRole"
+    })
+    public static class PublicationRoles {
+
+        @XmlElement(name = "publication-role", namespace = "https://github.com/XML-TIM4/ScientificPublications")
+        protected List<TPublicationRole> publicationRole;
+
+        /**
+         * Gets the value of the publicationRole property.
+         * 
+         * <p>
+         * This accessor method returns a reference to the live list,
+         * not a snapshot. Therefore any modification you make to the
+         * returned list will be present inside the JAXB object.
+         * This is why there is not a <CODE>set</CODE> method for the publicationRole property.
+         * 
+         * <p>
+         * For example, to add a new item, do as follows:
+         * <pre>
+         *    getPublicationRole().add(newItem);
+         * </pre>
+         * 
+         * 
+         * <p>
+         * Objects of the following type(s) are allowed in the list
+         * {@link TPublicationRole }
+         * 
+         * 
+         */
+        public List<TPublicationRole> getPublicationRole() {
+            if (publicationRole == null) {
+                publicationRole = new ArrayList<TPublicationRole>();
+            }
+            return this.publicationRole;
+        }
+
     }
 
 }

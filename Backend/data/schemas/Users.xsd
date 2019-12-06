@@ -20,7 +20,18 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="publication-roles" type="TPublicationRoles"/>
+            <xs:element name="publication-roles">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="publication-role"
+                            type="TPublicationRole"/>
+                    </xs:sequence>
+                </xs:complexType>
+                <xs:unique name="unique-publication-id">
+                    <xs:selector xpath="publication-role"></xs:selector>
+                    <xs:field xpath="@document-id"></xs:field>
+                </xs:unique>
+            </xs:element>
         </xs:sequence>
         <xs:attribute name="author-id">
             <xs:simpleType>
@@ -32,11 +43,6 @@
             </xs:simpleType>
         </xs:attribute>
         <xs:attribute default="false" name="is-editor" type="xs:boolean"/>
-    </xs:complexType>
-    <xs:complexType name="TUsers">
-        <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="TUser"/>
-        </xs:sequence>
     </xs:complexType>
     <xs:complexType name="TPublicationRole">
         <xs:attribute name="document-id" use="required">
@@ -57,11 +63,15 @@
             </xs:simpleType>
         </xs:attribute>
     </xs:complexType>
-    <xs:complexType name="TPublicationRoles">
-        <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="publication-role"
-                type="TPublicationRole"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:element name="users" type="TUsers"/>
+    <xs:element name="users">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="TUser"/>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:unique name="unique-username">
+            <xs:selector xpath="user/username"/>
+            <xs:field xpath="."/>
+        </xs:unique>
+    </xs:element>
 </xs:schema>

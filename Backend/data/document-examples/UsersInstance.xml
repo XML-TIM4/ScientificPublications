@@ -3,20 +3,20 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/Backend/data/schemas/Users.xsd">
     <user author-id="" is-editor="false">
-        <username>nfq5E8</username>
-        <password>^#641U#*HX*i#*3$</password>
-        <email>!@#.af</email>
+        <username>Mue5OFa6-_wuKF</username>
+        <password>^*f#W*#05*$</password>
+        <email>»@,.a</email>
         <publication-roles>
+            <publication-role document-id="" role="REVIEWER"/>
             <publication-role document-id="" role="AUTHOR"/>
-            <publication-role document-id="T:/s" role="REVIEWER"/>
         </publication-roles>
     </user>
     <user author-id="" is-editor="false">
-        <username>Iu0NJVilkqB6TY9z</username>
-        <password>^*GLf#zo**#T#B#b$</password>
-        <email>?+@).ao</email>
+        <username>g2xMy6tRgRVEEm8OP5G60IoE</username>
+        <password>^8#*04**F#$</password>
+        <email>l@Þ.r</email>
         <publication-roles>
-            <publication-role document-id=" #&amp;\" role="AUTHOR"/>
+            <publication-role document-id="" role="REVIEWER"/>
             <publication-role document-id="" role="REVIEWER"/>
         </publication-roles>
     </user>

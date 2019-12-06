@@ -6,20 +6,21 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for TPublicationRoles complex type.
+ * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="TPublicationRoles">
+ * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="publication-role" type="{https://github.com/XML-TIM4/ScientificPublications}TPublicationRole" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="user" type="{https://github.com/XML-TIM4/ScientificPublications}TUser" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,41 +30,42 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TPublicationRoles", namespace = "https://github.com/XML-TIM4/ScientificPublications", propOrder = {
-    "publicationRole"
+@XmlType(name = "", propOrder = {
+    "user"
 })
-public class TPublicationRoles {
+@XmlRootElement(name = "users", namespace = "https://github.com/XML-TIM4/ScientificPublications")
+public class Users {
 
-    @XmlElement(name = "publication-role", namespace = "https://github.com/XML-TIM4/ScientificPublications")
-    protected List<TPublicationRole> publicationRole;
+    @XmlElement(namespace = "https://github.com/XML-TIM4/ScientificPublications")
+    protected List<TUser> user;
 
     /**
-     * Gets the value of the publicationRole property.
+     * Gets the value of the user property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the publicationRole property.
+     * This is why there is not a <CODE>set</CODE> method for the user property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getPublicationRole().add(newItem);
+     *    getUser().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link TPublicationRole }
+     * {@link TUser }
      * 
      * 
      */
-    public List<TPublicationRole> getPublicationRole() {
-        if (publicationRole == null) {
-            publicationRole = new ArrayList<TPublicationRole>();
+    public List<TUser> getUser() {
+        if (user == null) {
+            user = new ArrayList<TUser>();
         }
-        return this.publicationRole;
+        return this.user;
     }
 
 }

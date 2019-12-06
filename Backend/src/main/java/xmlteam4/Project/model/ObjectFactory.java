@@ -1,10 +1,7 @@
 
 package xmlteam4.Project.model;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -24,37 +21,12 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _Users_QNAME = new QName("https://github.com/XML-TIM4/ScientificPublications", "users");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: xmlteam4.Project.model
      * 
      */
     public ObjectFactory() {
-    }
-
-    /**
-     * Create an instance of {@link TUsers }
-     * 
-     */
-    public TUsers createTUsers() {
-        return new TUsers();
-    }
-
-    /**
-     * Create an instance of {@link TPublicationRoles }
-     * 
-     */
-    public TPublicationRoles createTPublicationRoles() {
-        return new TPublicationRoles();
-    }
-
-    /**
-     * Create an instance of {@link TPublicationRole }
-     * 
-     */
-    public TPublicationRole createTPublicationRole() {
-        return new TPublicationRole();
     }
 
     /**
@@ -66,12 +38,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link TUsers }{@code >}}
+     * Create an instance of {@link Users }
      * 
      */
-    @XmlElementDecl(namespace = "https://github.com/XML-TIM4/ScientificPublications", name = "users")
-    public JAXBElement<TUsers> createUsers(TUsers value) {
-        return new JAXBElement<TUsers>(_Users_QNAME, TUsers.class, null, value);
+    public Users createUsers() {
+        return new Users();
+    }
+
+    /**
+     * Create an instance of {@link TPublicationRole }
+     * 
+     */
+    public TPublicationRole createTPublicationRole() {
+        return new TPublicationRole();
+    }
+
+    /**
+     * Create an instance of {@link TUser.PublicationRoles }
+     * 
+     */
+    public TUser.PublicationRoles createTUserPublicationRoles() {
+        return new TUser.PublicationRoles();
     }
 
 }
