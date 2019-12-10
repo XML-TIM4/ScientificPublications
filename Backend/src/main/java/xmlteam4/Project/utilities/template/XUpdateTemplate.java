@@ -1,6 +1,7 @@
 package xmlteam4.Project.utilities.template;
 
 import org.exist.xupdate.XUpdateProcessor;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * http://xmldb-org.sourceforge.net/xupdate/xupdate-wd.html
@@ -8,7 +9,8 @@ import org.exist.xupdate.XUpdateProcessor;
  */
 public class XUpdateTemplate {
 
-	public static final String TARGET_NAMESPACE = "https://github.com/XML-TIM4/ScientificPublications";
+	@Value("${x-update-template.target-namespace}")
+	public static String TARGET_NAMESPACE;
 	
 	/*
 	 * There are two instructions in XUpdate that support insertion of nodes:
