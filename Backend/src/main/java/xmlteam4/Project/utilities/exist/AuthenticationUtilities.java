@@ -1,29 +1,51 @@
 package xmlteam4.Project.utilities.exist;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.Database;
 import org.xmldb.api.base.XMLDBException;
 
+import javax.annotation.PostConstruct;
+
+@Component
 public class AuthenticationUtilities {
-    @Value("${exist-connection-uri}")
     public static String uri;
+    public static String host;
+    public static int port;
+    public static String user;
+    public static String password;
+    public static String driver;
+
+    @Value("${exist-connection-uri}")
+    private String _uri;
 
     @Value("${conn.host}")
-    public static String host;
+    private String _host;
 
     @Value("${conn.port}")
-    public static int port;
+    private int _port;
 
     @Value("${conn.user}")
-    public static String user;
+    private String _user;
 
     @Value("${conn.password}")
-    public static String password;
+    private String _password;
 
     @Value("${conn.driver}")
-    public static String driver;
+    private String _driver;
+
+
+    @PostConstruct
+    public void init() {
+        AuthenticationUtilities.uri = _uri;
+        AuthenticationUtilities.driver = _driver;
+        AuthenticationUtilities.password = _password;
+        AuthenticationUtilities.user = _user;
+        AuthenticationUtilities.host = _host;
+        AuthenticationUtilities.port = _port;
+    }
 
 
     public static Collection initDBCollection(String collectionId) throws ClassNotFoundException, IllegalAccessException, InstantiationException, XMLDBException {
