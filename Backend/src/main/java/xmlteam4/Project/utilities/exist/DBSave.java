@@ -38,7 +38,6 @@ public class DBSave {
              */
             System.out.println("[INFO] Inserting the document: " + documentId);
             res = (XMLResource) col.createResource(documentId, XMLResource.RESOURCE_TYPE);
-
             res.setContent(xmlEntity);
             System.out.println("[INFO] Storing the document: " + res.getId());
             col.storeResource(res);
@@ -69,13 +68,12 @@ public class DBSave {
     }
 
     private static Collection getOrCreateCollection(String collectionUri, int pathSegmentOffset) throws XMLDBException {
-
         Collection col = DatabaseManager
-                .getCollection(AuthenticationUtilities.uri + collectionUri, AuthenticationUtilities.user,
-                        AuthenticationUtilities.password);
+                .getCollection(AuthenticationUtilities.uri + collectionUri, AuthenticationUtilities.user, AuthenticationUtilities.password);
 
         // create the collection if it does not exist
         if (col == null) {
+
             if (collectionUri.startsWith("/")) {
                 collectionUri = collectionUri.substring(1);
             }
@@ -90,8 +88,7 @@ public class DBSave {
                 }
 
                 Collection startCol = DatabaseManager
-                        .getCollection(AuthenticationUtilities.uri + path, AuthenticationUtilities.user,
-                                AuthenticationUtilities.password);
+                        .getCollection(AuthenticationUtilities.uri + path, AuthenticationUtilities.user, AuthenticationUtilities.password);
 
                 if (startCol == null) {
 
@@ -99,8 +96,7 @@ public class DBSave {
 
                     String parentPath = path.substring(0, path.lastIndexOf("/"));
                     Collection parentCol = DatabaseManager
-                            .getCollection(AuthenticationUtilities.uri + parentPath, AuthenticationUtilities.user,
-                                    AuthenticationUtilities.password);
+                            .getCollection(AuthenticationUtilities.uri + parentPath, AuthenticationUtilities.user, AuthenticationUtilities.password);
 
                     CollectionManagementService mgt = (CollectionManagementService) parentCol
                             .getService("CollectionManagementService", "1.0");

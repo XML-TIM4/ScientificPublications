@@ -83,9 +83,7 @@ public class CoverLetterRepositoryTests {
                 "    </content>\r\n" +
                 "</CoverLetter>\r\n" +
                 "";
-
-        coverLetterRepository.create("jojo", cl);
-
-        assertEquals("It good.", cl, coverLetterRepository.findOne("jojo"));
+        
+        assertEquals("jojo", coverLetterRepository.create("jojo", cl));
     }
 }
