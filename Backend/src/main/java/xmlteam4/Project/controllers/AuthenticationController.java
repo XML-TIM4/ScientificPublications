@@ -36,15 +36,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO) {
-        try {
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    loginDTO.getEmail(), loginDTO.getPassword());
-            Authentication authentication = authenticationManager.authenticate(token);
-            UserDetails details = userDetailsService.loadUserByUsername(loginDTO.getEmail());
-            return new ResponseEntity<>(tokenUtils.generateToken(details), HttpStatus.OK);
-        } catch (BadCredentialsException | UsernameNotFoundException ignored) {
-            return new ResponseEntity<>("Invalid email or password", HttpStatus.BAD_REQUEST);
-        }
+        throw new NotImplementedException();
     }
 
     @PostMapping("/register")
