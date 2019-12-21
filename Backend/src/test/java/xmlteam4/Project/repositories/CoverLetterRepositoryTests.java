@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -83,7 +84,9 @@ public class CoverLetterRepositoryTests {
                 "    </content>\r\n" +
                 "</CoverLetter>\r\n" +
                 "";
-        
-        assertEquals("jojo", coverLetterRepository.create("jojo", cl));
+
+        String id = IDGenerator.createID();
+
+        assertEquals(id, coverLetterRepository.create(id, cl));
     }
 }
