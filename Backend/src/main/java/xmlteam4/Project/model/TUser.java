@@ -1,8 +1,13 @@
 
 package xmlteam4.Project.model;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -12,9 +17,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for TUser complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="TUser">
  *   &lt;complexContent>
@@ -59,17 +64,15 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TUser", namespace = "https://github.com/XML-TIM4/ScientificPublications", propOrder = {
-    "username",
-    "password",
-    "email",
-    "publicationRoles"
+        "username",
+        "password",
+        "email",
+        "publicationRoles"
 })
-public class TUser {
+public class TUser implements UserDetails {
 
     @XmlElement(namespace = "https://github.com/XML-TIM4/ScientificPublications", required = true)
     protected String username;
@@ -86,35 +89,70 @@ public class TUser {
 
     /**
      * Gets the value of the username property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUsername() {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
     /**
      * Sets the value of the username property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUsername(String value) {
         this.username = value;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        ArrayList<Authority> authorities = new ArrayList<>();
+
+        if (this.isEditor)
+            authorities.add(new Authority(UserRole.EDITOR));
+
+        if (this.publicationRoles != null && this.publicationRoles.getPublicationRole() != null) {
+            for (String role :
+                    this.publicationRoles.getPublicationRole().stream().map(TPublicationRole::getRole).distinct()
+                            .collect(Collectors.toList())) {
+                if (UserRole.AUTHOR.toString().equalsIgnoreCase(role))
+                    authorities.add(new Authority(UserRole.AUTHOR));
+                else if (UserRole.REVIEWER.toString().equalsIgnoreCase(role))
+                    authorities.add(new Authority(UserRole.REVIEWER));
+            }
+        }
+
+        return authorities;
+    }
+
     /**
      * Gets the value of the password property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPassword() {
         return password;
@@ -122,11 +160,9 @@ public class TUser {
 
     /**
      * Sets the value of the password property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPassword(String value) {
         this.password = value;
@@ -134,11 +170,9 @@ public class TUser {
 
     /**
      * Gets the value of the email property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getEmail() {
         return email;
@@ -146,11 +180,9 @@ public class TUser {
 
     /**
      * Sets the value of the email property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setEmail(String value) {
         this.email = value;
@@ -158,11 +190,9 @@ public class TUser {
 
     /**
      * Gets the value of the publicationRoles property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TUser.PublicationRoles }
-     *     
+     *
+     * @return possible object is
+     * {@link TUser.PublicationRoles }
      */
     public TUser.PublicationRoles getPublicationRoles() {
         return publicationRoles;
@@ -170,11 +200,9 @@ public class TUser {
 
     /**
      * Sets the value of the publicationRoles property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TUser.PublicationRoles }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link TUser.PublicationRoles }
      */
     public void setPublicationRoles(TUser.PublicationRoles value) {
         this.publicationRoles = value;
@@ -182,11 +210,9 @@ public class TUser {
 
     /**
      * Gets the value of the authorId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getAuthorId() {
         return authorId;
@@ -194,11 +220,9 @@ public class TUser {
 
     /**
      * Sets the value of the authorId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setAuthorId(String value) {
         this.authorId = value;
@@ -206,11 +230,9 @@ public class TUser {
 
     /**
      * Gets the value of the isEditor property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
+     *
+     * @return possible object is
+     * {@link Boolean }
      */
     public boolean isIsEditor() {
         if (isEditor == null) {
@@ -222,11 +244,9 @@ public class TUser {
 
     /**
      * Sets the value of the isEditor property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Boolean }
      */
     public void setIsEditor(Boolean value) {
         this.isEditor = value;
@@ -235,9 +255,9 @@ public class TUser {
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -249,12 +269,10 @@ public class TUser {
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "publicationRole"
+            "publicationRole"
     })
     public static class PublicationRoles {
 
@@ -263,25 +281,23 @@ public class TUser {
 
         /**
          * Gets the value of the publicationRole property.
-         * 
+         *
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the publicationRole property.
-         * 
+         *
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getPublicationRole().add(newItem);
          * </pre>
-         * 
-         * 
+         *
+         *
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TPublicationRole }
-         * 
-         * 
          */
         public List<TPublicationRole> getPublicationRole() {
             if (publicationRole == null) {
