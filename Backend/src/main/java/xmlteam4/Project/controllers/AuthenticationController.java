@@ -3,17 +3,16 @@ package xmlteam4.Project.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import xmlteam4.Project.DTOs.LoginDTO;
+import xmlteam4.Project.DTOs.UserDTO;
+import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.security.TokenUtils;
 import xmlteam4.Project.services.AuthenticationService;
 import xmlteam4.Project.services.UserDetailsServiceImpl;
@@ -22,9 +21,6 @@ import javax.validation.Valid;
 
 @RestController
 public class AuthenticationController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
@@ -36,12 +32,24 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO) {
-        throw new NotImplementedException();
+        try {
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                    loginDTO.getEmail(), loginDTO.getPassword());
+            UserDetails details = userDetailsService.loadUserByUsername(loginDTO.getEmail());
+            return new ResponseEntity<>(tokenUtils.generateToken(details), HttpStatus.OK);
+        } catch (UsernameNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (BadCredentialsException ex) {
+            return new ResponseEntity<>("Invalid email or password", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register() {
-
-        throw new NotImplementedException();
+    public ResponseEntity<Object> register(@Valid @RequestBody UserDTO user) {
+        try {
+            return new ResponseEntity<>(authenticationService.register(user), HttpStatus.OK);
+        } catch (RepositoryException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
