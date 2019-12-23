@@ -10,7 +10,7 @@ import org.xmldb.api.modules.XMLResource;
 import xmlteam4.Project.utilities.exist.DBRetrieve;
 import xmlteam4.Project.utilities.exist.DBSave;
 
-import static xmlteam4.Project.utilities.template.XUpdateTemplate.TARGET_NAMESPACE;
+//import static xmlteam4.Project.utilities.template.XUpdateTemplate.TARGET_NAMESPACE;
 
 
 @Repository
@@ -18,11 +18,14 @@ public class CoverLetterRepository {
     @Value("${cover-letter-collection-id}")
     private String coverLetterCollectionId;
 
-    public static String coverLetterXSLPath = "src/main/resources/data/xslt/CoverLetter.xsl";
-    public static String coverLetterSchemaPath = "src/main/resources/data/schemas/CoverLetter.xsd";
+    @Value("${x-update-template.target-namespace}")
+    private String TARGET_NAMESPACE;
+
+    //public static String coverLetterXSLPath = "src/main/resources/data/xslt/CoverLetter.xsl";
+    //public static String coverLetterSchemaPath = "src/main/resources/data/schemas/CoverLetter.xsd";
 
     public String findOne(String id) throws Exception {
-        String xPathExp = String.format("//coverLetter[@id='%s']", id);
+        String xPathExp = String.format("//CoverLetter[@id=\"%s\"]", id);
         ResourceSet resultSet = DBRetrieve.executeXPathExpression(coverLetterCollectionId, xPathExp, TARGET_NAMESPACE);
         if (resultSet == null)
             return null;
