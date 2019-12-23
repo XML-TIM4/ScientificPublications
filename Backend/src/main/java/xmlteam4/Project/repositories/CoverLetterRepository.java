@@ -18,6 +18,9 @@ public class CoverLetterRepository {
     @Value("${cover-letter-collection-id}")
     private String coverLetterCollectionId;
 
+    public static String coverLetterXSLPath = "src/main/resources/data/xslt/CoverLetter.xsl";
+    public static String coverLetterSchemaPath = "src/main/resources/data/schemas/CoverLetter.xsd";
+
     public String findOne(String id) throws Exception {
         String xPathExp = String.format("//coverLetter[@id='%s']", id);
         ResourceSet resultSet = DBRetrieve.executeXPathExpression(coverLetterCollectionId, xPathExp, TARGET_NAMESPACE);
