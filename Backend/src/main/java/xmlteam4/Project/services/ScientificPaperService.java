@@ -11,6 +11,9 @@ import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Service
 public class ScientificPaperService {
 
@@ -48,6 +51,11 @@ public class ScientificPaperService {
         String id = IDGenerator.createID();
         document.getDocumentElement().setAttribute("id", id);
 
+        String date = new SimpleDateFormat("yyyy-MM-ddZ").format(new Date());
+        document.getElementsByTagName("received").item(0).setTextContent(date);
+
+        document.getElementsByTagName("version").item(0).setTextContent("1.0");
+
         String newXml = documentXMLTransformer.toXMLString(document);
 
         return scientificPaperRepository.create(id, newXml);
@@ -57,6 +65,13 @@ public class ScientificPaperService {
         Document document = domParser.buildDocument(xml, scientificPaperSchemaPath);
 
         document.getDocumentElement().setAttribute("id", id);
+
+        String date = new SimpleDateFormat("yyyy-MM-ddZ").format(new Date());
+        document.getElementsByTagName("received").item(0).setTextContent(date);
+
+        Double version = Double.parseDouble(document.getElementsByTagName("version").item(0).getTextContent());
+        document.getElementsByTagName("version").item(0).setTextContent(version+1.0+"");
+
 
         String newXml = documentXMLTransformer.toXMLString(document);
 

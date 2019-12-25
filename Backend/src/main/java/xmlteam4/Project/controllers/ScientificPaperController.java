@@ -17,45 +17,42 @@ public class ScientificPaperController {
 
     @GetMapping(value = "/{id}", produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> getScientificPaper(@PathVariable("id") String id) {
-        String paper = "";
         try {
-            paper = scientificPaperService.findOne(id);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return new ResponseEntity<>(scientificPaperService.findOne(id),HttpStatus.OK);
+        }catch (Exception e){
+
+            return new ResponseEntity<>("Failed to find scientific paper with given id", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(paper, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createScientificPaper(@RequestBody String xml) {
-        String paper = "";
         try {
-            paper = scientificPaperService.create(xml);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return new ResponseEntity<>(scientificPaperService.create(xml),HttpStatus.OK);
+        }catch (Exception e){
+
+            return new ResponseEntity<>("Failed to create scientific paper", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(paper, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> editScientificPaper(@PathVariable("id") String id, @RequestBody String xml) {
-        String paper = "";
         try {
-            paper = scientificPaperService.update(id,xml);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return new ResponseEntity<>(scientificPaperService.update(id,xml),HttpStatus.OK);
+        }catch (Exception e){
+
+            return new ResponseEntity<>("Failed to update scientific paper with given id", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(paper, HttpStatus.OK);
+
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Boolean> deleteScientificPaper(@PathVariable("id") String id) {
-        Boolean paper = false;
         try {
-            paper = scientificPaperService.delete(id);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return new ResponseEntity<>(scientificPaperService.delete(id),HttpStatus.OK);
+        }catch (Exception e){
+
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(paper, HttpStatus.OK);
     }
 }

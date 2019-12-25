@@ -18,27 +18,26 @@ public class ReviewController {
     @GetMapping(value = "/{id}", produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> getReview(@PathVariable("id") String id) {
 
-        String review = "";
         try {
-            review = reviewService.findOne(id);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return new ResponseEntity<>(reviewService.findOne(id), HttpStatus.OK);
+        }catch (Exception e){
+
+            return new ResponseEntity<>("Failed to find review with given id", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(review, HttpStatus.OK);
+
     }
 
     @PostMapping(consumes = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createReview(@RequestParam("scientific-paper") String scientificPaperId,
                                                @RequestBody String xml) {
 
-        String review = "";
-        try {
-            review = reviewService.create(scientificPaperId,xml);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
-        return new ResponseEntity<>(review,HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(reviewService.create(scientificPaperId,xml),HttpStatus.OK);
+        }catch (Exception e){
+
+            return new ResponseEntity<>("Failed to create review for given scientific paper", HttpStatus.BAD_REQUEST);
+        }
 
     }
 }

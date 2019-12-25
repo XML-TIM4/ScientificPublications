@@ -17,25 +17,23 @@ public class CoverLetterController {
 
     @GetMapping(value = "/{id}", produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> getCoverLetter(@PathVariable("id") String id) {
-        String cover = "";
         try {
-            cover = coverLetterService.findOne(id);
+            return new ResponseEntity<>(coverLetterService.findOne(id), HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
+            return new ResponseEntity<>("Failed to find cover letter with given id", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(cover, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createCoverLetter(@RequestParam("scientific-paper") String scientificPaperId,
                                                     @RequestBody String xml) {
-        String cover = "";
+
         try {
-            cover = coverLetterService.create(scientificPaperId,xml);
+            return new ResponseEntity<>(coverLetterService.create(scientificPaperId,xml),HttpStatus.OK);
         }catch (Exception e){
-            e.printStackTrace();
+
+            return new ResponseEntity<>("Failed to create cover letter for given scientific paper", HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(cover,HttpStatus.OK);
     }
 }
