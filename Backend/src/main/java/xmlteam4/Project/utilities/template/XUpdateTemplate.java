@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class XUpdateTemplate {
 
-	@Value("${x-update-template.target-namespace}")
-	public static String TARGET_NAMESPACE;
+	public static final String TARGET_NAMESPACE = "https://github.com/XML-TIM4/ScientificPublications";
 	
 	/*
 	 * There are two instructions in XUpdate that support insertion of nodes:

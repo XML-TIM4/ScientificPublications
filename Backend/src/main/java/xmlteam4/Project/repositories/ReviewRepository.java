@@ -21,7 +21,7 @@ public class ReviewRepository {
     private String reviewCollectionId;
 
     public String findOne(String id) throws Exception {
-        String xPathExp = String.format("//review[@id='%s']", id);
+        String xPathExp = String.format("//Review[@id='%s']", id);
         ResourceSet resultSet = DBRetrieve.executeXPathExpression(reviewCollectionId, xPathExp, TARGET_NAMESPACE);
         if (resultSet == null)
             return null;

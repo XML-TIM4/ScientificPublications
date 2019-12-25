@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CoverLetterServiceTest {
+public class CoverLetterServiceTests {
 
     @Autowired
     private CoverLetterService coverLetterService;

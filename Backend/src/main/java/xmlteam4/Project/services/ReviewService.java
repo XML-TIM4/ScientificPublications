@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import xmlteam4.Project.repositories.CoverLetterRepository;
 import xmlteam4.Project.repositories.ReviewRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
@@ -16,9 +17,6 @@ public class ReviewService {
 
     @Autowired
     private ReviewRepository reviewRepository;
-
-    //@Autowired
-    //private XSLTransfomer xslTransfomer;
 
     @Autowired
     private DOMParser domParser;
@@ -45,7 +43,8 @@ public class ReviewService {
         String id = IDGenerator.createID();
         document.getDocumentElement().setAttribute("id", id);
 
-       // document.getElementsByTagName("scientific-paper-reference").item(0).setTextContent(scientificPaperId);
+        Node reviewer = document.getElementsByTagName("reviewer").item(0);
+        IDGenerator.generateChildlessElementID(reviewer, id + "/reviewer", "reviewer");
 
         String newXml = documentXMLTransformer.toXMLString(document);
 

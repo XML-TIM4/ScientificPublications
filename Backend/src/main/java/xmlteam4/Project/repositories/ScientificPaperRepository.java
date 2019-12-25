@@ -21,7 +21,7 @@ public class ScientificPaperRepository {
     private String scientificPaperCollectionId;
 
     public String findOne(String id) throws Exception {
-        String xPathExp = String.format("//scientificPaper[@id='%s']", id);
+        String xPathExp = String.format("//scientific-paper[@id='%s']", id);
         ResourceSet resultSet = DBRetrieve.executeXPathExpression(scientificPaperCollectionId, xPathExp, TARGET_NAMESPACE);
         if (resultSet == null)
             return null;
