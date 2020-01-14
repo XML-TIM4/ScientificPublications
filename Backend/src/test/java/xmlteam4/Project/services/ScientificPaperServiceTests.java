@@ -214,6 +214,10 @@ public class ScientificPaperServiceTests {
         String found = scientificPaperService.findOne(id);
 
         System.out.println(found);
+
+        String wut = scientificPaperService.update(id, found);
+
+        System.out.println("IS THIS IT? " + wut);
         assertNotNull(found, "Found not null");
         assertFalse(found.equals(""), "Found not empty string");
     }

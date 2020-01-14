@@ -1,5 +1,6 @@
 package xmlteam4.Project.utilities.dom;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -28,6 +29,8 @@ public class DOMParser {
         documentBuilderFactory.setSchema(loadSchema(schemaPath));
 
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+
+        StringReader wtf = new StringReader(xml);
 
         Document document = documentBuilder.parse(new InputSource(new StringReader(xml)));
 

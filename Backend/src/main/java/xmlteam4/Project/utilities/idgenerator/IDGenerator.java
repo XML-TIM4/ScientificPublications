@@ -18,7 +18,7 @@ public class IDGenerator {
             }
             Element section = (Element) node;
 
-            section.setAttribute("id", id);
+            section.setAttribute("sc:id", id);
 
             NodeList paragraphs = section.getElementsByTagName("paragraph");
             for (int i = 0; i < paragraphs.getLength(); ++i) {
@@ -37,7 +37,7 @@ public class IDGenerator {
             }
             Element paragraph = (Element) node;
 
-            paragraph.setAttribute("id", id);
+            paragraph.setAttribute("sc:id", id);
 
             NodeList tables = paragraph.getElementsByTagName("table");
             for (int i = 0; i < tables.getLength(); ++i) {
@@ -61,7 +61,7 @@ public class IDGenerator {
             }
             Element element = (Element) node;
 
-            element.setAttribute("id", id);
+            element.setAttribute("sc:id", id);
         }
         else {
             throw new BadParametersException("Node object passed is not an Element");

@@ -84,7 +84,7 @@ public class ScientificPaperService {
     }
 
     private void setIDs(String id, Document document) throws BadParametersException {
-        document.getDocumentElement().setAttribute("id", id);
+        document.getDocumentElement().setAttribute("sc:id", id);
 
         NodeList authors = document.getElementsByTagName("author");
         for (int i = 0; i < authors.getLength(); ++i) {
