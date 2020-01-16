@@ -19,7 +19,7 @@ public class CoverLetterRepository {
     private String coverLetterCollectionId;
 
     public String findOne(String id) throws Exception {
-        String xPathExp = String.format("//coverLetter[@id='%s']", id);
+        String xPathExp = String.format("//CoverLetter[@id=\"%s\"]", id);
         ResourceSet resultSet = DBRetrieve.executeXPathExpression(coverLetterCollectionId, xPathExp, TARGET_NAMESPACE);
         if (resultSet == null)
             return null;

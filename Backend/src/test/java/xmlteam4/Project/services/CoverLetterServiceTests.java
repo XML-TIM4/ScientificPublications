@@ -1,38 +1,24 @@
-package xmlteam4.Project.repositories;
+package xmlteam4.Project.services;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.w3c.dom.Document;
-import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.StringWriter;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CoverLetterRepositoryTests {
-    @Autowired
-    CoverLetterRepository coverLetterRepository;
-/*
-    @Autowired
-    DOMParser domParser;
+public class CoverLetterServiceTests {
 
-    @Value("${cover-letter-schema-path}")
-    private String coverLetterSchemaPath;
-*/
+    @Autowired
+    private CoverLetterService coverLetterService;
+
     @Test
-    void create_ValidCoverLetter_Equals() throws Exception {
+    void create_validCoverLetter_Equals() throws Exception{
         String cl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
                 "<CoverLetter xmlns=\"https://github.com/XML-TIM4/ScientificPublications\"\r\n" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" +
@@ -101,20 +87,15 @@ public class CoverLetterRepositoryTests {
                 "</CoverLetter>\r\n" +
                 "";
 
-        String id = IDGenerator.createID();
-/*
-        Document document = domParser.buildDocument(cl, coverLetterSchemaPath);
+        String scientificPaperId = IDGenerator.createID();
 
-        document.getElementsByTagName("scientific-paper-reference").item(0).setTextContent("jojojo");
+        String id = coverLetterService.create(scientificPaperId, cl);
 
-        DOMSource domSource = new DOMSource(document);
-        StringWriter writer = new StringWriter();
-        StreamResult result = new StreamResult(writer);
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
-        transformer.transform(domSource, result);
-        System.out.println(writer.toString());
-*/
-        assertEquals(id, coverLetterRepository.create(id, cl));
+        String found = coverLetterService.findOne(id);
+
+        System.out.println(found);
+        assertNotNull(found, "Found not null");
+        assertFalse(found.equals(""), "Found not empty string");
     }
+
 }

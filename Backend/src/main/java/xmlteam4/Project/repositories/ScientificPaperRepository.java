@@ -21,7 +21,7 @@ public class ScientificPaperRepository {
     private String scientificPaperCollectionId;
 
     public String findOne(String id) throws Exception {
-        String xPathExp = String.format("//scientificPaper[@id='%s']", id);
+        String xPathExp = String.format("//scientific-paper[@sc:id='%s']", id);
         ResourceSet resultSet = DBRetrieve.executeXPathExpression(scientificPaperCollectionId, xPathExp, TARGET_NAMESPACE);
         if (resultSet == null)
             return null;
@@ -61,7 +61,7 @@ public class ScientificPaperRepository {
     }
 
     public void delete(String id) throws Exception {
-        String xPathExp = "/scientificPaper";
+        String xPathExp = "/scientific-paper";
         long mods = DBUpdate.delete(scientificPaperCollectionId, id, xPathExp);
         if (mods == 0) {
             throw new Exception(String.format("Scientific Paper with documentId %s", id));
