@@ -24,7 +24,7 @@ public class AuthenticationUtilities {
     @Value("${conn.host}")
     private String _host;
 
-    @Value("${conn.port}")
+    @Value("${conn.exist-port}")
     private int _port;
 
     @Value("${conn.user}")
