@@ -23,8 +23,8 @@ public class CoverLetterService {
     @Autowired
     private CoverLetterRepository coverLetterRepository;
 
-    //@Autowired
-    //private XSLTransfomer xslTransfomer;
+    @Autowired
+    private XSLTransfomer xslTransfomer;
 
     @Autowired
     private DOMParser domParser;
@@ -43,6 +43,16 @@ public class CoverLetterService {
         // transformation to be added later. code saved for future reference
         //String clHTML = xslTransfomer.generateHTML(coverLetter, coverLetterXSLPath);
         return coverLetter;
+    }
+
+    public String findOneHTML(String id) throws Exception {
+        String coverLetter = coverLetterRepository.findOne(id);
+        if(coverLetter == null) {
+            throw new NotFoundException(String.format("Cover letter with id %s is not found", id));
+        }
+        // transformation to be added later. code saved for future reference
+        String clHTML = xslTransfomer.generateHTML(coverLetter, "data/xsl/xsl-t/CoverLetter.xsl");
+        return clHTML;
     }
 
     public String create(String scientificPaperId, String xml) throws Exception {

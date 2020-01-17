@@ -18,14 +18,23 @@ import org.apache.xalan.xsltc.trax.TransformerFactoryImpl;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.MimeConstants;
+
 @Component
 public class XSLTransfomer {
 
+    private FopFactory fopFactory;
+
     private TransformerFactory transformerFactory;
 
-    public XSLTransfomer(){
+    public XSLTransfomer() throws IOException, SAXException {
 
         transformerFactory = new TransformerFactoryImpl();
+        fopFactory = FopFactory.newInstance(new File("src/main/resources/fop.xconf"));
+
     }
 
     public String generateHTML(String source, String xsltTemplatePath) throws Exception
@@ -43,6 +52,40 @@ public class XSLTransfomer {
         return out.toString();
     }
 
+    public ByteArrayOutputStream generatePDF(String sourceStr, String xslt_fo_TemplatePath) throws Exception {
 
+        // xslt_fo_TemplatePath = XSL_FILE2;
+        // File ssourceStr = new File(INPUT_FILE2);
+
+        // Point to the XSL-FO file
+        File xslFile = new File(xslt_fo_TemplatePath);
+
+        // Create transformation source
+        StreamSource transformSource = new StreamSource(xslFile);
+
+        // Initialize the transformation subject
+        StreamSource source = new StreamSource(new StringReader(sourceStr));
+        // StreamSource source = new StreamSource(ssourceStr);
+
+        // Initialize user agent needed for the transformation
+        FOUserAgent userAgent = fopFactory.newFOUserAgent();
+
+        // Create the output stream to store the results
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+        // Initialize the XSL-FO transformer object
+        Transformer xslFoTransformer = transformerFactory.newTransformer(transformSource);
+
+        // Construct FOP instance with desired output format
+        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, userAgent, outStream);
+
+        // Resulting SAX events
+        Result res = new SAXResult(fop.getDefaultHandler());
+
+        // Start XSLT transformation and FOP processing
+        xslFoTransformer.transform(source, res);
+
+        return outStream;
+    }
 
 }
