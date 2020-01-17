@@ -23,7 +23,7 @@ public class ScientificPaperServiceTests {
         String scientificPaper = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<scientific-paper xmlns=\"https://github.com/XML-TIM4/ScientificPublications\"\n" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                " xsi:schemaLocation=\"https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/XMLSchemas/ScientificPaper.xsd\" xmlns:sc=\"https://github.com/XML-TIM4/ScientificPublications\" language=\"en\" sc:id=\"\">\n" +
+                " xsi:schemaLocation=\"https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/XMLSchemas/ScientificPaper.xsd\" language=\"en\" id=\"\">\n" +
                 "    <metadata>\n" +
                 "        <received>2021-06-14Z</received>\n" +
                 "        <revised>2020-03-10Z</revised>\n" +
@@ -38,7 +38,7 @@ public class ScientificPaperServiceTests {
                 "    </metadata>\n" +
                 "    <title>gYz5LPRg.fDxCPZvDkm-eYFs2E_8bq3Vs7bW86-y_di4HFr_kZsuq5Bi-xK_I7iet3d3FoTP_7</title>\n" +
                 "    <authors>\n" +
-                "        <author sc:id=\"\">\n" +
+                "        <author id=\"\">\n" +
                 "            <name>\n" +
                 "                <first-name>M.mJ8Lv5aq0irnN</first-name>\n" +
                 "                <middle-name>szOpWlVonEfoMVPOof2xmC3jLM7y6Gw9HH7xQix7j</middle-name>\n" +
@@ -53,7 +53,7 @@ public class ScientificPaperServiceTests {
                 "                <country>e8WXZAyJ9EdGdfiC6.TJ0-ehZZFHeXIN1O4UpGHnh</country>\n" +
                 "            </affiliation>\n" +
                 "        </author>\n" +
-                "        <author sc:id=\"\">\n" +
+                "        <author id=\"\">\n" +
                 "            <name>\n" +
                 "                <first-name>lVnDrjmD</first-name>\n" +
                 "                <middle-name>sMbuT-zCtFWlSfHUqWa</middle-name>\n" +
@@ -69,17 +69,17 @@ public class ScientificPaperServiceTests {
                 "            </affiliation>\n" +
                 "        </author>\n" +
                 "    </authors>\n" +
-                "    <abstract sc:id=\"\">\n" +
+                "    <abstract id=\"\">\n" +
                 "        <abstract-item title=\"purpose\">CzD33J1hPViTWPAqYW82p-mBf</abstract-item>\n" +
                 "        <abstract-item title=\"findings\">DaNoaYAMSz7rH</abstract-item>\n" +
                 "        <abstract-item title=\"social-implications\">y</abstract-item>\n" +
                 "        <abstract-item title=\"implications\">ELyou3bBqFqWnzzm</abstract-item>\n" +
                 "    </abstract>\n" +
                 "    <content>\n" +
-                "        <section sc:id=\"/oi\">\n" +
+                "        <section id=\"/oi\">\n" +
                 "            <title>vCdQ3R2EkpFISjVd1</title>\n" +
-                "            <paragraph sc:id=\" #~\">\n" +
-                "                <figure type=\"equation\" sc:id=\"\">\n" +
+                "            <paragraph id=\" #~\">\n" +
+                "                <figure type=\"equation\" id=\"\">\n" +
                 "                    <image>6985777971898673857571808767746668867878806778797183888389888981857587838588708969737480876985668870866987907586</image>\n" +
                 "                    <image>6687816581807875</image>\n" +
                 "                </figure>\n" +
@@ -92,8 +92,8 @@ public class ScientificPaperServiceTests {
                 "                    </publication>\n" +
                 "                </quote>\n" +
                 "            </paragraph>\n" +
-                "            <paragraph sc:id=\"\">\n" +
-                "                <table title=\"m44MpL\" sc:id=\"Q+://=\">\n" +
+                "            <paragraph id=\"\">\n" +
+                "                <table title=\"m44MpL\" id=\"Q+://=\">\n" +
                 "                    <header>\n" +
                 "                    </header>\n" +
                 "                    <body>\n" +
@@ -109,10 +109,10 @@ public class ScientificPaperServiceTests {
                 "                </quote>\n" +
                 "            </paragraph>\n" +
                 "        </section>\n" +
-                "        <section sc:id=\"\">\n" +
+                "        <section id=\"\">\n" +
                 "            <title>iVjS</title>\n" +
-                "            <paragraph sc:id=\"\">\n" +
-                "                <table title=\"S\" sc:id=\"\">\n" +
+                "            <paragraph id=\"\">\n" +
+                "                <table title=\"S\" id=\"\">\n" +
                 "                    <header>\n" +
                 "                    </header>\n" +
                 "                    <body>\n" +
@@ -149,12 +149,12 @@ public class ScientificPaperServiceTests {
                 "                    </italic>\n" +
                 "                </decorator>\n" +
                 "            </paragraph>\n" +
-                "            <paragraph sc:id=\"P:/\\!q. #~\">\n" +
-                "                <figure type=\"figure\" sc:id=\"\">\n" +
+                "            <paragraph id=\"P:/\\!q. #~\">\n" +
+                "                <figure type=\"figure\" id=\"\">\n" +
                 "                    <image>7088887067698968</image>\n" +
                 "                    <image>728186726674707089828986718972868273708078717970737089888390888568867986778767748167658775686582738285777279677169857286</image>\n" +
                 "                </figure>\n" +
-                "                <figure type=\"equation\" sc:id=\"\">\n" +
+                "                <figure type=\"equation\" id=\"\">\n" +
                 "                    <image>77836766758366718187906780698168</image>\n" +
                 "                    <image>ZGVmYXVsdA==</image>\n" +
                 "                </figure>\n" +
