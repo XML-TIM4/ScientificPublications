@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scientific-paper xmlns="https://github.com/XML-TIM4/ScientificPublications"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/XMLSchemas/ScientificPaper.xsd" xmlns:sc="https://github.com/XML-TIM4/ScientificPublications" language="en" sc:id="">
+ xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/XMLSchemas/ScientificPaper.xsd" language="en" id="">
     <metadata>
         <received>2021-06-14Z</received>
         <revised>2020-03-10Z</revised>
@@ -16,7 +16,7 @@
     </metadata>
     <title>gYz5LPRg.fDxCPZvDkm-eYFs2E_8bq3Vs7bW86-y_di4HFr_kZsuq5Bi-xK_I7iet3d3FoTP_7</title>
     <authors>
-        <author sc:id="">
+        <author id="">
             <name>
                 <first-name>M.mJ8Lv5aq0irnN</first-name>
                 <middle-name>szOpWlVonEfoMVPOof2xmC3jLM7y6Gw9HH7xQix7j</middle-name>
@@ -31,7 +31,7 @@
                 <country>e8WXZAyJ9EdGdfiC6.TJ0-ehZZFHeXIN1O4UpGHnh</country>
             </affiliation>
         </author>
-        <author sc:id="">
+        <author id="">
             <name>
                 <first-name>lVnDrjmD</first-name>
                 <middle-name>sMbuT-zCtFWlSfHUqWa</middle-name>
@@ -47,17 +47,17 @@
             </affiliation>
         </author>
     </authors>
-    <abstract sc:id="">
+    <abstract id="">
         <abstract-item title="purpose">CzD33J1hPViTWPAqYW82p-mBf</abstract-item>
         <abstract-item title="findings">DaNoaYAMSz7rH</abstract-item>
         <abstract-item title="social-implications">y</abstract-item>
         <abstract-item title="implications">ELyou3bBqFqWnzzm</abstract-item>
     </abstract>
     <content>
-        <section sc:id="/oi">
+        <section id="/oi">
             <title>vCdQ3R2EkpFISjVd1</title>
-            <paragraph sc:id=" #~">
-                <figure type="equation" sc:id="">
+            <paragraph id=" #~">
+                <figure type="equation" id="">
                     <image>6985777971898673857571808767746668867878806778797183888389888981857587838588708969737480876985668870866987907586</image>
                     <image>6687816581807875</image>
                 </figure>
@@ -70,8 +70,8 @@
                     </publication>
                 </quote>
             </paragraph>
-            <paragraph sc:id="">
-                <table title="m44MpL" sc:id="Q+://=">
+            <paragraph id="">
+                <table title="m44MpL" id="Q+://=">
                     <header>
                     </header>
                     <body>
@@ -87,10 +87,10 @@
                 </quote>
             </paragraph>
         </section>
-        <section sc:id="">
+        <section id="">
             <title>iVjS</title>
-            <paragraph sc:id="">
-                <table title="S" sc:id="">
+            <paragraph id="">
+                <table title="S" id="">
                     <header>
                     </header>
                     <body>
@@ -127,12 +127,12 @@
                     </italic>
                 </decorator>
             </paragraph>
-            <paragraph sc:id="P:/\!q. #~">
-                <figure type="figure" sc:id="">
+            <paragraph id="P:/\!q. #~">
+                <figure type="figure" id="">
                     <image>7088887067698968</image>
                     <image>728186726674707089828986718972868273708078717970737089888390888568867986778767748167658775686582738285777279677169857286</image>
                 </figure>
-                <figure type="equation" sc:id="">
+                <figure type="equation" id="">
                     <image>77836766758366718187906780698168</image>
                     <image>ZGVmYXVsdA==</image>
                 </figure>

@@ -38,7 +38,6 @@ public class DBRetrieve {
 
             // make the service aware of namespaces, using the default one
             xpathService.setNamespace("", TARGET_NAMESPACE);
-            xpathService.setNamespace("sc", TARGET_NAMESPACE);
             // execute xpath expression
             result = xpathService.query(xpathExp);
             // handle the results
