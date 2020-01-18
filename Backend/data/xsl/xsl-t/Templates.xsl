@@ -5,9 +5,10 @@
     <xsl:template name="TAuthor">
         <xsl:param name="author"/>
         <div>
-            <xsl:value-of select="$author/sc:name/sc:first-name"/>&#160;<xsl:value-of select="$author/sc:name/sc:last-name"/><br/>
+            <xsl:value-of select="$author/sc:name/sc:first-name"/>&#160;<xsl:for-each select="$author/sc:name/sc:middle-name"><xsl:value-of select="."/>&#160;</xsl:for-each>
+            <xsl:value-of select="$author/sc:name/sc:last-name"/><br/>
             <xsl:value-of select="$author/sc:affiliation/sc:university"/><br/>
-            <xsl:value-of select="$author/sc:affiliation/sc:city"/>, <xsl:value-of select="$author/sc:affiliation/sc:state"/>,<xsl:value-of select="$author/sc:affiliation/sc:country"/><br/>
+            <xsl:value-of select="$author/sc:affiliation/sc:city"/>, <xsl:value-of select="$author/sc:affiliation/sc:state"/>, <xsl:value-of select="$author/sc:affiliation/sc:country"/><br/>
             <xsl:value-of select="$author/sc:email"/>
         </div>
     </xsl:template>

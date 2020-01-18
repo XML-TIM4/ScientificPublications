@@ -183,13 +183,13 @@
                 <xs:attribute name="title">
                     <xs:simpleType>
                         <xs:restriction base="xs:string">
-                            <xs:enumeration value="purpose"/>
-                            <xs:enumeration value="methodology"/>
-                            <xs:enumeration value="findings"/>
-                            <xs:enumeration value="implications"/>
-                            <xs:enumeration value="practical-implications"/>
-                            <xs:enumeration value="social-implications"/>
-                            <xs:enumeration value="originality"/>
+                            <xs:enumeration value="Purpose"/>
+                            <xs:enumeration value="Methodology"/>
+                            <xs:enumeration value="Findings"/>
+                            <xs:enumeration value="Implications"/>
+                            <xs:enumeration value="Practical Implications"/>
+                            <xs:enumeration value="Social Implications"/>
+                            <xs:enumeration value="Originality"/>
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:attribute>

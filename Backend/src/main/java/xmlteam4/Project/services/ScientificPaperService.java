@@ -13,6 +13,7 @@ import xmlteam4.Project.repositories.ScientificPaperRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
+import xmlteam4.Project.utilities.transformer.XSLTransfomer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +30,9 @@ public class ScientificPaperService {
     @Autowired
     private DocumentXMLTransformer documentXMLTransformer;
 
+    @Autowired
+    private XSLTransfomer xslTransfomer;
+
     @Value("${scientific-paper-schema-path}")
     private String scientificPaperSchemaPath;
 
@@ -39,7 +43,16 @@ public class ScientificPaperService {
         }
 
         return paper;
+    }
 
+    public String findOneHTML(String id) throws Exception {
+        String paper = scientificPaperRepository.findOne(id);
+        if(paper == null) {
+            throw new NotFoundException(String.format("Scientific paper with id %s is not found", id));
+        }
+
+        String rHTML = xslTransfomer.generateHTML(paper, "data/xsl/xsl-t/ScientificPaperToHTML.xsl");
+        return rHTML;
     }
 
     public String create(String xml) throws Exception {
