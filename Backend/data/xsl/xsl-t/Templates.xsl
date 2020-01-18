@@ -5,13 +5,45 @@
     <xsl:template name="TAuthor">
         <xsl:param name="author"/>
         <div>
-            <xsl:value-of select="$author/sc:first-name"/>&#160;<xsl:value-of select="$author/sc:last-name"/><br/>
+            <xsl:value-of select="$author/sc:name/sc:first-name"/>&#160;<xsl:value-of select="$author/sc:name/sc:last-name"/><br/>
             <xsl:value-of select="$author/sc:affiliation/sc:university"/><br/>
             <xsl:value-of select="$author/sc:affiliation/sc:city"/>, <xsl:value-of select="$author/sc:affiliation/sc:state"/>,<xsl:value-of select="$author/sc:affiliation/sc:country"/><br/>
             <xsl:value-of select="$author/sc:email"/>
         </div>
     </xsl:template>
 
+    <xsl:template name="TComment">
+        <xsl:param name="comment"/>
+        <div>
+            <xsl:value-of select="$comment/sc:review-reference"/>
+            <xsl:value-of select="$comment/sc:comment-text"/>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="sc:question" name="TQuestion">
+        <xsl:for-each select="./*">
+            <xsl:if test="name(.) = 'question-text'">
+                <p><xsl:value-of select="."/></p>
+            </xsl:if>
+            <xsl:if test="name(.) = 'answer'">
+                proso
+                <xsl:value-of select="@type"/>
+                <xsl:if test="@type = 'text'">
+                        <p><xsl:value-of select="."/></p>
+                </xsl:if>
+                <xsl:if test="@type = 'multiple-choice'">
+                    <xsl:choose>
+                        <xsl:when test="@selected = 'true'">
+                            <input type="checkbox" name="" value="" checked="true"><xsl:value-of select="."/></input>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <input type="checkbox" name="" value=""><xsl:value-of select="."/></input>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:if>
+                </xsl:if>
+        </xsl:for-each>
+    </xsl:template>
 
     <xsl:template match="sc:paragraph" name="TParagraph">
         <xsl:for-each select="./*">

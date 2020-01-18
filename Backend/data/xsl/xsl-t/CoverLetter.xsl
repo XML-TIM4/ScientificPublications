@@ -10,20 +10,31 @@
         </head>
 
         <body>
+            <div alight="right">
+                <xsl:value-of select="sc:CoverLetter/sc:cover-letter-metadata/sc:date"></xsl:value-of>
+            </div>
             <div align="left">
                 <xsl:call-template name="TAuthor">
                     <xsl:with-param name="author" select="sc:CoverLetter/sc:cover-letter-metadata/sc:author"/>
                 </xsl:call-template>
             </div>
 
+            <div align="center">
             <xsl:for-each select="sc:CoverLetter/sc:content/sc:paragraph">
                 <xsl:call-template name="TParagraph"/>
             </xsl:for-each>
 
             <p>
-                Signature:<br/>
-                <i><xsl:value-of select="sc:CoverLetter/sc:content/sc:signature"/></i>
+                Signature: <i><xsl:value-of select="sc:CoverLetter/sc:content/sc:signature"/></i>
             </p>
+            </div>
+
+            <div align="left">
+                <xsl:call-template name="TAuthor">
+                    <xsl:with-param name="author" select="sc:CoverLetter/sc:cover-letter-metadata/sc:editor"/>
+                </xsl:call-template>
+            </div>
+
         </body>
 
 

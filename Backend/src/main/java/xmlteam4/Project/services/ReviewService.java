@@ -11,6 +11,7 @@ import xmlteam4.Project.repositories.ReviewRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
+import xmlteam4.Project.utilities.transformer.XSLTransfomer;
 
 @Service
 public class ReviewService {
@@ -24,6 +25,9 @@ public class ReviewService {
     @Autowired
     private DocumentXMLTransformer documentXMLTransformer;
 
+    @Autowired
+    private XSLTransfomer xslTransfomer;
+
     @Value("${review-schema-path}")
     private String reviewSchemaPath;
 
@@ -34,7 +38,16 @@ public class ReviewService {
         }
 
         return review;
+    }
 
+    public String findOneHTML(String id) throws Exception {
+        String review = reviewRepository.findOne(id);
+        if(review == null) {
+            throw new NotFoundException(String.format("Review with id %s is not found", id));
+        }
+        // transformation to be added later. code saved for future reference
+        String rHTML = xslTransfomer.generateHTML(review, "data/xsl/xsl-t/Review.xsl");
+        return rHTML;
     }
 
     public String create(String scientificPaperId, String xml) throws Exception {
