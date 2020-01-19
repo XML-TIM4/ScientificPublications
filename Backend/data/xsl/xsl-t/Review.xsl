@@ -10,7 +10,7 @@
             </head>
 
             <body>
-                <div alight="right">
+                <div align="right" position="absolute">
                     <xsl:value-of select="sc:review/sc:review-metadata/sc:date"></xsl:value-of>
                 </div>
                 <div align="left">
@@ -19,6 +19,9 @@
                     </xsl:call-template>
                 </div>
 
+                <div align="center">
+                    <h1><xsl:value-of select="sc:review/sc:review-metadata/sc:recommendation"/></h1>
+                </div><br/>
                 <div align="center">
 
                     <xsl:for-each select="sc:review/sc:questionnaire/sc:question">

@@ -112,8 +112,8 @@ public class ReviewServiceTests {
                 "        </question>\n" +
                 "        <question type=\"multiple-choice\">\n" +
                 "            <question-text>question-text1</question-text>\n" +
-                "            <answer selected='true'>answer1</answer>\n" +
-                "            <answer selected='false'>answer2</answer>\n" +
+                "            <answer selected=\"true\">answer1</answer>\n" +
+                "            <answer selected=\"false\">answer2</answer>\n" +
                 "        </question>\n" +
                 "    </questionnaire>\n" +
                 "    <author-comments>\n" +

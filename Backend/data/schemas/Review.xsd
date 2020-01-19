@@ -7,7 +7,7 @@
         <xs:sequence>
             <xs:element name="question-text" type="xs:string"/>
             <xs:element maxOccurs="unbounded" minOccurs="0" name="answer">
-                <xs:complexType>
+                <xs:complexType mixed="true">
                     <xs:attribute name="selected" type="xs:boolean"/>
                 </xs:complexType>
             </xs:element>
@@ -67,7 +67,7 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="TComment">
+        <xs:complexType name="TComment">
         <xs:sequence>
             <xs:element name="review-reference" type="xs:string" nillable="false"/>
             <xs:element name="comment-text">

@@ -20,6 +20,14 @@
             </div>
 
             <div align="center">
+                <a><xsl:attribute name="href">
+                    http://localhost:8080/scientific-papers/<xsl:value-of select="sc:CoverLetter/sc:cover-letter-metadata/sc:scientific-paper-reference"/>
+                </xsl:attribute>
+                    AAAAAA
+                </a>
+            </div>
+
+            <div align="center">
             <xsl:for-each select="sc:CoverLetter/sc:content/sc:paragraph">
                 <xsl:call-template name="TParagraph"/>
             </xsl:for-each>

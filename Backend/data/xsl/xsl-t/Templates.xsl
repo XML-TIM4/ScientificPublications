@@ -16,34 +16,43 @@
     <xsl:template name="TComment">
         <xsl:param name="comment"/>
         <div>
-            <xsl:value-of select="$comment/sc:review-reference"/>
-            <xsl:value-of select="$comment/sc:comment-text"/>
+            <p><xsl:value-of select="$comment/sc:review-reference"/></p>
+            <p><xsl:value-of select="$comment/sc:comment-text"/></p>
+            <br/>
         </div>
     </xsl:template>
 
     <xsl:template match="sc:question" name="TQuestion">
-        <xsl:for-each select="./*">
-            <xsl:if test="name(.) = 'question-text'">
-                <p><xsl:value-of select="."/></p>
-            </xsl:if>
-            <xsl:if test="name(.) = 'answer'">
-                proso
-                <xsl:value-of select="@type"/>
-                <xsl:if test="@type = 'text'">
-                        <p><xsl:value-of select="."/></p>
+        <xsl:if test="@type = 'text'">
+            <xsl:for-each select="./*">
+                <xsl:if test="name(.) = 'question-text'">
+                    <p><xsl:value-of select="."/></p>
                 </xsl:if>
-                <xsl:if test="@type = 'multiple-choice'">
+                <xsl:if test="name(.) = 'answer'">
+                    <p><xsl:value-of select="."/></p>
+                </xsl:if>
+            </xsl:for-each>
+        </xsl:if>
+        <xsl:if test="@type = 'multiple-choice'">
+            <xsl:for-each select="./*">
+                <xsl:if test="name(.) = 'question-text'">
+                    <p><xsl:value-of select="."/></p>
+                </xsl:if>
+                <xsl:if test="name(.) = 'answer'">
                     <xsl:choose>
                         <xsl:when test="@selected = 'true'">
                             <input type="checkbox" name="" value="" checked="true"><xsl:value-of select="."/></input>
+                            <br/>
                         </xsl:when>
                         <xsl:otherwise>
                             <input type="checkbox" name="" value=""><xsl:value-of select="."/></input>
+                            <br/>
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:if>
-                </xsl:if>
-        </xsl:for-each>
+            </xsl:for-each>
+
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="sc:paragraph" name="TParagraph">
