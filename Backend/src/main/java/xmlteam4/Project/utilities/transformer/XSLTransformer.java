@@ -1,10 +1,11 @@
 package xmlteam4.Project.utilities.transformer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.MimeConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -13,32 +14,20 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import org.apache.xalan.xsltc.trax.TransformerFactoryImpl;
-import org.springframework.stereotype.Component;
-import org.xml.sax.SAXException;
-
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 @Component
-public class XSLTransfomer {
-
+public class XSLTransformer {
+    @Autowired
     private FopFactory fopFactory;
 
+    @Autowired
     private TransformerFactory transformerFactory;
 
-    public XSLTransfomer() throws IOException, SAXException {
-
-        transformerFactory = new TransformerFactoryImpl();
-        fopFactory = FopFactory.newInstance(new File("src/main/resources/fop.xconf"));
-
-    }
-
-    public String generateHTML(String source, String xsltTemplatePath) throws Exception
-    {
+    public String generateHTML(String source, String xsltTemplatePath) throws Exception {
 
         File tf = new File(xsltTemplatePath); // template file
         StringWriter out = new StringWriter(); // result
@@ -48,7 +37,7 @@ public class XSLTransfomer {
 
         Source s = new StreamSource(src);
         Result r = new StreamResult(out);
-        t.transform(s,r);
+        t.transform(s, r);
         return out.toString();
     }
 

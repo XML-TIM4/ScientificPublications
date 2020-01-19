@@ -1,6 +1,5 @@
 package xmlteam4.Project.services;
 
-import org.apache.xpath.operations.Bool;
 import org.exist.http.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +12,7 @@ import xmlteam4.Project.repositories.ScientificPaperRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
-import xmlteam4.Project.utilities.transformer.XSLTransfomer;
+import xmlteam4.Project.utilities.transformer.XSLTransformer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +30,7 @@ public class ScientificPaperService {
     private DocumentXMLTransformer documentXMLTransformer;
 
     @Autowired
-    private XSLTransfomer xslTransfomer;
+    private XSLTransformer xslTransformer;
 
     @Value("${scientific-paper-schema-path}")
     private String scientificPaperSchemaPath;
@@ -51,7 +50,7 @@ public class ScientificPaperService {
             throw new NotFoundException(String.format("Scientific paper with id %s is not found", id));
         }
 
-        String rHTML = xslTransfomer.generateHTML(paper, "data/xsl/xsl-t/ScientificPaperToHTML.xsl");
+        String rHTML = xslTransformer.generateHTML(paper, "data/xsl/xsl-t/ScientificPaperToHTML.xsl");
         return rHTML;
     }
 

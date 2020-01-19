@@ -6,12 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import xmlteam4.Project.repositories.CoverLetterRepository;
 import xmlteam4.Project.repositories.ReviewRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
-import xmlteam4.Project.utilities.transformer.XSLTransfomer;
+import xmlteam4.Project.utilities.transformer.XSLTransformer;
 
 @Service
 public class ReviewService {
@@ -26,7 +25,7 @@ public class ReviewService {
     private DocumentXMLTransformer documentXMLTransformer;
 
     @Autowired
-    private XSLTransfomer xslTransfomer;
+    private XSLTransformer xslTransformer;
 
     @Value("${review-schema-path}")
     private String reviewSchemaPath;
@@ -46,7 +45,7 @@ public class ReviewService {
             throw new NotFoundException(String.format("Review with id %s is not found", id));
         }
         // transformation to be added later. code saved for future reference
-        String rHTML = xslTransfomer.generateHTML(review, "data/xsl/xsl-t/Review.xsl");
+        String rHTML = xslTransformer.generateHTML(review, "data/xsl/xsl-t/Review.xsl");
         return rHTML;
     }
 
