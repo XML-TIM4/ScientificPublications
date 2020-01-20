@@ -19,22 +19,24 @@
                 </xsl:call-template>
             </div>
 
-            <div align="center">
+            <div align="left">
                 <a><xsl:attribute name="href">
                     http://localhost:8080/scientific-papers/<xsl:value-of select="sc:CoverLetter/sc:cover-letter-metadata/sc:scientific-paper-reference"/>
                 </xsl:attribute>
-                    AAAAAA
+                    Scientific Paper
                 </a>
             </div>
-
             <div align="center">
             <xsl:for-each select="sc:CoverLetter/sc:content/sc:paragraph">
                 <xsl:call-template name="TParagraph"/>
             </xsl:for-each>
 
-            <p>
-                Signature: <i><xsl:value-of select="sc:CoverLetter/sc:content/sc:signature"/></i>
-            </p>
+            <img>
+                <xsl:attribute name="src">
+                    data:image/*;base64,<xsl:value-of select="sc:CoverLetter/sc:content/sc:signature"/>
+                </xsl:attribute>
+            </img>
+                
             </div>
 
             <div align="left">
