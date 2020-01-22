@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
+import xmlteam4.Project.utilities.transformer.XSLTransformer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,6 +18,81 @@ public class ReviewServiceTests {
 
     @Autowired
     ReviewService reviewService;
+
+    @Autowired
+    XSLTransformer xslTransformer;
+
+    @Test
+    void testXSLT() throws Exception {
+        String review = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<review xmlns=\"https://github.com/XML-TIM4/ScientificPublications\"\n" +
+                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                " xsi:schemaLocation=\"https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/Backend/data/schemas/Review.xsd\" language=\"en\" id=\"b9\">\n" +
+                "    <review-metadata>\n" +
+                "        <reviewer id=\"FntmDZMKwrOZT12LIBtROE0\">\n" +
+                "            <name>\n" +
+                "                <first-name>jeCxMT5Pahlv5KysK8RfI</first-name>\n" +
+                "                <middle-name>C9gi6XhF9</middle-name>\n" +
+                "                <middle-name>fnhZ8cPxbEuyNAOSePK3_ppGH2L2PC8MVhiZZ9oor3vlL7pG</middle-name>\n" +
+                "                <last-name>YbshLWN1tdzYOvtm7HFUE6E4I6FT3BUuhVysd29-LVZlGI.Lw</last-name>\n" +
+                "            </name>\n" +
+                "            <email>Ú@~V +.ara</email>\n" +
+                "            <affiliation>\n" +
+                "                <university>or32BfZP8fIFw83hd3YsvtYyA</university>\n" +
+                "                <city>oXy</city>\n" +
+                "                <state>b4Loy0ssNdyU_4nSs.AHDg36Hkhdgv8XZHUj</state>\n" +
+                "                <country>PxC</country>\n" +
+                "            </affiliation>\n" +
+                "        </reviewer>\n" +
+                "        <date>2021-05-23Z</date>\n" +
+                "        <recommendation>C7oXx01exQcjQ</recommendation>\n" +
+                "        <scientific-paper-id>j.xBOPweWUrCQRo0e.</scientific-paper-id>\n" +
+                "    </review-metadata>\n" +
+                "    <questionnaire>\n" +
+                "        <question type=\"text\">\n" +
+                "            <question-text>koXHcI3oScOP0G</question-text>\n" +
+                "            <answer selected=\"0\">\n" +
+                "            </answer>\n" +
+                "            <answer selected=\"true\">\n" +
+                "            </answer>\n" +
+                "        </question>\n" +
+                "        <question type=\"text\">\n" +
+                "            <question-text>A23FsHnIy86L3exsmaaX.z6_</question-text>\n" +
+                "            <answer selected=\"false\">\n" +
+                "            </answer>\n" +
+                "            <answer selected=\"false\">\n" +
+                "            </answer>\n" +
+                "        </question>\n" +
+                "    </questionnaire>\n" +
+                "    <author-comments>\n" +
+                "        <author-comment>\n" +
+                "            <review-reference>dY2mfF8y3WcL.Wg6Li5cD_uIh</review-reference>\n" +
+                "            <comment-text>ukrO1fx02-LlDwzh6N9yswCe-Gmb6whlIZ0JI6hztSXupMfLPkv3</comment-text>\n" +
+                "        </author-comment>\n" +
+                "        <author-comment>\n" +
+                "            <review-reference>m7YUyyqurAA4BVGFZGXKg</review-reference>\n" +
+                "            <comment-text>Mwe6TPQXzfhHgqP880P8GpkHY8d7VdG78m_cEjRPVe81wyIB65qTadrv8PP8uHwu5J</comment-text>\n" +
+                "        </author-comment>\n" +
+                "    </author-comments>\n" +
+                "    <editor-comments>\n" +
+                "        <editor-comment>\n" +
+                "            <review-reference>p-</review-reference>\n" +
+                "            <comment-text>cqSVJ0HVdRnRtyOMzipfMYh4dqdb.Pd9Q38ODNDacoRGcVwcpbXvTa2GGJxZ-uGlIRCiV8DFx2jT9mFaygd9DRu3wttUPQ</comment-text>\n" +
+                "        </editor-comment>\n" +
+                "        <editor-comment>\n" +
+                "            <review-reference>C5ftoj1J</review-reference>\n" +
+                "            <comment-text>GcND0LuOwzWyw-ElfSeM7xGX0WUihbutwvtKUAD8_SdSQOzmwGBMlwTgxVLkVrt_ZhTvPa-lbgdMT</comment-text>\n" +
+                "        </editor-comment>\n" +
+                "    </editor-comments>\n" +
+                "</review>\n";
+
+        String result = xslTransformer.generateHTML(review, "D:\\ScientificPublications\\Backend\\data\\xsl" +
+                "\\xsl-t\\ReviewToRDFa.xsl");
+
+        System.out.println(result);
+
+        assertTrue(true);
+    }
 
     @Test
     void create_validReview_equals() throws Exception {

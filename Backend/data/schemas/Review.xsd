@@ -50,24 +50,49 @@
         </xs:sequence>
         <xs:attribute default="en" name="language" type="xs:language"/>
         <xs:attribute name="id" type="xs:string"/>
+        <xs:anyAttribute processContents="lax"/>
     </xs:complexType>
     <xs:complexType name="TReviewMetadata">
         <xs:sequence>
-            <xs:element name="reviewer" type="TAuthor"/>
-            <xs:element name="date" type="xs:date"/>
+            <xs:element name="reviewer">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="TAuthor">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="date">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:date">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="recommendation">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:enumeration value="accept"/>
-                        <xs:enumeration value="reject"/>
-                        <xs:enumeration value="major-revisions"/>
-                        <xs:enumeration value="minor-revisions"/>
-                    </xs:restriction>
-                </xs:simpleType>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="scientific-paper-id">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-        <xs:complexType name="TComment">
+    <xs:complexType name="TComment">
         <xs:sequence>
             <xs:element name="review-reference" type="xs:string" nillable="false"/>
             <xs:element name="comment-text">
