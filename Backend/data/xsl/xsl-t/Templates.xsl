@@ -87,9 +87,7 @@
                 <div>
                     <xsl:for-each select="./sc:image">
                     <img>
-                        <xsl:attribute name="src">
-                            data:image/*;base64,<xsl:value-of select="."/>
-                        </xsl:attribute>
+                        <xsl:attribute name="src">data:image/*;base64,<xsl:value-of select="."/></xsl:attribute>
                     </img>
                     </xsl:for-each>
                 </div>
@@ -103,13 +101,13 @@
                         <xsl:choose>
                             <xsl:when test="name(.) = 'header'">
                                 <xsl:for-each select="./sc:row">
-                                    <th>
+                                    <tr>
                                         <xsl:for-each select="./sc:column">
-                                            <td>
+                                            <th>
                                                 <xsl:value-of select="."/>
-                                            </td>
+                                            </th>
                                         </xsl:for-each>
-                                    </th>
+                                    </tr>
                                 </xsl:for-each>
                             </xsl:when>
                             <xsl:otherwise>
