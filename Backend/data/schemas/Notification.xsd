@@ -15,7 +15,7 @@
     </xs:complexType>
     <xs:complexType name="TNotificationMetadata">
         <xs:sequence>
-            <xs:element name="author">
+            <xs:element name="recipient">
                 <xs:complexType>
                     <xs:complexContent>
                         <xs:extension base="TAuthor">
