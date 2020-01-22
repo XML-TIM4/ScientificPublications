@@ -26,139 +26,111 @@ public class ScientificPaperServiceTests {
         String scientificPaper = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<scientific-paper xmlns=\"https://github.com/XML-TIM4/ScientificPublications\"\n" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                " xsi:schemaLocation=\"https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/Backend/data/schemas/ScientificPaper.xsd\" language=\"en\" id=\"D1Fb5qToobRahOi4r\">\n" +
+                " xsi:schemaLocation=\"https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/Backend/data/schemas/ScientificPaper.xsd\" language=\"en\" id=\"CQLP7XcE64kYMDEh\">\n" +
                 "    <metadata>\n" +
-                "        <received>2021-08-17</received>\n" +
-                "        <revised>2020-01-20</revised>\n" +
-                "        <accepted>2020-11-17</accepted>\n" +
+                "        <received>2021-07-02Z</received>\n" +
+                "        <revised>2021-07-02Z</revised>\n" +
+                "        <accepted>2020-10-10</accepted>\n" +
                 "        <version>1.0</version>\n" +
-                "        <status>rejected</status>\n" +
+                "        <status>revision</status>\n" +
                 "        <category>research-paper</category>\n" +
                 "        <keywords>\n" +
-                "            <keyword>SQZndS</keyword>\n" +
-                "            <keyword>E43OYaJDLCfZH2jXjNwcdkKiRt-C</keyword>\n" +
+                "            <keyword>HdkVdO.QQ</keyword>\n" +
+                "            <keyword>BiR7U_hxiaJ3YGhtbv</keyword>\n" +
                 "        </keywords>\n" +
                 "    </metadata>\n" +
-                "    <title>nHc2-LIZB4cQ0w8BHpRL</title>\n" +
+                "    <title>r</title>\n" +
                 "    <authors>\n" +
-                "        <author id=\"GBb7fJh6QUKiGS5Gvx\">\n" +
+                "        <author id=\"_iR7GNUfn.S.ecC8NXg.VafqH\">\n" +
                 "            <name>\n" +
-                "                <first-name>NmAS3EmL5-RkqaMIDeJeSaV6p-vVOP05NEPuph_BsD_iHhLlc</first-name>\n" +
-                "                <middle-name>oFfw6zCM2lZ.GuCwkSd2WJ6OqCP</middle-name>\n" +
-                "                <middle-name>g.40clp9u1Y5IXbMtYI2LIF4ivICRWtoQ_TfK.9NCuy_RWN</middle-name>\n" +
-                "                <last-name>sy-FlI_3kGqqbDertMs30lfDz8BK4SsJN1qh</last-name>\n" +
+                "                <first-name>AmoF9Z_ldIwe</first-name>\n" +
+                "                <middle-name>QpejSb8PUdJWjkBrzkNHD</middle-name>\n" +
+                "                <middle-name>SclwT2HtIEo</middle-name>\n" +
+                "                <last-name>kg</last-name>\n" +
                 "            </name>\n" +
                 "            <email>Ú@~V +.ara</email>\n" +
                 "            <affiliation>\n" +
-                "                <university>VoHFvE2_OlIr0ALJL9e49YvCfQmA2DEVuH4fQrnQOd3JeX</university>\n" +
-                "                <city>Xy8J.DtF4.nBM8tAkGNB</city>\n" +
-                "                <state>A3YFLsN6UxoI8KpSRYiyB2</state>\n" +
-                "                <country>yxv0LI1I6-yDFNAWoyNyzQhxIqtx</country>\n" +
+                "                <university>r6n_f</university>\n" +
+                "                <city>tVkrgzZ0RSWRg7zGvCc1tKXp9EX4hE.ea6Cp</city>\n" +
+                "                <state>U9T7.y.CXt7snyCzDks</state>\n" +
+                "                <country>AAbh8z-_pYRuvQVkbdXsIEzPRtX3Ore4f54OGBlrYkaxx</country>\n" +
                 "            </affiliation>\n" +
                 "        </author>\n" +
-                "        <author id=\"lVU2sou5t3c271hfxo02D0nhg7H9\">\n" +
+                "        <author id=\"waI9ru\">\n" +
                 "            <name>\n" +
-                "                <first-name>WDFtRlr.AIQ203jLw1deA</first-name>\n" +
-                "                <middle-name>yhe37.9cWiNf</middle-name>\n" +
-                "                <middle-name>eQet1Q4GkcnQWi4E8bFMgRlZplA3dyae30</middle-name>\n" +
-                "                <last-name>N7LFEd3nqhg4YIdR2n6J</last-name>\n" +
+                "                <first-name>ea.AAtLZDFOX9hWNafuzZByEd4s0vAyRFY4</first-name>\n" +
+                "                <middle-name>R39HjxEytLW_0qOqvd-QFY1vcRP6B0tBtnBbXKYxYJyDUSB</middle-name>\n" +
+                "                <middle-name>cup5pvi6.hhrRxPUb8mkZq</middle-name>\n" +
+                "                <last-name>v9r.m</last-name>\n" +
                 "            </name>\n" +
                 "            <email>í0;@g.ofn</email>\n" +
                 "            <affiliation>\n" +
-                "                <university>eAsKkexx-R9cBjzFpLl.7MBVK_wRIZP5ewxfU3QEQR0</university>\n" +
-                "                <city>MfpyQLQ</city>\n" +
-                "                <state>UkrRXZqdlh9LtRWvCCuBVZqsYZDIhgx0uwXmJrSJ52Xvl_</state>\n" +
-                "                <country>Mf3EMT8NZPkyQBRjgAUPWOCQMzhs57IUEuc</country>\n" +
+                "                <university>wiTvrm2.TKBF1F_6ayVvq</university>\n" +
+                "                <city>b51HSq1r.o2RakWE_45CsZ7m3tSP</city>\n" +
+                "                <state>l</state>\n" +
+                "                <country>CsRo</country>\n" +
                 "            </affiliation>\n" +
                 "        </author>\n" +
                 "    </authors>\n" +
-                "    <abstract id=\"T0jAFTekYhnMXNO3_Tt_.hz5\">\n" +
-                "        <abstract-item title=\"Findings\">ai1</abstract-item>\n" +
-                "        <abstract-item title=\"Findings\">ai2</abstract-item>\n" +
-                "        <abstract-item title=\"Purpose\">ai3</abstract-item>\n" +
-                "        <abstract-item title=\"Originality\">ai4</abstract-item>\n" +
+                "    <abstract id=\"_tHhOS1XxqD\">\n" +
+                "        <abstract-item title=\"Practical Implications\">NP</abstract-item>\n" +
+                "        <abstract-item title=\"Methodology\">TsJs_J_l_hUDOZDXDzm</abstract-item>\n" +
+                "        <abstract-item title=\"Purpose\">uZ-PNbRWAoJWNRQ5A2.6</abstract-item>\n" +
+                "        <abstract-item title=\"Findings\">BM6KB24Rsg-WsuerMc0GM</abstract-item>\n" +
                 "    </abstract>\n" +
                 "    <content>\n" +
-                "        <section id=\"wa6W.a\">\n" +
-                "            <title>GMTAuAP6QRIon6bc4JhPCSg</title>\n" +
-                "            <paragraph id=\"d7_an5yQfXkJdi2O7Af-\">\n" +
-                "                <list ordered=\"false\">\n" +
-                "                    <list-item>wvRuwm</list-item>\n" +
-                "                    <list-item>BaaJMjoD35</list-item>\n" +
-                "                </list>\n" +
-                "                <list ordered=\"false\">\n" +
-                "                    <list-item>z70CedbA55IAqB5sh0nWPCrMg0KY1QcL.A</list-item>\n" +
-                "                    <list-item>g0NmGkr7JWcTE</list-item>\n" +
-                "                </list>\n" +
-                "            </paragraph>\n" +
-                "            <paragraph id=\"V\">\n" +
-                "                <decorator>\n" +
-                "                    <bold>\n" +
-                "                        <underline>\n" +
-                "                            <italic>\n" +
-                "                            </italic>\n" +
-                "                            <italic>\n" +
-                "                            </italic>\n" +
-                "                        </underline>\n" +
-                "                        <italic>\n" +
-                "                            <underline>\n" +
-                "                            </underline>\n" +
-                "                            <underline>\n" +
-                "                            </underline>\n" +
-                "                        </italic>\n" +
-                "                    </bold>\n" +
-                "                    <bold>\n" +
-                "                        <underline>\n" +
-                "                            <italic>\n" +
-                "                            </italic>\n" +
-                "                            <italic>\n" +
-                "                            </italic>\n" +
-                "                        </underline>\n" +
-                "                        <italic>\n" +
-                "                            <underline>\n" +
-                "                            </underline>\n" +
-                "                            <underline>\n" +
-                "                            </underline>\n" +
-                "                        </italic>\n" +
-                "                    </bold>\n" +
-                "                </decorator>\n" +
-                "                <table title=\"Tst-PhHf4G69CzWXIZiH-6SZ_mb6STWkv45AWzXrv\" id=\"jO99nL.sSLALjvQtb\">\n" +
-                "                    <header>\n" +
-                "                    </header>\n" +
-                "                    <body>\n" +
-                "                    </body>\n" +
-                "                </table>\n" +
-                "            </paragraph>\n" +
-                "        </section>\n" +
-                "        <section id=\"GRJupe6Ztle6ID.5fOWIaoL\">\n" +
-                "            <title>TZ0tMkgcqtCJkFbPdqWDQmgweIS6OKEr9l3r0er9X</title>\n" +
-                "            <paragraph id=\"FGhFFIqPutOjyTs1iBJHmA2teRQ\">\n" +
-                "                <table title=\"WYn902CqAu4xfM-.0p9Y\" id=\"N5I9SD7lD\">\n" +
-                "                    <header>\n" +
-                "                    </header>\n" +
-                "                    <body>\n" +
-                "                    </body>\n" +
-                "                </table>\n" +
+                "        <section id=\"muU4WuwOXy5X_pBEvgrjf5g9iqYcit\">\n" +
+                "            <title>oYKxZIe9QSEr-8ZhWTIjl</title>\n" +
+                "            <paragraph id=\"ahHsgTP9nZJ4xOQKIyfuxjv\">\n" +
                 "                <quote>\n" +
-                "                    <quote-text>l0PSj3G3AJZzI4m</quote-text>\n" +
+                "                    <quote-text>K0DalYGZUBFTjAQ8E</quote-text>\n" +
                 "                    <publication>\n" +
-                "                        <title>CbbwsQomXGs_pyS_2H4mCTtYwUYi7nzOJ7IDwz9R0UhVFbJ7PbFj85qBIq4AuXAt</title>\n" +
-                "                        <publisher>t9W.4RSKCYTFRxj1B_WhFc.wEjF3qtEsPlrP8Nm0</publisher>\n" +
-                "                        <place>btQs81mwMQx-.NAVqZeziId6b8q</place>\n" +
+                "                        <title>F79mrXZ.tQyrS69wcfReAxnqa9nuBfycV6G7IZ.eEwOcxi2Z-0tixLaXb8Ee2RHJqXr3xhSHkaf0wpdJHs_T-</title>\n" +
+                "                        <publisher>caNx</publisher>\n" +
+                "                        <place>D.-hMNckVjbytDoE1Dwevy3E</place>\n" +
                 "                    </publication>\n" +
                 "                </quote>\n" +
-                "            </paragraph>\n" +
-                "            <paragraph id=\"Lf2wm__VMC\">\n" +
                 "                <list ordered=\"false\">\n" +
-                "                    <list-item>INCQCV7Fewv</list-item>\n" +
-                "                    <list-item>y6HN3LEHzvVzLphaoN2ntGiVaFYgj4y0zHXMEcr</list-item>\n" +
+                "                    <list-item>F.RGdDa7J5QtePkSlniQbHvW</list-item>\n" +
+                "                    <list-item>we_dl</list-item>\n" +
                 "                </list>\n" +
-                "                <table title=\"RGBkBJp9vAG_aMDXEb-S8esXhzhcio-mG8khhqBBPzXax\" id=\"n_ZS067H5Tp80PFP9tU\">\n" +
-                "                    <header>\n" +
-                "                    </header>\n" +
-                "                    <body>\n" +
-                "                    </body>\n" +
-                "                </table>\n" +
+                "            </paragraph>\n" +
+                "            <paragraph id=\"npolxgXi2fq\">\n" +
+                "                <list ordered=\"false\">\n" +
+                "                    <list-item>J_8o5doErv2t5uH.N.GE_PBzyF</list-item>\n" +
+                "                    <list-item>Gkv6eevYUSoRh7v6eGnvft7l8zWVnU4LfNg.</list-item>\n" +
+                "                </list>\n" +
+                "                <list ordered=\"false\">\n" +
+                "                    <list-item>_dclEmV.</list-item>\n" +
+                "                    <list-item>tIHA8HpWqut6EZWCr6ead</list-item>\n" +
+                "                </list>\n" +
+                "            </paragraph>\n" +
+                "        </section>\n" +
+                "        <section id=\"IJH2HvPcUKJpQV2vHcC-jbQLTJ\">\n" +
+                "            <title>LAgaY6l7vREDANjR</title>\n" +
+                "            <paragraph id=\"WnKjYi0CD\">\n" +
+                "                <list ordered=\"false\">\n" +
+                "                    <list-item>HFHoah8aDBhRopvot1</list-item>\n" +
+                "                    <list-item>_pClr2OEAeTzI5ztJ</list-item>\n" +
+                "                </list>\n" +
+                "                <list ordered=\"false\">\n" +
+                "                    <list-item>nGaJbLa-t1XjHNAc67xUECpW.HxUiuYDd850np8</list-item>\n" +
+                "                    <list-item>vGJXU.CEKFL5cO9XDuY</list-item>\n" +
+                "                </list>\n" +
+                "            </paragraph>\n" +
+                "            <paragraph id=\"oJu6mYvmrZWJa3oa2E\">\n" +
+                "                <quote>\n" +
+                "                    <quote-text>r6YjRGyXgUKH</quote-text>\n" +
+                "                    <publication>\n" +
+                "                        <title>QAt25bFVTGbLRwsW7GIwwoAoE-rd3FZ1CReI</title>\n" +
+                "                        <publisher>Ty3klujRgOqH5D2cy2oCSPp</publisher>\n" +
+                "                        <place>ARJsqfeJhiS_yFGXRZKX121e195XE3vlycxGm4zOmoay</place>\n" +
+                "                    </publication>\n" +
+                "                </quote>\n" +
+                "                <figure type=\"figure\" id=\"HFez\">\n" +
+                "                    <image>7580687690816786678987668268716573767479</image>\n" +
+                "                    <image>82706867857569688785656880798082</image>\n" +
+                "                </figure>\n" +
                 "            </paragraph>\n" +
                 "        </section>\n" +
                 "    </content>\n" +
@@ -166,45 +138,45 @@ public class ScientificPaperServiceTests {
                 "        <reference>\n" +
                 "            <authors>\n" +
                 "                <name>\n" +
-                "                    <first-name>agUMSxxtVF1eIg</first-name>\n" +
-                "                    <middle-name>T</middle-name>\n" +
-                "                    <middle-name>bVgMoD5eVdAIsGtlsEg3-H5o16JtbG-wsjE.EsXc</middle-name>\n" +
-                "                    <last-name>UX1QnbHFi1ytpRnoE-LABP2TYkI9oyn</last-name>\n" +
+                "                    <first-name>IAbApJtNanDJstMJSsh1q5H_gO-z29reBa8gLonUvKiE</first-name>\n" +
+                "                    <middle-name>fu8azAMXrfQGMlUb05MnS9JpAcLl3daH</middle-name>\n" +
+                "                    <middle-name>qTc</middle-name>\n" +
+                "                    <last-name>tSrSgMxmQLR</last-name>\n" +
                 "                </name>\n" +
                 "                <name>\n" +
-                "                    <first-name>e1v08KnYl2IcRAS-l69So_IaHzufh_PYRkPofsFLdZwQy7ta</first-name>\n" +
-                "                    <middle-name>RAsuf8sJ.ZyrxQ80krfyRM1H2CHH_</middle-name>\n" +
-                "                    <middle-name>fUQAO8d.Q5MyYig8k2.</middle-name>\n" +
-                "                    <last-name>cHc6PUyc.JADKrnzoSEimBERLFm0.wnsK-Cx8NKXs</last-name>\n" +
+                "                    <first-name>ITe8Se01onEkP46oT5qvbhdrMAn</first-name>\n" +
+                "                    <middle-name>l47l_</middle-name>\n" +
+                "                    <middle-name>EON5fWENif4vZTXKy_8BOrnZ</middle-name>\n" +
+                "                    <last-name>PUAPnOB.x7m2h2jFzbFyfIqJ3Z.um7HYpVNZa6</last-name>\n" +
                 "                </name>\n" +
                 "            </authors>\n" +
                 "            <publication>\n" +
-                "                <title>iRu_xfFhfs2hMEXmj1ILmR5vsJOZY._MNvFN61tF4vXxwvCR4lrFrm.LpTtsNrmaOQ-Yiw</title>\n" +
-                "                <year>1694</year>\n" +
-                "                <publisher>iJ</publisher>\n" +
-                "                <place>ylU834Nbzs_6B_6SFGMxk8wYVUKsH6u</place>\n" +
+                "                <title>GWFOm4bdpybpVt91OFfpuzlRsU6yask5P04_C3AQTm</title>\n" +
+                "                <year>1449</year>\n" +
+                "                <publisher>dezuK_UVNV5U7D0MNhF.-JSY</publisher>\n" +
+                "                <place>jnJ-3M-BRhKFE8TJP</place>\n" +
                 "            </publication>\n" +
                 "        </reference>\n" +
                 "        <reference>\n" +
                 "            <authors>\n" +
                 "                <name>\n" +
-                "                    <first-name>DmmCuiIwiFsKeL</first-name>\n" +
-                "                    <middle-name>fSGPdRymA89P5xdCw2Q9p</middle-name>\n" +
-                "                    <middle-name>Z2y32CgtZmDDnTkB</middle-name>\n" +
-                "                    <last-name>F-pLJXcGS8fQSENU</last-name>\n" +
+                "                    <first-name>V0IFY5kY-wqVoC51LiRuifyO_Awsk0Njt0mP</first-name>\n" +
+                "                    <middle-name>RiVMrbZP9mgfdysjnBbCrAQgk.vd3.1AEzCd7gUMKH</middle-name>\n" +
+                "                    <middle-name>NAoK2pDNBm6Bv-3kb2DOQ</middle-name>\n" +
+                "                    <last-name>_M8AlT77BZNPccG6O1Q</last-name>\n" +
                 "                </name>\n" +
                 "                <name>\n" +
-                "                    <first-name>mp03</first-name>\n" +
-                "                    <middle-name>tGOp28_L6d2ErQhWIgI</middle-name>\n" +
-                "                    <middle-name>ZhgOnJuB7JtXc</middle-name>\n" +
-                "                    <last-name>ZN</last-name>\n" +
+                "                    <first-name>H_oDAxthoHj4cC0VN12j2</first-name>\n" +
+                "                    <middle-name>U</middle-name>\n" +
+                "                    <middle-name>H.US8</middle-name>\n" +
+                "                    <last-name>aC</last-name>\n" +
                 "                </name>\n" +
                 "            </authors>\n" +
                 "            <publication>\n" +
-                "                <title>CgCHbDCEYnd-jWuzY4pLJjOHX3JokXTP7iEgV.xUBLyskZC_yvO7eZGcGgsbvUKptbcEYBJ19uNwJptJ9xiBHnD9YFZ</title>\n" +
-                "                <year>1043</year>\n" +
-                "                <publisher>ZL</publisher>\n" +
-                "                <place>gIAeB</place>\n" +
+                "                <title>ut7-XDkvc7iHS01__D0auXt5</title>\n" +
+                "                <year>1019</year>\n" +
+                "                <publisher>M</publisher>\n" +
+                "                <place>d7q.KT44gxfzggev8AZAwE6F5383qf2</place>\n" +
                 "            </publication>\n" +
                 "        </reference>\n" +
                 "    </references>\n" +

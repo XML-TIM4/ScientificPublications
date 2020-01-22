@@ -7,12 +7,13 @@
         <xs:sequence>
             <xs:element name="metadata" type="TMetadata"/>
             <xs:element name="title">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:minLength value="1"/>
-                        <xs:maxLength value="100"/>
-                    </xs:restriction>
-                </xs:simpleType>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="TTitle">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
             </xs:element>
             <xs:element name="authors">
                 <xs:complexType>
@@ -22,7 +23,15 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="abstract" type="TAbstract"/>
+            <xs:element name="abstract">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="TAbstract">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="content">
                 <xs:complexType>
                     <xs:sequence>
@@ -40,6 +49,7 @@
         </xs:sequence>
         <xs:attribute default="en" name="language" type="xs:language"/>
         <xs:attribute name="id" type="xs:string"/>
+        <xs:anyAttribute processContents="lax"/>
     </xs:complexType>
     <xs:complexType name="TAuthor">
         <xs:sequence>
@@ -57,39 +67,59 @@
     </xs:complexType>
     <xs:complexType name="TMetadata">
         <xs:sequence>
-            <xs:element name="received" nillable="false" type="xs:date"/>
-            <xs:element name="revised" nillable="true" type="xs:date"/>
-            <xs:element name="accepted" nillable="true" type="xs:date"/>
+            <xs:element name="received" nillable="false">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:date">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="revised" nillable="true">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:date">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="accepted" nillable="true">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:date">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
             <xs:element default="1.0" name="version">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:pattern value="[1-9]\d*.\d{1,2}"/>
-                    </xs:restriction>
-                </xs:simpleType>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="TVersion">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
             </xs:element>
             <xs:element name="status">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:enumeration value="accepted"/>
-                        <xs:enumeration value="rejected"/>
-                        <xs:enumeration value="revision"/>
-                        <xs:enumeration value="withdrawn"/>
-                        <xs:enumeration value="uploaded"/>
-                    </xs:restriction>
-                </xs:simpleType>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="TStatus">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
             </xs:element>
             <xs:element default="research-paper" name="category">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:enumeration value="research-paper"/>
-                        <xs:enumeration value="viewpoint"/>
-                        <xs:enumeration value="technical-paper"/>
-                        <xs:enumeration value="conceptual-paper"/>
-                        <xs:enumeration value="case-study"/>
-                        <xs:enumeration value="literature-review"/>
-                        <xs:enumeration value="general-review"/>
-                    </xs:restriction>
-                </xs:simpleType>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="TCategory">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
             </xs:element>
             <xs:element name="keywords">
                 <xs:complexType>
@@ -103,6 +133,7 @@
                             </xs:simpleType>
                         </xs:element>
                     </xs:sequence>
+                    <xs:anyAttribute processContents="lax"/>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
@@ -176,6 +207,7 @@
             <xs:element name="abstract-item" type="TAbstractItem" maxOccurs="7" minOccurs="4"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string"/>
+        <xs:anyAttribute processContents="lax"/>
     </xs:complexType>
     <xs:complexType name="TAbstractItem">
         <xs:simpleContent>
@@ -354,4 +386,35 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
+    <xs:simpleType name="TTitle">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="TVersion">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[1-9]\d*.\d{1,2}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="TStatus">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="accepted"/>
+            <xs:enumeration value="rejected"/>
+            <xs:enumeration value="revision"/>
+            <xs:enumeration value="withdrawn"/>
+            <xs:enumeration value="uploaded"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="TCategory">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="research-paper"/>
+            <xs:enumeration value="viewpoint"/>
+            <xs:enumeration value="technical-paper"/>
+            <xs:enumeration value="conceptual-paper"/>
+            <xs:enumeration value="case-study"/>
+            <xs:enumeration value="literature-review"/>
+            <xs:enumeration value="general-review"/>
+        </xs:restriction>
+    </xs:simpleType>
 </xs:schema>
