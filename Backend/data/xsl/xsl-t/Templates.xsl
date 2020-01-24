@@ -26,17 +26,17 @@
         <xsl:if test="@type = 'text'">
             <xsl:for-each select="./*">
                 <xsl:if test="name(.) = 'question-text'">
-                    <p><xsl:value-of select="."/></p>
+                    <p style="margin-bottom:10px"><xsl:value-of select="."/></p>
                 </xsl:if>
                 <xsl:if test="name(.) = 'answer'">
-                    <p><xsl:value-of select="."/></p>
+                    <p style="margin-top: 5px"><xsl:value-of select="."/></p>
                 </xsl:if>
             </xsl:for-each>
         </xsl:if>
         <xsl:if test="@type = 'multiple-choice'">
             <xsl:for-each select="./*">
                 <xsl:if test="name(.) = 'question-text'">
-                    <p><xsl:value-of select="."/></p>
+                    <p style="margin-bottom: 10px; margin-top: 15px"><xsl:value-of select="."/></p>
                 </xsl:if>
                 <xsl:if test="name(.) = 'answer'">
                     <xsl:choose>
@@ -57,6 +57,7 @@
 
     <xsl:template match="sc:paragraph" name="TParagraph">
         <xsl:for-each select="./*">
+            <div style="margin-top: 10px; margin-bottom: 10px">
             <xsl:if test="name(.) = 'quote'">
                 <xsl:apply-templates/>
             </xsl:if>
@@ -128,6 +129,7 @@
             <xsl:if test="name(.) = 'decorator'">
                     <br/><xsl:apply-templates select="."/>
             </xsl:if>
+            </div>
         </xsl:for-each>
     </xsl:template>
 

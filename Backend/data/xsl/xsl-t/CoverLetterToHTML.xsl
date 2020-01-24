@@ -9,17 +9,16 @@
             <title>Cover letter</title>
         </head>
 
-        <body>
-            <div alight="right">
-                <xsl:value-of select="sc:CoverLetter/sc:cover-letter-metadata/sc:date"></xsl:value-of>
-            </div>
-            <div align="left">
-                <xsl:call-template name="TAuthor">
+        <body style="padding-left:10%; padding-right:10%">
+           <div align="left">
+               <xsl:value-of select="sc:CoverLetter/sc:cover-letter-metadata/sc:date"></xsl:value-of>
+               <xsl:call-template name="TAuthor">
                     <xsl:with-param name="author" select="sc:CoverLetter/sc:cover-letter-metadata/sc:author"/>
                 </xsl:call-template>
             </div>
 
-            <div align="left">
+            <div align="center" style="margin-top: 10px; margin-bottom:20px">
+                Cover Letter for
                 <a><xsl:attribute name="href">
                     http://localhost:8080/scientific-papers/<xsl:value-of select="sc:CoverLetter/sc:cover-letter-metadata/sc:scientific-paper-reference"/>
                 </xsl:attribute>

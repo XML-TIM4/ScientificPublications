@@ -9,33 +9,36 @@
                 <title>Review</title>
             </head>
 
-            <body>
-                <div align="right" position="absolute">
-                    <xsl:value-of select="sc:review/sc:review-metadata/sc:date"></xsl:value-of>
-                </div>
+            <body style="padding-left:10%; padding-right:10%">
                 <div align="left">
+                    <xsl:value-of select="sc:review/sc:review-metadata/sc:date"></xsl:value-of>
                     <xsl:call-template name="TAuthor">
                         <xsl:with-param name="author" select="sc:review/sc:review-metadata/sc:reviewer"/>
                     </xsl:call-template>
                 </div>
 
-                <div align="center">
+                <div align="center" style="margin-top: 10px; margin-bottom: 20px">
                     <h1><xsl:value-of select="sc:review/sc:review-metadata/sc:recommendation"/></h1>
                 </div><br/>
                 <div align="center">
 
+                    <div>
                     <xsl:for-each select="sc:review/sc:questionnaire/sc:question">
                         <xsl:call-template name="TQuestion"/>
                     </xsl:for-each>
+                    </div>
 
-                    Author comments
+                    <div>
+                        <h3 style="margin-top: 15px">Author comments</h3>
                     <xsl:for-each select="sc:review/sc:author-comments">
                         <xsl:call-template name="TComment">
                             <xsl:with-param name="comment" select="sc:author-comment"/>
                         </xsl:call-template>
                     </xsl:for-each>
+                    </div>
 
-                    Editor comments
+                <div>
+                    <h3 style="margin-bottom: 10px; margin-top: 15px">Editor comments</h3>
 
                     <xsl:for-each select="sc:review/sc:editor-comments">
                         <xsl:call-template name="TComment">
@@ -43,7 +46,7 @@
                         </xsl:call-template>
                     </xsl:for-each>
 
-
+                </div>
                 </div>
 
             </body>

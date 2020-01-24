@@ -15,7 +15,7 @@
 
     <xsl:template name="TComment">
         <xsl:param name="comment"/>
-        <fo:block>
+        <fo:block space-before="10px">
             <fo:block><xsl:value-of select="$comment/sc:review-reference"/></fo:block>
             <fo:block><xsl:value-of select="$comment/sc:comment-text"/></fo:block>
         </fo:block>
@@ -24,12 +24,12 @@
     <xsl:template match="sc:question" name="TQuestion">
         <xsl:if test="@type = 'text'">
             <xsl:for-each select="./*">
-                <fo:block>
+                <fo:block space-after="10px">
                     <xsl:if test="name(.) = 'question-text'">
-                        <fo:block><xsl:value-of select="."/></fo:block>
+                        <fo:block><fo:inline font-weight="bold"><xsl:value-of select="."/></fo:inline></fo:block>
                     </xsl:if>
                     <xsl:if test="name(.) = 'answer'">
-                        <fo:block><xsl:value-of select="."/></fo:block>
+                        <fo:block space-before="5px"><xsl:value-of select="."/></fo:block>
                     </xsl:if>
                 </fo:block>
             </xsl:for-each>
@@ -37,17 +37,17 @@
 
         <xsl:if test="@type = 'multiple-choice'">
             <xsl:for-each select="./*">
-                <fo:block>
+                <fo:block space-after="10px">
                     <xsl:if test="name(.) = 'question-text'">
-                        <fo:block><xsl:value-of select="."/></fo:block>
+                        <fo:block><fo:inline font-weight="bold"><xsl:value-of select="."/></fo:inline></fo:block>
                     </xsl:if>
                     <xsl:if test="name(.) = 'answer'">
                         <xsl:choose>
                             <xsl:when test="@selected = 'true'">
-                                <fo:block><xsl:value-of select="."/>: True</fo:block>
+                                <fo:block space-before="5px"><xsl:value-of select="."/>: True</fo:block>
                             </xsl:when>
                             <xsl:otherwise>
-                                <fo:block><xsl:value-of select="."/>: False</fo:block>
+                                <fo:block space-before="5px"><xsl:value-of select="."/>: False</fo:block>
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:if>

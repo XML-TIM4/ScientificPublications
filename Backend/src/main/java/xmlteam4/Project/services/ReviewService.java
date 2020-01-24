@@ -45,7 +45,7 @@ public class ReviewService {
             throw new NotFoundException(String.format("Review with id %s is not found", id));
         }
         // transformation to be added later. code saved for future reference
-        String rHTML = xslTransformer.generateHTML(review, "data/xsl/xsl-t/Review.xsl");
+        String rHTML = xslTransformer.generateHTML(review, "data/xsl/xsl-t/ReviewToHTML.xsl");
         return rHTML;
     }
 

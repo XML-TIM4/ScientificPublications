@@ -46,7 +46,7 @@ public class CoverLetterService {
             throw new NotFoundException(String.format("Cover letter with id %s is not found", id));
         }
         // transformation to be added later. code saved for future reference
-        String clHTML = xslTransformer.generateHTML(coverLetter, "data/xsl/xsl-t/CoverLetter.xsl");
+        String clHTML = xslTransformer.generateHTML(coverLetter, "data/xsl/xsl-t/CoverLetterToHTML.xsl");
         return clHTML;
     }
 
