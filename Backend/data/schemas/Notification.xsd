@@ -9,12 +9,39 @@
             <xs:element name="notification-metadata" type="TNotificationMetadata"/>
             <xs:element name="content" type="TParagraph"/>
         </xs:sequence>
+        <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="language" type="xs:language"/>
+        <xs:anyAttribute processContents="lax"/>
     </xs:complexType>
     <xs:complexType name="TNotificationMetadata">
         <xs:sequence>
-            <xs:element name="author" type="TAuthor"/>
-            <xs:element name="date" type="xs:date"/>
-            <xs:element name="scientific-paper-id" type="xs:string" nillable="false"/>
+            <xs:element name="recipient">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="TAuthor">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="date">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:date">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="scientific-paper-id" nillable="false">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

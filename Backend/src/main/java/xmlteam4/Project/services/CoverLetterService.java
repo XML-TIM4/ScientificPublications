@@ -6,16 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import xmlteam4.Project.exceptions.DocumentParsingFailedException;
 import xmlteam4.Project.repositories.CoverLetterRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
-import xmlteam4.Project.utilities.transformer.XSLTransfomer;
-
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+import xmlteam4.Project.utilities.transformer.XSLTransformer;
 
 @Service
 public class CoverLetterService {
@@ -23,8 +18,8 @@ public class CoverLetterService {
     @Autowired
     private CoverLetterRepository coverLetterRepository;
 
-    //@Autowired
-    //private XSLTransfomer xslTransfomer;
+    @Autowired
+    private XSLTransformer xslTransformer;
 
     @Autowired
     private DOMParser domParser;
@@ -43,6 +38,16 @@ public class CoverLetterService {
         // transformation to be added later. code saved for future reference
         //String clHTML = xslTransfomer.generateHTML(coverLetter, coverLetterXSLPath);
         return coverLetter;
+    }
+
+    public String findOneHTML(String id) throws Exception {
+        String coverLetter = coverLetterRepository.findOne(id);
+        if(coverLetter == null) {
+            throw new NotFoundException(String.format("Cover letter with id %s is not found", id));
+        }
+        // transformation to be added later. code saved for future reference
+        String clHTML = xslTransformer.generateHTML(coverLetter, "data/xsl/xsl-t/CoverLetterToHTML.xsl");
+        return clHTML;
     }
 
     public String create(String scientificPaperId, String xml) throws Exception {

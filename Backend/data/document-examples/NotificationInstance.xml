@@ -3,9 +3,11 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/XMLSchemas/Notification.xsd">
     <notification-metadata>
-        <author>
+        <recipient>
             <name>
                 <first-name>first-name0</first-name>
+                <middle-name>middle-name0</middle-name>
+                <middle-name>middle-name1</middle-name>
                 <last-name>last-name0</last-name>
             </name>
             <email> @ .a</email>
@@ -15,7 +17,7 @@
                 <state>state0</state>
                 <country>country0</country>
             </affiliation>
-        </author>
+        </recipient>
         <date>2006-05-04</date>
         <scientific-paper-id>scientific-paper-id0</scientific-paper-id>
     </notification-metadata>

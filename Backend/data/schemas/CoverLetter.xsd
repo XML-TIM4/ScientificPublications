@@ -5,10 +5,33 @@
     <xs:include schemaLocation="ScientificPaper.xsd"/>
     <xs:complexType name="TCoverLetterMetadata">
         <xs:sequence>
-            <xs:element name="author" type="TAuthor"/>
-            <xs:element name="editor" type="TAuthor"/>
-            <xs:element name="date" type="xs:date"/>
-            <xs:element name="scientific-paper-reference" type="xs:string"/>
+            <xs:element name="author">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="TAuthor">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="date">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:date">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="scientific-paper-reference">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="TCoverLetter">
@@ -24,12 +47,13 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    <xs:element name="CoverLetter">
+    <xs:element name="cover-letter">
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="TCoverLetter">
                     <xs:attribute name="language" type="xs:language"/>
                     <xs:attribute name="id" type="xs:string"/>
+                    <xs:anyAttribute processContents="lax"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
