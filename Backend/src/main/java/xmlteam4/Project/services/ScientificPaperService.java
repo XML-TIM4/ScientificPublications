@@ -19,7 +19,6 @@ import java.util.Date;
 
 @Service
 public class ScientificPaperService {
-
     @Autowired
     private ScientificPaperRepository scientificPaperRepository;
 
@@ -35,23 +34,27 @@ public class ScientificPaperService {
     @Value("${scientific-paper-schema-path}")
     private String scientificPaperSchemaPath;
 
+    @Value("${grddl-xslt}")
+    private String grddl;
+
+    @Value("${scientific-paper-rdfa-xslt}")
+    private String scientificPaperToRDFa;
+
+    @Value("${scientific-paper-html-xslt}")
+    private String scientificPaperToHTML;
+
+
     public String findOne(String id) throws Exception {
         String paper = scientificPaperRepository.findOne(id);
-        if(paper == null) {
+
+        if (paper == null) {
             throw new NotFoundException(String.format("Scientific paper with id %s is not found", id));
         }
-
         return paper;
     }
 
     public String findOneHTML(String id) throws Exception {
-        String paper = scientificPaperRepository.findOne(id);
-        if(paper == null) {
-            throw new NotFoundException(String.format("Scientific paper with id %s is not found", id));
-        }
-
-        String rHTML = xslTransformer.generateHTML(paper, "data/xsl/xsl-t/ScientificPaperToHTML.xsl");
-        return rHTML;
+        return xslTransformer.generateHTML(findOne(id), scientificPaperToHTML);
     }
 
     public String create(String xml) throws Exception {
@@ -65,9 +68,13 @@ public class ScientificPaperService {
 
         document.getElementsByTagName("version").item(0).setTextContent("1.0");
 
-        String newXml = documentXMLTransformer.toXMLString(document);
+        String rdfa = xslTransformer.generateHTML(documentXMLTransformer.toXMLString(document),
+                scientificPaperToRDFa);
 
-        return scientificPaperRepository.create(id, newXml);
+        String turtle = xslTransformer.generateHTML(rdfa, grddl);
+        System.out.println(turtle);
+
+        return scientificPaperRepository.create(id, rdfa);
     }
 
     public String update(String id, String xml) throws Exception {
@@ -78,8 +85,8 @@ public class ScientificPaperService {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "Z";
         document.getElementsByTagName("received").item(0).setTextContent(date);
 
-        Double version = Double.parseDouble(document.getElementsByTagName("version").item(0).getTextContent());
-        document.getElementsByTagName("version").item(0).setTextContent(version+1.0+"");
+        double version = Double.parseDouble(document.getElementsByTagName("version").item(0).getTextContent());
+        document.getElementsByTagName("version").item(0).setTextContent(version + 1.0 + "");
 
 
         String newXml = documentXMLTransformer.toXMLString(document);
@@ -88,8 +95,8 @@ public class ScientificPaperService {
     }
 
     public Boolean delete(String id) throws Exception {
-        if(scientificPaperRepository.findOne(id) == null){
-               return false;
+        if (scientificPaperRepository.findOne(id) == null) {
+            return false;
         }
         scientificPaperRepository.delete(id);
         return true;
@@ -100,15 +107,15 @@ public class ScientificPaperService {
 
         NodeList authors = document.getElementsByTagName("author");
         for (int i = 0; i < authors.getLength(); ++i) {
-            IDGenerator.generateChildlessElementID(authors.item(i), id + "/authors/" + (i+1), "author");
+            IDGenerator.generateChildlessElementID(authors.item(i), id + "/authors/" + (i + 1), "author");
         }
 
         Node abstr = document.getElementsByTagName("abstract").item(0);
-        IDGenerator.generateChildlessElementID(abstr, id + "/abstract","abstract");
+        IDGenerator.generateChildlessElementID(abstr, id + "/abstract", "abstract");
 
         NodeList sections = document.getElementsByTagName("section");
         for (int i = 0; i < sections.getLength(); ++i) {
-            IDGenerator.generateSectionID(sections.item(i), id + "/sections/" + (i+1));
+            IDGenerator.generateSectionID(sections.item(i), id + "/sections/" + (i + 1));
         }
     }
 }

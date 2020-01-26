@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -13,7 +12,6 @@ import java.io.StringWriter;
 
 @Component
 public class DocumentXMLTransformer {
-
     public String toXMLString(Document document) throws TransformerException {
         DOMSource domSource = new DOMSource(document);
         StringWriter writer = new StringWriter();
