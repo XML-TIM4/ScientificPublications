@@ -121,31 +121,55 @@
                         <xsl:value-of select="@title"/>
                     </fo:block>
                     <fo:table>
-                        <fo:table-header>
-                            <xsl:for-each select="./sc:header/sc:row">
-                                <fo:table-row>
-                                    <xsl:for-each select="./sc:column">
-                                        <fo:table-cell border="1px solid black" padding="2px 2px 2px 5px">
-                                            <fo:block font-weight="bold">
-                                                <xsl:value-of select="."/>
-                                            </fo:block>
-                                        </fo:table-cell>
-                                    </xsl:for-each>
-                                </fo:table-row>
-                            </xsl:for-each>
-                        </fo:table-header>
+                            <fo:table-header>
+                                <xsl:choose>
+                                    <xsl:when test="./sc:header/*">
+                                        <xsl:for-each select="./sc:header/sc:row">
+                                            <fo:table-row>
+                                                <xsl:for-each select="./sc:column">
+                                                    <fo:table-cell border="1px solid black" padding="2px 2px 2px 5px">
+                                                        <fo:block font-weight="bold">
+                                                            <xsl:value-of select="."/>
+                                                        </fo:block>
+                                                    </fo:table-cell>
+                                                </xsl:for-each>
+                                            </fo:table-row>
+                                        </xsl:for-each>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <fo:table-row>
+                                            <fo:table-cell border="1px solid black" padding="2px">
+                                                <fo:block>
+                                                </fo:block>
+                                            </fo:table-cell>
+                                        </fo:table-row>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </fo:table-header>
                         <fo:table-body>
-                            <xsl:for-each select="sc:body/sc:row">
-                                <fo:table-row>
-                                    <xsl:for-each select="./sc:column">
+                            <xsl:choose>
+                                <xsl:when test="./sc:body/*">
+                                    <xsl:for-each select="sc:body/sc:row">
+                                        <fo:table-row>
+                                            <xsl:for-each select="./sc:column">
+                                                <fo:table-cell border="1px solid black" padding="2px">
+                                                    <fo:block>
+                                                        <xsl:value-of select="."/>
+                                                    </fo:block>
+                                                </fo:table-cell>
+                                            </xsl:for-each>
+                                        </fo:table-row>
+                                    </xsl:for-each>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <fo:table-row>
                                         <fo:table-cell border="1px solid black" padding="2px">
                                             <fo:block>
-                                                <xsl:value-of select="."/>
                                             </fo:block>
                                         </fo:table-cell>
-                                    </xsl:for-each>
-                                </fo:table-row>
-                            </xsl:for-each>
+                                    </fo:table-row>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </fo:table-body>
                     </fo:table>
                 </fo:block>

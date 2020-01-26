@@ -409,13 +409,13 @@ public class ScientificPaperServiceTests {
                 "    </references>\n" +
                 "</scientific-paper>\n";
 
-        String id = scientificPaperService.create(scientificPaper);
+        String id = scientificPaperService.createScientificPaper(scientificPaper);
 
-        String found = scientificPaperService.findOne(id);
+        String found = scientificPaperService.getScientificPaperXML(id);
 
         System.out.println(found);
 
-        String wut = scientificPaperService.update(id, found);
+        String wut = scientificPaperService.reviseScientificPaper(id, found);
 
         System.out.println("IS THIS IT? " + wut);
         assertNotNull(found, "Found not null");
@@ -637,9 +637,9 @@ public class ScientificPaperServiceTests {
                 "    </references>\n" +
                 "</scientific-paper>\n";
 
-        String id = scientificPaperService.create(scientificPaper);
+        String id = scientificPaperService.createScientificPaper(scientificPaper);
 
-        String found = scientificPaperService.findOneHTML(id);
+        String found = scientificPaperService.getScientificPaperHTML(id);
 
         System.out.println(found);
         assertNotNull(found, "Found not null");
@@ -861,14 +861,14 @@ public class ScientificPaperServiceTests {
                 "    </references>\n" +
                 "</scientific-paper>\n";
 
-        String id = scientificPaperService.create(scientificPaper);
+        String id = scientificPaperService.createScientificPaper(scientificPaper);
 
-        String found = scientificPaperService.findOne(id);
+        String found = scientificPaperService.getScientificPaperXML(id);
 
         System.out.println(found);
 
         ByteArrayOutputStream stream = xslTransformer.generatePDF(found, "data/xsl/xsl-fo/ScientificPaperToPDF.xsl");
-        try(OutputStream outputStream = new FileOutputStream("jo.pdf")) {
+        try (OutputStream outputStream = new FileOutputStream("jo.pdf")) {
             stream.writeTo(outputStream);
         }
         assertNotNull(found, "Found not null");
