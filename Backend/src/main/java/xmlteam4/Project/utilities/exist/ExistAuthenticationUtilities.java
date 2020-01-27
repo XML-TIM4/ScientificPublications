@@ -10,7 +10,7 @@ import org.xmldb.api.base.XMLDBException;
 import javax.annotation.PostConstruct;
 
 @Component
-public class AuthenticationUtilities {
+public class ExistAuthenticationUtilities {
     public static String uri;
     public static String host;
     public static int port;
@@ -39,12 +39,12 @@ public class AuthenticationUtilities {
 
     @PostConstruct
     public void init() {
-        AuthenticationUtilities.uri = _uri;
-        AuthenticationUtilities.driver = _driver;
-        AuthenticationUtilities.password = _password;
-        AuthenticationUtilities.user = _user;
-        AuthenticationUtilities.host = _host;
-        AuthenticationUtilities.port = _port;
+        ExistAuthenticationUtilities.uri = _uri;
+        ExistAuthenticationUtilities.driver = _driver;
+        ExistAuthenticationUtilities.password = _password;
+        ExistAuthenticationUtilities.user = _user;
+        ExistAuthenticationUtilities.host = _host;
+        ExistAuthenticationUtilities.port = _port;
     }
 
 

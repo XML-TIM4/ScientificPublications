@@ -7,7 +7,7 @@ public enum ScientificPaperAbstractTitles {
     IMPLICATIONS("Implications", false),
     PRACTICAL_IMPLICATIONS("Practical Implications", false),
     SOCIAL_IMPLICATIONS("Social Implications", false),
-    ORIGINALITY("Originality", false);
+    ORIGINALITY("Originality", true);
 
     private String name;
     private boolean mandatory;

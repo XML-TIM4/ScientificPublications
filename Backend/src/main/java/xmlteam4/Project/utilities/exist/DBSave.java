@@ -15,8 +15,8 @@ public class DBSave {
             System.out.println("missing collectionId or documentId or xmlEntity");
         }
         // initialize database driver
-        System.out.println("[INFO] Loading driver class: " + AuthenticationUtilities.driver);
-        Class<?> cl = Class.forName(AuthenticationUtilities.driver);
+        System.out.println("[INFO] Loading driver class: " + ExistAuthenticationUtilities.driver);
+        Class<?> cl = Class.forName(ExistAuthenticationUtilities.driver);
 
         // encapsulation of the database driver functionality
         Database database = (Database) cl.newInstance();
@@ -69,7 +69,7 @@ public class DBSave {
 
     private static Collection getOrCreateCollection(String collectionUri, int pathSegmentOffset) throws XMLDBException {
         Collection col = DatabaseManager
-                .getCollection(AuthenticationUtilities.uri + collectionUri, AuthenticationUtilities.user, AuthenticationUtilities.password);
+                .getCollection(ExistAuthenticationUtilities.uri + collectionUri, ExistAuthenticationUtilities.user, ExistAuthenticationUtilities.password);
 
         // create the collection if it does not exist
         if (col == null) {
@@ -88,7 +88,7 @@ public class DBSave {
                 }
 
                 Collection startCol = DatabaseManager
-                        .getCollection(AuthenticationUtilities.uri + path, AuthenticationUtilities.user, AuthenticationUtilities.password);
+                        .getCollection(ExistAuthenticationUtilities.uri + path, ExistAuthenticationUtilities.user, ExistAuthenticationUtilities.password);
 
                 if (startCol == null) {
 
@@ -96,7 +96,7 @@ public class DBSave {
 
                     String parentPath = path.substring(0, path.lastIndexOf("/"));
                     Collection parentCol = DatabaseManager
-                            .getCollection(AuthenticationUtilities.uri + parentPath, AuthenticationUtilities.user, AuthenticationUtilities.password);
+                            .getCollection(ExistAuthenticationUtilities.uri + parentPath, ExistAuthenticationUtilities.user, ExistAuthenticationUtilities.password);
 
                     CollectionManagementService mgt = (CollectionManagementService) parentCol
                             .getService("CollectionManagementService", "1.0");

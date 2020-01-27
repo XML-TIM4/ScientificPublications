@@ -1,21 +1,19 @@
 package xmlteam4.Project.utilities.sparql;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-public class AuthenticationUtilities {
+@Component
+public class FusekiAuthenticationUtilities {
     public static String endpoint;
-    public static String dataset;
     public static String queryEndpoint;
     public static String updateEndpoint;
     public static String dataEndpoint;
 
     @Value("${conn.fuseki-endpoint}")
     private String _endpoint;
-
-    @Value("${conn.dataset}")
-    private String _dataset;
 
     @Value("${conn.query}")
     private String _query;
@@ -28,10 +26,9 @@ public class AuthenticationUtilities {
 
     @PostConstruct
     public void init() {
-        AuthenticationUtilities.dataEndpoint = _data;
-        AuthenticationUtilities.dataset = _dataset;
-        AuthenticationUtilities.endpoint = _endpoint;
-        AuthenticationUtilities.queryEndpoint = _query;
-        AuthenticationUtilities.updateEndpoint = _update;
+        FusekiAuthenticationUtilities.endpoint = _endpoint;
+        FusekiAuthenticationUtilities.dataEndpoint = String.join("/", _endpoint, _data);
+        FusekiAuthenticationUtilities.queryEndpoint = String.join("/", _endpoint, _query);
+        FusekiAuthenticationUtilities.updateEndpoint = String.join("/", _endpoint, _update);
     }
 }

@@ -16,7 +16,7 @@ public class DBRetrieve {
     public static ResourceSet executeXPathExpression(String collectionId, String xpathExp, String TARGET_NAMESPACE) throws Exception {
         ResourceSet result;
 
-        Class<?> cl = Class.forName(AuthenticationUtilities.driver);
+        Class<?> cl = Class.forName(ExistAuthenticationUtilities.driver);
 
         Database database = (Database) cl.newInstance();
         database.setProperty("create-database", "true");
@@ -27,7 +27,7 @@ public class DBRetrieve {
 
         try {
             // get the collection
-            col = DatabaseManager.getCollection(AuthenticationUtilities.uri + collectionId);
+            col = DatabaseManager.getCollection(ExistAuthenticationUtilities.uri + collectionId);
 
             if (col == null) {
                 return null;

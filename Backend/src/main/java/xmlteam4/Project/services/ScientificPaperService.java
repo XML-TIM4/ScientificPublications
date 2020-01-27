@@ -15,6 +15,7 @@ import xmlteam4.Project.model.ScientificPaperStatus;
 import xmlteam4.Project.repositories.ScientificPaperRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
+import xmlteam4.Project.utilities.sparql.SparqlService;
 import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
 import xmlteam4.Project.utilities.transformer.XSLTransformer;
 
@@ -22,10 +23,8 @@ import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ScientificPaperService {
@@ -40,6 +39,9 @@ public class ScientificPaperService {
 
     @Autowired
     private XSLTransformer xslTransformer;
+
+    @Autowired
+    private SparqlService sparqlService;
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -80,6 +82,10 @@ public class ScientificPaperService {
     public String createScientificPaper(String xml) throws Exception {
         Document document = domParser.buildDocument(xml, scientificPaperSchemaPath);
 
+        if (document == null) {
+            throw new DocumentParsingFailedException("Document is not valid");
+        }
+
         String id = IDGenerator.createID();
         setIDs(id, document);
 
@@ -94,14 +100,19 @@ public class ScientificPaperService {
         String rdfa = xslTransformer.generateHTML(documentXMLTransformer.toXMLString(document),
                 scientificPaperToRDFa);
 
-        String turtle = xslTransformer.generateHTML(rdfa, grddl);
-        System.out.println(turtle);
+        String rdf = xslTransformer.generateHTML(rdfa, grddl);
+
+        sparqlService.createGraph("/scientific-papers/" + id, rdf);
 
         return scientificPaperRepository.create(id, rdfa);
     }
 
     public String reviseScientificPaper(String id, String xml) throws Exception {
         Document document = domParser.buildDocument(xml, scientificPaperSchemaPath);
+
+        if (document == null) {
+            throw new DocumentParsingFailedException("Document is not valid");
+        }
 
         setIDs(id, document);
 
@@ -123,6 +134,12 @@ public class ScientificPaperService {
 
         String newXml = documentXMLTransformer.toXMLString(document);
 
+        String rdf = xslTransformer.generateHTML(newXml, grddl);
+
+        String graphName = "/scientific-papers/" + id;
+        sparqlService.deleteGraph(graphName);
+        sparqlService.createGraph(graphName, rdf);
+
         return scientificPaperRepository.update(id, newXml);
     }
 
@@ -133,6 +150,13 @@ public class ScientificPaperService {
 
         document.getElementsByTagName("status").item(0)
                 .setTextContent(ScientificPaperStatus.WITHDRAWN.toString());
+
+        String rdfa = documentXMLTransformer.toXMLString(document);
+        String rdf = xslTransformer.generateHTML(rdfa, grddl);
+
+        String graphName = "/scientific-papers/" + id;
+        sparqlService.deleteGraph(graphName);
+        sparqlService.createGraph(graphName, rdf);
 
         scientificPaperRepository.update(id, documentXMLTransformer.toXMLString(document));
         return true;
@@ -155,6 +179,7 @@ public class ScientificPaperService {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean checkAbstract(Document document) {
         ArrayList<String> abstractTitles = new ArrayList<>();
         NodeList abstractItems = document.getElementsByTagName("abstract-item");
@@ -169,7 +194,11 @@ public class ScientificPaperService {
             return false;
         }
 
-        return uniqueTitles.containsAll(Arrays.stream(ScientificPaperAbstractTitles.values())
-                .filter(ScientificPaperAbstractTitles::isMandatory).collect(Collectors.toList()));
+        for (ScientificPaperAbstractTitles title : ScientificPaperAbstractTitles.values()) {
+            if (title.isMandatory() && !uniqueTitles.contains(title.toString())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

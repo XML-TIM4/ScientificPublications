@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import xmlteam4.Project.services.ScientificPaperService;
 
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/scientific-papers")
