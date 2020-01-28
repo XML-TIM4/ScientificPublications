@@ -17,12 +17,14 @@ public class UserMapper implements IMapper<TUser, UserDTO> {
         user.setEmail(dto.getEmail());
         user.setEditor(dto.getEditor());
         user.setPassword(dto.getPassword());
+        user.setExpertise(dto.getExpertise());
 
         return user;
     }
 
     @Override
     public UserDTO toDTO(TUser tUser) {
-        return new UserDTO(tUser.getPassword(), tUser.getEmail(), tUser.getId(), tUser.isEditor());
+        return new UserDTO(tUser.getPassword(), tUser.getEmail(), tUser.getId(), tUser.isEditor(), tUser
+                .getExpertise());
     }
 }

@@ -64,6 +64,7 @@ public class StartupService {
                 user.setId(TARGET_NAMESPACE + "/users/" + IDGenerator.createID());
                 user.setPassword("admin");
                 user.setEmail("admin@admin.com");
+                user.setExpertise("");
                 users.getUser().add(user);
                 String usersXML = userRepository.marshallAll(users);
                 resource = (XMLResource) col.createResource("users.xml", XMLResource.RESOURCE_TYPE);

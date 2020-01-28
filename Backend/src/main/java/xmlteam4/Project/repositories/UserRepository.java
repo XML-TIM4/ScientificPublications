@@ -90,7 +90,7 @@ public class UserRepository {
     }
 
     private String marshallUser(TUser user) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(TUser.class);
+        JAXBContext context = JAXBContext.newInstance("xmlteam4.Project.model");
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
@@ -104,7 +104,7 @@ public class UserRepository {
 
     public String marshallAll(Users users) throws JAXBException {
         OutputStream os = new ByteArrayOutputStream();
-        JAXBContext context = JAXBContext.newInstance(Users.class);
+        JAXBContext context = JAXBContext.newInstance("xmlteam4.Project.model");
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         marshaller.marshal(users, os);

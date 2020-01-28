@@ -45,6 +45,7 @@ import java.util.Collection;
 @XmlType(name = "TUser", namespace = "https://github.com/XML-TIM4/ScientificPublications", propOrder = {
         "password",
         "email",
+        "expertise",
         "id"
 })
 @XmlRootElement(name = "user")
@@ -56,6 +57,8 @@ public class TUser implements UserDetails {
     protected String email;
     @XmlElement(namespace = "https://github.com/XML-TIM4/ScientificPublications", required = true)
     protected String id;
+    @XmlElement(namespace = "https://github.com/XML-TIM4/ScientificPublications", required = true)
+    protected String expertise;
     @XmlAttribute(name = "is-editor", required = true)
     protected boolean editor;
 
@@ -170,4 +173,11 @@ public class TUser implements UserDetails {
         this.editor = value;
     }
 
+    public String getExpertise() {
+        return expertise;
+    }
+
+    public void setExpertise(String expertise) {
+        this.expertise = expertise;
+    }
 }

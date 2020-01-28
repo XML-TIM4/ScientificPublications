@@ -177,7 +177,7 @@ public class ScientificPaperService {
         TUser user;
         for (int i = 0; i < authors.getLength(); ++i) {
             try {
-                user = userRepository.findOneByEmail(authors.item(i).getLastChild().getTextContent());
+                user = userRepository.findOneByEmail(authors.item(i).getChildNodes().item(1).getTextContent());
                 authors.item(i).getAttributes().getNamedItem("id").setTextContent(user.getId());
             } catch (Exception e) {
                 e.printStackTrace();
