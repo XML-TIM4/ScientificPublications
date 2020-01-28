@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CoverLetter xmlns="https://github.com/XML-TIM4/ScientificPublications"
+<cover-letter xmlns="https://github.com/XML-TIM4/ScientificPublications"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/XMLSchemas/CoverLetter.xsd">
+ xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/data/schemas/CoverLetter.xsd">
     <cover-letter-metadata>
         <author>
             <name>
                 <first-name>first-name0</first-name>
                 <last-name>last-name0</last-name>
             </name>
-            <email> @ .a</email>
+            <email>admin@admin.com</email>
             <affiliation>
                 <university>university0</university>
                 <city>city0</city>
@@ -16,19 +16,6 @@
                 <country>country0</country>
             </affiliation>
         </author>
-        <editor>
-            <name>
-                <first-name>first-name1</first-name>
-                <last-name>last-name1</last-name>
-            </name>
-            <email> @ .a</email>
-            <affiliation>
-                <university>university1</university>
-                <city>city1</city>
-                <state>state1</state>
-                <country>country1</country>
-            </affiliation>
-        </editor>
         <date>2006-05-04</date>
         <scientific-paper-reference>scientific-paper-reference0</scientific-paper-reference>
     </cover-letter-metadata>
@@ -52,6 +39,7 @@
                     <title>title0</title>
                     <publisher>publisher0</publisher>
                     <place>place0</place>
+                    <url>http://www.findtheinvisiblecow.com</url>
                 </publication>
             </quote>
             <table>
@@ -63,4 +51,4 @@
         </paragraph>
         <signature>ZGVmYXVsdA==</signature>
     </content>
-</CoverLetter>
+</cover-letter>

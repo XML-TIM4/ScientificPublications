@@ -22,10 +22,13 @@ public class AuthenticationService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private IDGenerator idGenerator;
+
 
     public UserDTO register(UserDTO user) throws RepositoryException {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setId(TARGET_NAMESPACE + "/users/" + IDGenerator.createID());
+        user.setId(TARGET_NAMESPACE + "/users/" + idGenerator.createID());
 
         return userMapper.toDTO(userRepository.save(userMapper.toEntity(user)));
     }

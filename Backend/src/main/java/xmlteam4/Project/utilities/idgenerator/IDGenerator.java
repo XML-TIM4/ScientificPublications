@@ -1,17 +1,26 @@
 package xmlteam4.Project.utilities.idgenerator;
 
 import com.devskiller.friendly_id.FriendlyId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import xmlteam4.Project.exceptions.BadParametersException;
+import xmlteam4.Project.model.TUser;
+import xmlteam4.Project.repositories.UserRepository;
 
+@Component
 public class IDGenerator {
-    public static String createID() {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public String createID() {
         return FriendlyId.createFriendlyId();
     }
 
-    public static void generateSectionID(Node node, String id) throws BadParametersException {
+    public void generateSectionID(Node node, String id) throws BadParametersException {
         if (node instanceof Element) {
             if (!node.getNodeName().equals("section")) {
                 throw new BadParametersException("Expected section, instead got " + node.getNodeName());
@@ -30,7 +39,7 @@ public class IDGenerator {
         }
     }
 
-    public static void generateParagraphID(Node node, String id) throws BadParametersException {
+    public void generateParagraphID(Node node, String id) throws BadParametersException {
         if (node instanceof Element) {
             if (!node.getNodeName().equals("paragraph")) {
                 throw new BadParametersException("Expected paragraph, instead got " + node.getNodeName());
@@ -54,7 +63,7 @@ public class IDGenerator {
         }
     }
 
-    public static void generateChildlessElementID(Node node, String id, String type) throws BadParametersException{
+    public void generateChildlessElementID(Node node, String id, String type) throws BadParametersException{
         if (node instanceof Element) {
             if (!node.getNodeName().equals(type)) {
                 throw new BadParametersException(String.format("Expected %s, instead got %s", type, node.getNodeName()));
@@ -67,4 +76,18 @@ public class IDGenerator {
             throw new BadParametersException("Node object passed is not an Element");
         }
     }
+
+    public void generateUserIDs(NodeList users) {
+        TUser user;
+        for (int i = 0; i < users.getLength(); ++i) {
+            try {
+                Element userElem = (Element)users.item(i);
+                user = userRepository.findOneByEmail(userElem.getElementsByTagName("email").item(0).getTextContent());
+                userElem.setAttribute("id", user.getId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
