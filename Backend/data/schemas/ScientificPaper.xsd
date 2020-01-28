@@ -67,7 +67,7 @@
     </xs:complexType>
     <xs:complexType name="TMetadata">
         <xs:sequence>
-            <xs:element name="received" nillable="false">
+            <xs:element name="received" nillable="true">
                 <xs:complexType>
                     <xs:simpleContent>
                         <xs:extension base="xs:date">
@@ -103,7 +103,7 @@
                     </xs:simpleContent>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="status">
+            <xs:element name="status" nillable="true">
                 <xs:complexType>
                     <xs:simpleContent>
                         <xs:extension base="TStatus">
@@ -212,7 +212,7 @@
     <xs:complexType name="TAbstractItem">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="title">
+                <xs:attribute name="title" use="required">
                     <xs:simpleType>
                         <xs:restriction base="xs:string">
                             <xs:enumeration value="Purpose"/>
@@ -384,6 +384,7 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
+            <xs:element name="url" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
     <xs:simpleType name="TTitle">

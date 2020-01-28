@@ -1,4 +1,4 @@
-package xmlteam4.Project.utilities.dom;
+package xmlteam4.Project.utilities.dom.dbf;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

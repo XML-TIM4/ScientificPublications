@@ -48,7 +48,7 @@ public class AuthenticationController {
     public ResponseEntity<Object> register(@Valid @RequestBody UserDTO user) {
         try {
             return new ResponseEntity<>(authenticationService.register(user), HttpStatus.OK);
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

@@ -1,32 +1,44 @@
 package xmlteam4.Project.repositories;
 
 import org.exist.xmldb.EXistResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.w3c.dom.Node;
+import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.base.XMLDBException;
 import org.xmldb.api.modules.XMLResource;
 import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.model.TUser;
-import xmlteam4.Project.utilities.exist.DBRetrieve;
-import xmlteam4.Project.utilities.exist.DBUpdate;
+import xmlteam4.Project.model.Users;
+import xmlteam4.Project.utilities.exist.CRUDService;
+import xmlteam4.Project.utilities.exist.QueryService;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayOutputStream;
-
-import static xmlteam4.Project.utilities.template.XUpdateTemplate.*;
+import java.io.OutputStream;
 
 @Repository
 public class UserRepository {
     @Value("${user-collection-id}")
     private String userCollectionId;
 
-    public TUser findOneByUsername(String username) throws RepositoryException {
+    @Autowired
+    private CRUDService crudService;
+
+    @Autowired
+    private QueryService queryService;
+
+
+    public TUser findOneByEmail(String email) throws RepositoryException {
+        String xPathExp = String.format("//user[email='%s']", email);
         try {
-            String xPathExp = String.format("users/user[username='%s']", username);
-            ResourceSet resultSet = DBRetrieve.executeXPathExpression(userCollectionId, xPathExp, TARGET_NAMESPACE);
+            ResourceSet resultSet = queryService.executeXPathQuery(userCollectionId, xPathExp);
 
             if (resultSet == null)
                 return null;
@@ -37,7 +49,7 @@ public class UserRepository {
 
             if (i.hasMoreResources()) {
                 res = (XMLResource) i.nextResource();
-                retVal = (TUser) res.getContent();
+                retVal = unmarshallUser(res.getContentAsDOM());
             }
 
             if (res != null)
@@ -48,44 +60,36 @@ public class UserRepository {
                 }
 
             return retVal;
-        } catch (Exception e) {
-            throw new RepositoryException("Error in repository");
+        } catch (XMLDBException | JAXBException e) {
+            throw new RepositoryException("Failed to find user");
         }
     }
 
     public TUser save(TUser user) throws RepositoryException {
         try {
-            if (findOneByUsername(user.getUsername()) != null)
-                throw new RepositoryException("User already exists");
+            String userXml = marshallUser(user);
 
-            String xmlElement = marshallUser(user);
+            Collection col = crudService.getOrCreateCollection(userCollectionId, 0);
 
-            if (DBUpdate.update(userCollectionId, "users", "users", xmlElement, INSERT_AFTER) == 0L)
-                throw new RepositoryException("Failed to save user");
-            else
-                return findOneByUsername(user.getUsername());
-        } catch (Exception e) {
-            throw new RepositoryException(e.getMessage());
+            queryService.append(col, userCollectionId, "/users", userXml);
+
+            return user;
+        } catch (XMLDBException | JAXBException e) {
+            throw new RepositoryException("Failed to save user");
         }
     }
 
-    public TUser update(TUser user) throws RepositoryException {
-        try {
-            if (findOneByUsername(user.getUsername()) == null)
-                throw new RepositoryException("User does not exist");
+    private TUser unmarshallUser(Node node) throws JAXBException {
+        TUser user;
 
-            String xmlElement = marshallUser(user);
+        JAXBContext context = JAXBContext.newInstance(TUser.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        user = (TUser) unmarshaller.unmarshal(node);
 
-            if (DBUpdate.update(userCollectionId, "users", "users", xmlElement, UPDATE) == 0L)
-                throw new RepositoryException("Failed to update user");
-            else
-                return findOneByUsername(user.getUsername());
-        } catch (Exception e) {
-            throw new RepositoryException(e.getMessage());
-        }
+        return user;
     }
 
-    private String marshallUser(TUser user) throws Exception {
+    private String marshallUser(TUser user) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(TUser.class);
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -93,7 +97,18 @@ public class UserRepository {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         marshaller.marshal(user, stream);
 
-        return new String(stream.toByteArray());
+        String userXML = new String(stream.toByteArray());
+
+        return userXML.substring(userXML.indexOf('\n') + 1);
     }
 
+    public String marshallAll(Users users) throws JAXBException {
+        OutputStream os = new ByteArrayOutputStream();
+        JAXBContext context = JAXBContext.newInstance(Users.class);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        marshaller.marshal(users, os);
+
+        return os.toString();
+    }
 }

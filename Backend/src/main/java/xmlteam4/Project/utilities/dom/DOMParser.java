@@ -29,8 +29,6 @@ public class DOMParser {
 
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
-        StringReader wtf = new StringReader(xml);
-
         Document document = documentBuilder.parse(new InputSource(new StringReader(xml)));
 
         if (document == null)

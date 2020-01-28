@@ -5,12 +5,9 @@
 
     <xs:complexType name="TUser">
         <xs:sequence>
-            <xs:element name="username" type="xs:string"/>
             <xs:element name="password">
                 <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:pattern value="^([a-zA-Z0-9@*#]{8,15})$"/>
-                    </xs:restriction>
+                    <xs:restriction base="xs:string"> </xs:restriction>
                 </xs:simpleType>
             </xs:element>
             <xs:element name="email">
@@ -20,48 +17,9 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="publication-roles">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="publication-role"
-                            type="TPublicationRole"/>
-                    </xs:sequence>
-                </xs:complexType>
-                <xs:unique name="unique-publication-id">
-                    <xs:selector xpath="publication-role"></xs:selector>
-                    <xs:field xpath="@document-id"></xs:field>
-                </xs:unique>
-            </xs:element>
+            <xs:element name="id" type="xs:string"/>
         </xs:sequence>
-        <xs:attribute name="author-id">
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:pattern
-                        value="(([a-zA-Z][0-9a-zA-Z+\\-\\.]*:)?/{0,2}[0-9a-zA-Z;/?:@&amp;amp;=+$\\.\\-_!~*'()%]+)?( #[0-9a-zA-Z;/?:@&amp;amp;=+$\\.\\-_!~*'()%]+)?"
-                    />
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
-        <xs:attribute default="false" name="is-editor" type="xs:boolean"/>
-    </xs:complexType>
-    <xs:complexType name="TPublicationRole">
-        <xs:attribute name="document-id" use="required">
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:pattern
-                        value="(([a-zA-Z][0-9a-zA-Z+\\-\\.]*:)?/{0,2}[0-9a-zA-Z;/?:@&amp;amp;=+$\\.\\-_!~*'()%]+)?( #[0-9a-zA-Z;/?:@&amp;amp;=+$\\.\\-_!~*'()%]+)?"
-                    />
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
-        <xs:attribute name="role" use="required">
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:enumeration value="REVIEWER"/>
-                    <xs:enumeration value="AUTHOR"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
+        <xs:attribute name="is-editor" type="xs:boolean" use="required"/>
     </xs:complexType>
     <xs:element name="users">
         <xs:complexType>
@@ -69,8 +27,8 @@
                 <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="TUser"/>
             </xs:sequence>
         </xs:complexType>
-        <xs:unique name="unique-username">
-            <xs:selector xpath="user/username"/>
+        <xs:unique name="unique-email">
+            <xs:selector xpath="user/email"/>
             <xs:field xpath="."/>
         </xs:unique>
     </xs:element>

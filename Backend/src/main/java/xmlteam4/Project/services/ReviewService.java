@@ -9,8 +9,8 @@ import org.w3c.dom.Node;
 import xmlteam4.Project.repositories.ReviewRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
-import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
-import xmlteam4.Project.utilities.transformer.XSLTransformer;
+import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
+import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
 @Service
 public class ReviewService {

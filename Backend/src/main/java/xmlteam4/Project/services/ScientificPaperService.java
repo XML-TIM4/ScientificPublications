@@ -3,23 +3,35 @@ package xmlteam4.Project.services;
 import org.exist.http.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import xmlteam4.Project.exceptions.BadParametersException;
+import xmlteam4.Project.exceptions.DocumentParsingFailedException;
+import xmlteam4.Project.model.ScientificPaperAbstractTitles;
+import xmlteam4.Project.model.ScientificPaperStatus;
+import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.ScientificPaperRepository;
+import xmlteam4.Project.repositories.UserRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
-import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
-import xmlteam4.Project.utilities.transformer.XSLTransformer;
+import xmlteam4.Project.utilities.sparql.SparqlService;
+import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
+import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.ByteArrayInputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
 
 @Service
 public class ScientificPaperService {
-
     @Autowired
     private ScientificPaperRepository scientificPaperRepository;
 
@@ -32,83 +44,175 @@ public class ScientificPaperService {
     @Autowired
     private XSLTransformer xslTransformer;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private SparqlService sparqlService;
+
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     @Value("${scientific-paper-schema-path}")
     private String scientificPaperSchemaPath;
 
-    public String findOne(String id) throws Exception {
+    @Value("${grddl-xslt}")
+    private String grddl;
+
+    @Value("${scientific-paper-rdfa-xslt}")
+    private String scientificPaperToRDFa;
+
+    @Value("${scientific-paper-html-xslt}")
+    private String scientificPaperToHTML;
+
+    @Value("${scientific-paper-pdf-xslfo}")
+    private String scientificPaperToPDF;
+
+
+    public String getScientificPaperXML(String id) throws Exception {
         String paper = scientificPaperRepository.findOne(id);
-        if(paper == null) {
+
+        if (paper == null) {
             throw new NotFoundException(String.format("Scientific paper with id %s is not found", id));
         }
-
         return paper;
     }
 
-    public String findOneHTML(String id) throws Exception {
-        String paper = scientificPaperRepository.findOne(id);
-        if(paper == null) {
-            throw new NotFoundException(String.format("Scientific paper with id %s is not found", id));
-        }
-
-        String rHTML = xslTransformer.generateHTML(paper, "data/xsl/xsl-t/ScientificPaperToHTML.xsl");
-        return rHTML;
+    public String getScientificPaperHTML(String id) throws Exception {
+        return xslTransformer.generateHTML(getScientificPaperXML(id), scientificPaperToHTML);
     }
 
-    public String create(String xml) throws Exception {
+    public InputStreamResource getScientificPaperPDF(String id) throws Exception {
+        return new InputStreamResource(new ByteArrayInputStream(xslTransformer.generatePDF(getScientificPaperXML(id),
+                scientificPaperToPDF).toByteArray()));
+    }
+
+    public String createScientificPaper(String xml) throws Exception {
         Document document = domParser.buildDocument(xml, scientificPaperSchemaPath);
+
+        if (document == null) {
+            throw new DocumentParsingFailedException("Document is not valid");
+        }
 
         String id = IDGenerator.createID();
         setIDs(id, document);
 
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "Z";
-        document.getElementsByTagName("received").item(0).setTextContent(date);
+        if (!checkAbstract(document))
+            throw new DocumentParsingFailedException("Invalid abstract titles");
 
-        document.getElementsByTagName("version").item(0).setTextContent("1.0");
+        document.getElementsByTagName("received").item(0).setTextContent(dateTimeFormatter.format(LocalDateTime.now()));
 
-        String newXml = documentXMLTransformer.toXMLString(document);
+        document.getElementsByTagName("status").item(0)
+                .setTextContent(ScientificPaperStatus.UPLOADED.toString());
 
-        return scientificPaperRepository.create(id, newXml);
+        String rdfa = xslTransformer.generateHTML(documentXMLTransformer.toXMLString(document),
+                scientificPaperToRDFa);
+
+        String rdf = xslTransformer.generateHTML(rdfa, grddl);
+
+        sparqlService.createGraph("/scientific-papers/" + id, rdf);
+
+        return scientificPaperRepository.create(id, rdfa);
     }
 
-    public String update(String id, String xml) throws Exception {
+    public String reviseScientificPaper(String id, String xml) throws Exception {
         Document document = domParser.buildDocument(xml, scientificPaperSchemaPath);
+
+        if (document == null) {
+            throw new DocumentParsingFailedException("Document is not valid");
+        }
 
         setIDs(id, document);
 
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "Z";
-        document.getElementsByTagName("received").item(0).setTextContent(date);
+        Document oldDocument = domParser.buildDocument(getScientificPaperXML(id), scientificPaperSchemaPath);
 
-        Double version = Double.parseDouble(document.getElementsByTagName("version").item(0).getTextContent());
-        document.getElementsByTagName("version").item(0).setTextContent(version+1.0+"");
+        if (!checkAbstract(document))
+            throw new DocumentParsingFailedException("Invalid abstract titles");
 
+        document.getElementsByTagName("received").item(0)
+                .setTextContent(oldDocument.getElementsByTagName("received").item(0).getTextContent());
+
+        document.getElementsByTagName("revised").item(0).setTextContent(dateTimeFormatter.format(LocalDateTime.now()));
+
+        document.getElementsByTagName("status").item(0)
+                .setTextContent(ScientificPaperStatus.REVISION.toString());
+
+        double version = Double.parseDouble(document.getElementsByTagName("version").item(0).getTextContent()) + 1.0;
+        document.getElementsByTagName("version").item(0).setTextContent(Double.toString(version));
 
         String newXml = documentXMLTransformer.toXMLString(document);
+
+        String rdf = xslTransformer.generateHTML(newXml, grddl);
+
+        String graphName = "/scientific-papers/" + id;
+        sparqlService.deleteGraph(graphName);
+        sparqlService.createGraph(graphName, rdf);
 
         return scientificPaperRepository.update(id, newXml);
     }
 
-    public Boolean delete(String id) throws Exception {
-        if(scientificPaperRepository.findOne(id) == null){
-               return false;
-        }
-        scientificPaperRepository.delete(id);
+    public Boolean withdrawScientificPaper(String id) throws Exception {
+        String paper = getScientificPaperXML(id);
+
+        Document document = domParser.buildDocument(paper, scientificPaperSchemaPath);
+
+        document.getElementsByTagName("status").item(0)
+                .setTextContent(ScientificPaperStatus.WITHDRAWN.toString());
+
+        String rdfa = documentXMLTransformer.toXMLString(document);
+        String rdf = xslTransformer.generateHTML(rdfa, grddl);
+
+        String graphName = "/scientific-papers/" + id;
+        sparqlService.deleteGraph(graphName);
+        sparqlService.createGraph(graphName, rdf);
+
+        scientificPaperRepository.update(id, documentXMLTransformer.toXMLString(document));
         return true;
     }
 
     private void setIDs(String id, Document document) throws BadParametersException {
-        document.getDocumentElement().setAttribute("id", id);
+        String paperId = TARGET_NAMESPACE + "/scientific-papers/" + id;
+        document.getDocumentElement().setAttribute("id", paperId);
 
         NodeList authors = document.getElementsByTagName("author");
+        TUser user;
         for (int i = 0; i < authors.getLength(); ++i) {
-            IDGenerator.generateChildlessElementID(authors.item(i), id + "/authors/" + (i+1), "author");
+            try {
+                user = userRepository.findOneByEmail(authors.item(i).getLastChild().getTextContent());
+                authors.item(i).getAttributes().getNamedItem("id").setTextContent(user.getId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         Node abstr = document.getElementsByTagName("abstract").item(0);
-        IDGenerator.generateChildlessElementID(abstr, id + "/abstract","abstract");
+        IDGenerator.generateChildlessElementID(abstr, paperId + "/abstract", "abstract");
 
         NodeList sections = document.getElementsByTagName("section");
         for (int i = 0; i < sections.getLength(); ++i) {
-            IDGenerator.generateSectionID(sections.item(i), id + "/sections/" + (i+1));
+            IDGenerator.generateSectionID(sections.item(i), paperId + "/sections/" + (i + 1));
         }
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean checkAbstract(Document document) {
+        ArrayList<String> abstractTitles = new ArrayList<>();
+        NodeList abstractItems = document.getElementsByTagName("abstract-item");
+
+        for (int i = 0; i < abstractItems.getLength(); i++) {
+            abstractTitles.add(abstractItems.item(i).getAttributes().getNamedItem("title").getTextContent());
+        }
+
+        Set<String> uniqueTitles = new HashSet<>(abstractTitles);
+
+        if (uniqueTitles.size() != abstractTitles.size()) {
+            return false;
+        }
+
+        for (ScientificPaperAbstractTitles title : ScientificPaperAbstractTitles.values()) {
+            if (title.isMandatory() && !uniqueTitles.contains(title.toString())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -1,70 +1,77 @@
 package xmlteam4.Project.repositories;
 
-import static xmlteam4.Project.utilities.template.XUpdateTemplate.TARGET_NAMESPACE;
-
 import org.exist.xmldb.EXistResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.base.XMLDBException;
 import org.xmldb.api.modules.XMLResource;
-
-import xmlteam4.Project.utilities.exist.DBRetrieve;
-import xmlteam4.Project.utilities.exist.DBSave;
-import xmlteam4.Project.utilities.exist.DBUpdate;
+import xmlteam4.Project.exceptions.CRUDServiceException;
+import xmlteam4.Project.exceptions.RepositoryException;
+import xmlteam4.Project.utilities.exist.CRUDService;
+import xmlteam4.Project.utilities.exist.QueryService;
 
 
 @Repository
 public class ReviewRepository {
-	@Value("${review-collection-id}")
+    @Value("${review-collection-id}")
     private String reviewCollectionId;
 
-    public String findOne(String id) throws Exception {
+    @Autowired
+    private CRUDService crudService;
+
+    @Autowired
+    private QueryService queryService;
+
+    public String findOne(String id) throws RepositoryException {
         String xPathExp = String.format("//review[@id='%s']", id);
-        ResourceSet resultSet = DBRetrieve.executeXPathExpression(reviewCollectionId, xPathExp, TARGET_NAMESPACE);
-        if (resultSet == null)
-            return null;
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(reviewCollectionId, xPathExp);
 
-        ResourceIterator i = resultSet.getIterator();
-        XMLResource res = null;
-        String retVal = null;
+            if (resultSet == null)
+                return null;
 
-        if (i.hasMoreResources()) {
-            res = (XMLResource) i.nextResource();
-            retVal = res.getContent().toString();
+            XMLResource res = queryService.extractSingleResource(resultSet);
+            String retVal = res.getContent().toString();
+            ((EXistResource) res).freeResources();
+            return retVal;
+        } catch (XMLDBException e) {
+            throw new RepositoryException("Failed to find review");
         }
-
-        if (res != null)
-            try {
-                ((EXistResource) res).freeResources();
-            } catch (XMLDBException exception) {
-                exception.printStackTrace();
-            }
-
-        return retVal;
     }
 
-    public String create(String id, String review) throws Exception {
-        DBSave.store(reviewCollectionId, id, review);
+    public String create(String id, String review) throws RepositoryException {
+        try {
+            crudService.storeDocument(reviewCollectionId, id, review);
+        } catch (CRUDServiceException e) {
+            throw new RepositoryException("Failed to create review");
+        }
         return id;
     }
 
-    public String update(String id, String review) throws Exception {
-        String oldReviewData = this.findOne(id);
+    public String update(String id, String review) throws RepositoryException {
+        String oldReviewData = findOne(id);
+
         if (oldReviewData == null) {
-            throw new Exception("Review with id: " + id);
+            throw new RepositoryException("Failed to update nonexistent review");
         }
-        this.delete(id);
-        DBSave.store(reviewCollectionId, id, review);
+
+        delete(id);
+
+        try {
+            crudService.storeDocument(reviewCollectionId, id, review);
+        } catch (CRUDServiceException e) {
+            throw new RepositoryException("Failed to update review");
+        }
         return id;
     }
 
-    public void delete(String id) throws Exception {
-        String xPathExp = "/review";
-        long mods = DBUpdate.delete(reviewCollectionId, id, xPathExp);
-        if (mods == 0) {
-            throw new Exception(String.format("Review with documentId %s", id));
+    public void delete(String id) throws RepositoryException {
+        try {
+            crudService.deleteDocument(reviewCollectionId, id);
+        } catch (CRUDServiceException e) {
+            throw new RepositoryException("Failed to delete review");
         }
     }
 }
