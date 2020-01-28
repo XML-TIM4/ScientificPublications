@@ -1,12 +1,10 @@
 package xmlteam4.Project.DTOs;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class UserDTO {
-    @NotBlank
-    private String username;
-
     @NotBlank
     @Pattern(regexp = "^([a-zA-Z0-9@*#]{8,15})$")
     private String password;
@@ -15,28 +13,19 @@ public class UserDTO {
     @Pattern(regexp = "[^@]+@[^\\.]+\\..+")
     private String email;
 
-    private Boolean isEditor;
+    private String id;
 
-    private String authorId;
+    @NotNull
+    private Boolean editor;
 
     public UserDTO() {
-
     }
 
-    public UserDTO(@NotBlank String username, @NotBlank @Pattern(regexp = "^([a-zA-Z0-9@*#]{8,15})$") String password, @NotBlank @Pattern(regexp = "[^@]+@[^\\.]+\\..+") String email, Boolean isEditor, String authorId) {
-        this.username = username;
+    public UserDTO(@NotBlank @Pattern(regexp = "^([a-zA-Z0-9@*#]{8,15})$") String password, @NotBlank @Pattern(regexp = "[^@]+@[^\\.]+\\..+") String email, String id, @NotNull Boolean editor) {
         this.password = password;
         this.email = email;
-        this.isEditor = isEditor;
-        this.authorId = authorId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+        this.id = id;
+        this.editor = editor;
     }
 
     public String getPassword() {
@@ -55,19 +44,19 @@ public class UserDTO {
         this.email = email;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public Boolean getEditor() {
-        return isEditor;
+        return editor;
     }
 
     public void setEditor(Boolean editor) {
-        isEditor = editor;
-    }
-
-    public String getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(String authorId) {
-        this.authorId = authorId;
+        this.editor = editor;
     }
 }

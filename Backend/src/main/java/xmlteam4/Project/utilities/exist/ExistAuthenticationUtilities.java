@@ -3,7 +3,6 @@ package xmlteam4.Project.utilities.exist;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.xmldb.api.DatabaseManager;
-import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.Database;
 import org.xmldb.api.base.XMLDBException;
 
@@ -45,17 +44,5 @@ public class ExistAuthenticationUtilities {
         ExistAuthenticationUtilities.user = _user;
         ExistAuthenticationUtilities.host = _host;
         ExistAuthenticationUtilities.port = _port;
-    }
-
-
-    public static Collection initDBCollection(String collectionId) throws ClassNotFoundException, IllegalAccessException, InstantiationException, XMLDBException {
-        Collection col;
-        Class<?> cl = Class.forName(driver);
-        Database database = (Database) cl.newInstance();
-        database.setProperty("create-database", "true");
-        DatabaseManager.registerDatabase(database);
-        col = DatabaseManager.getCollection(uri + collectionId, user, password);
-        col.setProperty("indent", "yes");
-        return col;
     }
 }

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import xmlteam4.Project.utilities.transformer.XSLTransformer;
+import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;

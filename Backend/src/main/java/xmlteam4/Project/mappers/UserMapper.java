@@ -12,18 +12,17 @@ public class UserMapper implements IMapper<TUser, UserDTO> {
         ObjectFactory objectFactory = new ObjectFactory();
         TUser user = objectFactory.createTUser();
 
-        user.setAuthorId(dto.getAuthorId());
+        user.setId(dto.getId());
+        user.setId(dto.getId());
         user.setEmail(dto.getEmail());
-        user.setIsEditor(dto.getEditor());
+        user.setEditor(dto.getEditor());
         user.setPassword(dto.getPassword());
-        user.setPublicationRoles(new TUser.PublicationRoles());
 
         return user;
     }
 
     @Override
     public UserDTO toDTO(TUser tUser) {
-        return new UserDTO(tUser.getUsername(), tUser.getPassword(), tUser.getEmail(), tUser.isIsEditor(),
-                tUser.getAuthorId());
+        return new UserDTO(tUser.getPassword(), tUser.getEmail(), tUser.getId(), tUser.isEditor());
     }
 }

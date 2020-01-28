@@ -9,6 +9,9 @@ public class LoginDTO {
     @NotBlank(message = "You must enter password")
     private String password;
 
+    public LoginDTO() {
+    }
+
     public String getEmail() {
         return email;
     }

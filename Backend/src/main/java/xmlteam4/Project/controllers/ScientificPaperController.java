@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import xmlteam4.Project.services.ScientificPaperService;
 
@@ -35,6 +36,7 @@ public class ScientificPaperController {
         }
     }
 
+    @Secured("ROLE_AUTHOR")
     @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createScientificPaper(@RequestBody String xml) {
         try {
@@ -44,6 +46,7 @@ public class ScientificPaperController {
         }
     }
 
+    @Secured("ROLE_AUTHOR")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> reviseScientificPaper(@PathVariable("id") String id, @RequestBody String xml) {
         try {
@@ -53,6 +56,7 @@ public class ScientificPaperController {
         }
     }
 
+    @Secured("ROLE_AUTHOR")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> withdrawScientificPaper(@PathVariable("id") String id) {
         try {

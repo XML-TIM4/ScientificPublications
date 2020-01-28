@@ -3,19 +3,13 @@ package xmlteam4.Project.repositories;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.w3c.dom.Document;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
-import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
-import xmlteam4.Project.utilities.transformer.XSLTransformer;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
+import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
 import static org.junit.jupiter.api.Assertions.*;
 

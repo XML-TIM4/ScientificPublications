@@ -12,12 +12,14 @@ import xmlteam4.Project.exceptions.BadParametersException;
 import xmlteam4.Project.exceptions.DocumentParsingFailedException;
 import xmlteam4.Project.model.ScientificPaperAbstractTitles;
 import xmlteam4.Project.model.ScientificPaperStatus;
+import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.ScientificPaperRepository;
+import xmlteam4.Project.repositories.UserRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.sparql.SparqlService;
-import xmlteam4.Project.utilities.transformer.DocumentXMLTransformer;
-import xmlteam4.Project.utilities.transformer.XSLTransformer;
+import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
+import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
@@ -25,6 +27,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
 
 @Service
 public class ScientificPaperService {
@@ -39,6 +43,9 @@ public class ScientificPaperService {
 
     @Autowired
     private XSLTransformer xslTransformer;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private SparqlService sparqlService;
@@ -163,19 +170,26 @@ public class ScientificPaperService {
     }
 
     private void setIDs(String id, Document document) throws BadParametersException {
-        document.getDocumentElement().setAttribute("id", id);
+        String paperId = TARGET_NAMESPACE + "/scientific-papers/" + id;
+        document.getDocumentElement().setAttribute("id", paperId);
 
         NodeList authors = document.getElementsByTagName("author");
+        TUser user;
         for (int i = 0; i < authors.getLength(); ++i) {
-            IDGenerator.generateChildlessElementID(authors.item(i), id + "/authors/" + (i + 1), "author");
+            try {
+                user = userRepository.findOneByEmail(authors.item(i).getLastChild().getTextContent());
+                authors.item(i).getAttributes().getNamedItem("id").setTextContent(user.getId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         Node abstr = document.getElementsByTagName("abstract").item(0);
-        IDGenerator.generateChildlessElementID(abstr, id + "/abstract", "abstract");
+        IDGenerator.generateChildlessElementID(abstr, paperId + "/abstract", "abstract");
 
         NodeList sections = document.getElementsByTagName("section");
         for (int i = 0; i < sections.getLength(); ++i) {
-            IDGenerator.generateSectionID(sections.item(i), id + "/sections/" + (i + 1));
+            IDGenerator.generateSectionID(sections.item(i), paperId + "/sections/" + (i + 1));
         }
     }
 
