@@ -19,7 +19,7 @@ public class CRUDService {
         XMLResource res = null;
 
         try {
-            col = getOrCreateCollection(collectionName, 0);
+            col = getOrCreateCollection(collectionName + "/", 0);
             res = (XMLResource) col.createResource(documentId, XMLResource.RESOURCE_TYPE);
             res.setContent(xmlEntity);
             col.storeResource(res);

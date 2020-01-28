@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <notification xmlns="https://github.com/XML-TIM4/ScientificPublications"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/XMLSchemas/Notification.xsd">
+ xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/data/schemas/Notification.xsd">
     <notification-metadata>
         <recipient>
             <name>
@@ -10,7 +10,7 @@
                 <middle-name>middle-name1</middle-name>
                 <last-name>last-name0</last-name>
             </name>
-            <email> @ .a</email>
+            <email>admin@admin.com</email>
             <affiliation>
                 <university>university0</university>
                 <city>city0</city>
@@ -28,6 +28,7 @@
                 <title>title0</title>
                 <publisher>publisher0</publisher>
                 <place>place0</place>
+                <url>http://www.findtheinvisiblecow.com</url>
             </publication>
         </quote>
         <list>

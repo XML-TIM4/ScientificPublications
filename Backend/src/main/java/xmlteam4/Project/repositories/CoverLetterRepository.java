@@ -25,7 +25,7 @@ public class CoverLetterRepository {
     private QueryService queryService;
 
     public String findOne(String id) throws RepositoryException {
-        String xPathExp = String.format("//CoverLetter[@id=\"%s\"]", id);
+        String xPathExp = String.format("//cover-letter[@id=\"%s\"]", id);
         try {
             ResourceSet resultSet = queryService.executeXPathQuery(coverLetterCollectionId, xPathExp);
 
@@ -43,7 +43,7 @@ public class CoverLetterRepository {
 
     public String create(String id, String coverLetter) throws RepositoryException {
         try {
-            crudService.storeDocument(coverLetter, id, coverLetter);
+            crudService.storeDocument(coverLetterCollectionId, id, coverLetter);
         } catch (CRUDServiceException e) {
             throw new RepositoryException("Failed to create cover letter");
         }

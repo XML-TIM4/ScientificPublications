@@ -24,6 +24,9 @@ public class NotificationRepositoryTests {
     XSLTransformer xslTransformer;
 
     @Autowired
+    IDGenerator idGenerator;
+
+    @Autowired
     private DOMParser domParser;
 
     @Autowired
@@ -45,7 +48,7 @@ public class NotificationRepositoryTests {
                 "                <middle-name>middle-name1</middle-name>\n" +
                 "                <last-name>last-name0</last-name>\n" +
                 "            </name>\n" +
-                "            <email> @ .a</email>\n" +
+                "            <email>admin@admin.com</email>\n" +
                 "            <affiliation>\n" +
                 "                <university>university0</university>\n" +
                 "                <city>city0</city>\n" +
@@ -54,7 +57,7 @@ public class NotificationRepositoryTests {
                 "            </affiliation>\n" +
                 "        </recipient>\n" +
                 "        <date>2006-05-04</date>\n" +
-                "        <scientific-paper-id>1AHYLIaeOD92f6Ic9TqnXo</scientific-paper-id>\n" +
+                "        <scientific-paper-id>scientific-paper-id0</scientific-paper-id>\n" +
                 "    </notification-metadata>\n" +
                 "    <content>\n" +
                 "        <quote>\n" +
@@ -63,6 +66,7 @@ public class NotificationRepositoryTests {
                 "                <title>title0</title>\n" +
                 "                <publisher>publisher0</publisher>\n" +
                 "                <place>place0</place>\n" +
+                "                <url>http://www.findtheinvisiblecow.com</url>\n" +
                 "            </publication>\n" +
                 "        </quote>\n" +
                 "        <list>\n" +
@@ -70,7 +74,7 @@ public class NotificationRepositoryTests {
                 "    </content>\n" +
                 "</notification>\n";
 
-        String id = IDGenerator.createID();
+        String id = idGenerator.createID();
 
         Document document = domParser.buildDocument(notification, notificationSchemaPath);
         document.getDocumentElement().setAttribute("id", id);
