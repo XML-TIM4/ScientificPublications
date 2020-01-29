@@ -12,9 +12,7 @@ import xmlteam4.Project.exceptions.BadParametersException;
 import xmlteam4.Project.exceptions.DocumentParsingFailedException;
 import xmlteam4.Project.model.ScientificPaperAbstractTitles;
 import xmlteam4.Project.model.ScientificPaperStatus;
-import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.ScientificPaperRepository;
-import xmlteam4.Project.repositories.UserRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.sparql.SparqlService;
@@ -45,7 +43,7 @@ public class ScientificPaperService {
     private XSLTransformer xslTransformer;
 
     @Autowired
-    private UserRepository userRepository;
+    private IDGenerator idGenerator;
 
     @Autowired
     private SparqlService sparqlService;
@@ -93,7 +91,7 @@ public class ScientificPaperService {
             throw new DocumentParsingFailedException("Document is not valid");
         }
 
-        String id = IDGenerator.createID();
+        String id = idGenerator.createID();
         setIDs(id, document);
 
         if (!checkAbstract(document))
@@ -174,22 +172,16 @@ public class ScientificPaperService {
         document.getDocumentElement().setAttribute("id", paperId);
 
         NodeList authors = document.getElementsByTagName("author");
-        TUser user;
-        for (int i = 0; i < authors.getLength(); ++i) {
-            try {
-                user = userRepository.findOneByEmail(authors.item(i).getChildNodes().item(1).getTextContent());
-                authors.item(i).getAttributes().getNamedItem("id").setTextContent(user.getId());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+
+        idGenerator.generateUserIDs(authors);
+
 
         Node abstr = document.getElementsByTagName("abstract").item(0);
-        IDGenerator.generateChildlessElementID(abstr, paperId + "/abstract", "abstract");
+        idGenerator.generateChildlessElementID(abstr, paperId + "/abstract", "abstract");
 
         NodeList sections = document.getElementsByTagName("section");
         for (int i = 0; i < sections.getLength(); ++i) {
-            IDGenerator.generateSectionID(sections.item(i), paperId + "/sections/" + (i + 1));
+            idGenerator.generateSectionID(sections.item(i), paperId + "/sections/" + (i + 1));
         }
     }
 

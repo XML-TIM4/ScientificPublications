@@ -25,6 +25,9 @@ public class AuthenticationService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private IDGenerator idGenerator;
+
 
     public UserDTO register(UserDTO user) throws RepositoryException, EntityAlreadyExistsException {
         if (userRepository.findOneByEmail(user.getEmail()) != null) {

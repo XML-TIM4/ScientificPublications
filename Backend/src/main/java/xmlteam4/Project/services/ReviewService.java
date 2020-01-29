@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import xmlteam4.Project.repositories.ReviewRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
 import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
+
+import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
 
 @Service
 public class ReviewService {
@@ -26,6 +29,9 @@ public class ReviewService {
 
     @Autowired
     private XSLTransformer xslTransformer;
+
+    @Autowired
+    private IDGenerator idGenerator;
 
     @Value("${review-schema-path}")
     private String reviewSchemaPath;
@@ -52,11 +58,12 @@ public class ReviewService {
     public String create(String scientificPaperId, String xml) throws Exception {
         Document document = domParser.buildDocument(xml, reviewSchemaPath);
 
-        String id = IDGenerator.createID();
-        document.getDocumentElement().setAttribute("id", id);
+        String id = idGenerator.createID();
+        String fullUrl = TARGET_NAMESPACE + "/reviews/" + id;
+        document.getDocumentElement().setAttribute("id", fullUrl);
 
-        Node reviewer = document.getElementsByTagName("reviewer").item(0);
-        IDGenerator.generateChildlessElementID(reviewer, id + "/reviewer", "reviewer");
+        NodeList reviewers = document.getElementsByTagName("reviewer");
+        idGenerator.generateUserIDs(reviewers);
 
         String newXml = documentXMLTransformer.toXMLString(document);
 

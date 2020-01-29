@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scientific-paper xmlns="https://github.com/XML-TIM4/ScientificPublications"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/XMLSchemas/ScientificPaper.xsd" language="en" id="">
+ xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/data/schemas/ScientificPaper.xsd" language="en" id="">
     <metadata>
         <received>2019-06-14Z</received>
         <revised>2019-07-10Z</revised>
@@ -22,7 +22,7 @@
                 <middle-name>Bajo</middle-name>
                 <last-name>Bajic</last-name>
             </name>
-            <email>Basbaja@ba.ja</email>
+            <email>admin@admin.com</email>
             <affiliation>
                 <university>Univerzitet Bajomira Bajica</university>
                 <city>Bajograd</city>
@@ -37,7 +37,7 @@
                 <middle-name>Neophodan</middle-name>
                 <last-name>Covek</last-name>
             </name>
-            <email>lep@zgodan.neophodan</email>
+            <email>admin@admin.com</email>
             <affiliation>
                 <university>Univerzitet lepote</university>
                 <city>Zgodnograd</city>
@@ -49,6 +49,8 @@
     <abstract id="">
         <abstract-item title="Purpose">Bla bla bla</abstract-item>
         <abstract-item title="Findings">Blla</abstract-item>
+        <abstract-item title="Originality">Blla</abstract-item>
+        <abstract-item title="Methodology">Blla</abstract-item>
         <abstract-item title="Social Implications">Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla </abstract-item>
         <abstract-item title="Implications">Hvala na paznji</abstract-item>
     </abstract>
@@ -66,6 +68,7 @@
                         <title>yZ7DDR</title>
                         <publisher>j62Ajr2pK46f0ZKXw</publisher>
                         <place>Q2uQwWl_O9Rv</place>
+                        <url>http://www.findtheinvisiblecow.com</url>
                     </publication>
                 </quote>
             </paragraph>
@@ -94,6 +97,7 @@
                         <title>NhL4K8a</title>
                         <publisher>P7AKE4rofSGKjbS.2LGPsrwQSh.E-150laxyri_7dIiTCBt3c4mT6dMDCLYYv6vE</publisher>
                         <place>Vdij5WAXb82_.0TOKHTOQXxde8VHsJyccT</place>
+                        <url>http://www.findtheinvisiblecow.com</url>
                     </publication>
                 </quote>
             </paragraph>
@@ -183,6 +187,7 @@
                 <year>2019</year>
                 <publisher>Ujedinjene Baje Srbije</publisher>
                 <place>Bajograd</place>
+                <url>http://www.findtheinvisiblecow.com</url>
             </publication>
         </reference>
         <reference>
@@ -206,6 +211,7 @@
                 <year>2015</year>
                 <publisher>Fakultet Nikolica</publisher>
                 <place>Mirijevo</place>
+                <url>http://www.findtheinvisiblecow.com</url>
             </publication>
         </reference>
     </references>

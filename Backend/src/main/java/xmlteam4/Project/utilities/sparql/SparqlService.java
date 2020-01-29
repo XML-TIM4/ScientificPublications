@@ -40,7 +40,7 @@ public class SparqlService {
         String query = SparqlUtil.dropGraph(FusekiAuthenticationUtilities.endpoint + graphName);
         UpdateRequest request = UpdateFactory.create(query);
         UpdateProcessor processor = UpdateExecutionFactory.createRemote(request,
-                FusekiAuthenticationUtilities.queryEndpoint);
+                FusekiAuthenticationUtilities.updateEndpoint);
 
         processor.execute();
     }

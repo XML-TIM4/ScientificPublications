@@ -34,6 +34,9 @@ public class StartupService {
     @Autowired
     private CRUDService crudService;
 
+    @Autowired
+    private IDGenerator idGenerator;
+
     @Value("${user-collection-id}")
     private String userCollectionId;
 
@@ -65,7 +68,7 @@ public class StartupService {
                 Users users = factory.createUsers();
                 TUser user = new TUser();
                 user.setEditor(true);
-                user.setId(TARGET_NAMESPACE + "/users/" + IDGenerator.createID());
+                user.setId(TARGET_NAMESPACE + "/users/" + idGenerator.createID());
                 user.setPassword(passwordEncoder.encode("adminadmin"));
                 user.setEmail("admin@admin.com");
                 user.setExpertise("");
