@@ -65,10 +65,10 @@ public class TUser implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<Authority> authorities = new ArrayList<>();
-        authorities.add(new Authority(UserRole.AUTHOR));
+        authorities.add(new Authority(UserRole.ROLE_AUTHOR));
 
         if (isEditor()) {
-            authorities.add(new Authority(UserRole.EDITOR));
+            authorities.add(new Authority(UserRole.ROLE_EDITOR));
         }
 
         return authorities;

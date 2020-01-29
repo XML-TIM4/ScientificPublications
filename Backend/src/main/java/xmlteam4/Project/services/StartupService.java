@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
@@ -26,6 +27,9 @@ import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
 public class StartupService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private CRUDService crudService;
@@ -62,7 +66,7 @@ public class StartupService {
                 TUser user = new TUser();
                 user.setEditor(true);
                 user.setId(TARGET_NAMESPACE + "/users/" + IDGenerator.createID());
-                user.setPassword("admin");
+                user.setPassword(passwordEncoder.encode("adminadmin"));
                 user.setEmail("admin@admin.com");
                 user.setExpertise("");
                 users.getUser().add(user);

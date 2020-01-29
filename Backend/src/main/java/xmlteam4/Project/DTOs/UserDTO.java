@@ -19,14 +19,13 @@ public class UserDTO {
     private Boolean editor;
 
     @NotBlank
-    @Pattern(regexp = "/^([a-z0-9\\s]+,)*([a-z0-9\\s]+){1}$/i")
     private String expertise;
 
     public UserDTO() {
     }
 
     public UserDTO(@NotBlank @Pattern(regexp = "^([a-zA-Z0-9@*#]{8,15})$") String password,
-                   @NotBlank @Pattern(regexp = "[^@]+@[^\\.]+\\..+") String email, String id, @NotNull Boolean editor, @NotBlank @Pattern(regexp = "/^([a-z0-9\\s]+,)*([a-z0-9\\s]+){1}$/i") String expertise) {
+                   @NotBlank @Pattern(regexp = "[^@]+@[^\\.]+\\..+") String email, String id, @NotNull Boolean editor, @NotBlank String expertise) {
         this.password = password;
         this.email = email;
         this.id = id;

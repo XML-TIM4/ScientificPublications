@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import xmlteam4.Project.DTOs.UserDTO;
+import xmlteam4.Project.exceptions.EntityAlreadyExistsException;
 import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.mappers.UserMapper;
+import xmlteam4.Project.model.ObjectFactory;
+import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.UserRepository;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 
@@ -23,10 +26,19 @@ public class AuthenticationService {
     private UserMapper userMapper;
 
 
-    public UserDTO register(UserDTO user) throws RepositoryException {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setId(TARGET_NAMESPACE + "/users/" + IDGenerator.createID());
+    public UserDTO register(UserDTO user) throws RepositoryException, EntityAlreadyExistsException {
+        if (userRepository.findOneByEmail(user.getEmail()) != null) {
+            throw new EntityAlreadyExistsException("User already exists");
+        }
 
-        return userMapper.toDTO(userRepository.save(userMapper.toEntity(user)));
+        ObjectFactory objectFactory = new ObjectFactory();
+        TUser newUser = objectFactory.createTUser();
+        newUser.setId(TARGET_NAMESPACE + "/users/" + IDGenerator.createID());
+        newUser.setExpertise(user.getExpertise());
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setEditor(user.getEditor());
+
+        return userMapper.toDTO(userRepository.save(newUser));
     }
 }
