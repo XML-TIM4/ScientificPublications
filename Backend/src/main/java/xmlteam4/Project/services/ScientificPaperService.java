@@ -145,6 +145,7 @@ public class ScientificPaperService {
         else if (!checkIfCreatorIsAuthor(document))
             throw new UnauthorizedException("In order to revise a scientific paper you have to be an author");
 
+        // set new id's and metadata
         setIDs(id, document);
         document.getElementsByTagName("received").item(0)
                 .setTextContent(businessProcess.getCreated().toXMLFormat());
@@ -156,8 +157,12 @@ public class ScientificPaperService {
                 .parseDouble(document.getElementsByTagName("version").item(0).getTextContent()) + 1.0;
         document.getElementsByTagName("version").item(0).setTextContent(Double.toString(version));
 
-        // TODO:create new business process cycle and set tasks, then save business process
+        // start new business cycle and update business process
+        TReviewCycle newCycle = businessProcessService.createNewReviewCycle(id);
+        businessProcess.getReviewCycles().getReviewCycle().add(newCycle);
+        businessProcessService.updateBusinessProcess(businessProcess);
 
+        // deal with rdf
         String newXml = documentXMLTransformer.toXMLString(document);
         String rdf = xslTransformer.generateHTML(newXml, grddl);
         String graphName = "/scientific-papers/" + id;
@@ -168,20 +173,26 @@ public class ScientificPaperService {
     }
 
     public Boolean withdrawScientificPaper(String id) throws Exception {
-        // TODO:check business process
         String paper = getScientificPaperXML(id);
+
+        if (paper == null)
+            throw new EntityNotFoundException("Cannot withdrawn nonexistent scientific paper");
 
         Document document = domParser.buildDocument(paper, scientificPaperSchemaPath);
 
         document.getElementsByTagName("status").item(0)
                 .setTextContent(ScientificPaperStatus.WITHDRAWN.toString());
-
         String rdfa = documentXMLTransformer.toXMLString(document);
         String rdf = xslTransformer.generateHTML(rdfa, grddl);
 
         String graphName = "/scientific-papers/" + id;
         sparqlService.deleteGraph(graphName);
         sparqlService.createGraph(graphName, rdf);
+
+        TBusinessProcess businessProcess = businessProcessService.findById(id);
+        TReviewCycle activeCycle = getActiveCycle(businessProcess);
+        activeCycle.setStatus(ReviewCycleStatus.WITHDRAWN.toString());
+        businessProcessService.updateBusinessProcess(businessProcess);
 
         scientificPaperRepository.update(id, documentXMLTransformer.toXMLString(document));
         return true;
