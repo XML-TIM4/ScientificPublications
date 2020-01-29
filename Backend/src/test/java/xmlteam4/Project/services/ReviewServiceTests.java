@@ -150,7 +150,7 @@ public class ReviewServiceTests {
 
         String id = TARGET_NAMESPACE + "/reviews/" + reviewService.create(scientificPaperId, review);
 
-        String found = reviewService.findOne(id);
+        String found = reviewService.getReviewXML(id);
 
         System.out.println(found);
         assertNotNull(found, "Found not null");
@@ -215,7 +215,7 @@ public class ReviewServiceTests {
 
         String id = TARGET_NAMESPACE + "/reviews/" + reviewService.create(scientificPaperId, review);
 
-        String found = reviewService.findOneHTML(id);
+        String found = reviewService.getReviewHTML(id);
 
         System.out.println(found);
         assertNotNull(found, "Found not null");
@@ -281,7 +281,7 @@ public class ReviewServiceTests {
 
         String id = TARGET_NAMESPACE + "/reviews/" + reviewService.create(scientificPaperId, review);
 
-        String found = reviewService.findOne(id);
+        String found = reviewService.getReviewXML(id);
 
         ByteArrayOutputStream stream = xslTransformer.generatePDF(found, "data/xsl/xsl-fo/ReviewToPDF.xsl");
         try(OutputStream outputStream = new FileOutputStream("review.pdf")) {

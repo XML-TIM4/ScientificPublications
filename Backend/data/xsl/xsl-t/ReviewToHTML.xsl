@@ -30,21 +30,19 @@
 
                     <div>
                         <h3 style="margin-top: 15px">Author comments</h3>
-                    <xsl:for-each select="sc:review/sc:author-comments">
                         <xsl:call-template name="TComment">
-                            <xsl:with-param name="comment" select="sc:author-comment"/>
+                            <xsl:with-param name="comments" select="sc:review/sc:author-comments"/>
+                            <xsl:with-param name="scientificId" select="sc:review/sc:review-metadata/sc:scientific-paper-id"/>
                         </xsl:call-template>
-                    </xsl:for-each>
                     </div>
 
                 <div>
                     <h3 style="margin-bottom: 10px; margin-top: 15px">Editor comments</h3>
 
-                    <xsl:for-each select="sc:review/sc:editor-comments">
                         <xsl:call-template name="TComment">
-                            <xsl:with-param name="comment" select="sc:editor-comment"/>
+                            <xsl:with-param name="comments" select="sc:review/sc:editor-comments"/>
+                            <xsl:with-param name="scientificId" select="sc:review/sc:review-metadata/sc:scientific-paper-id"/>
                         </xsl:call-template>
-                    </xsl:for-each>
 
                 </div>
                 </div>
