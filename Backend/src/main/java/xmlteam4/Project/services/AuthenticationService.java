@@ -36,7 +36,7 @@ public class AuthenticationService {
 
         ObjectFactory objectFactory = new ObjectFactory();
         TUser newUser = objectFactory.createTUser();
-        newUser.setId(TARGET_NAMESPACE + "/users/" + IDGenerator.createID());
+        newUser.setId(TARGET_NAMESPACE + "/users/" + idGenerator.createID());
         newUser.setExpertise(user.getExpertise());
         newUser.setEmail(user.getEmail());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));

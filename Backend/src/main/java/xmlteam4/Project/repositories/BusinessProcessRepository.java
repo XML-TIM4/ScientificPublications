@@ -14,7 +14,6 @@ import xmlteam4.Project.businessprocess.*;
 import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.utilities.exist.CRUDService;
 import xmlteam4.Project.utilities.exist.QueryService;
-import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -37,10 +36,6 @@ public class BusinessProcessRepository {
 
     @Autowired
     private QueryService queryService;
-
-    @Autowired
-    private IDGenerator idGenerator;
-
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -75,58 +70,23 @@ public class BusinessProcessRepository {
         }
     }
 
-    public String createBusinessProcess(String scientificPaperId, String authorId) throws RepositoryException {
+    public void createBusinessProcess(String scientificPaperId, String authorId) throws RepositoryException {
         try {
             ObjectFactory objectFactory = new ObjectFactory();
-
-            String id = idGenerator.createID();
 
             TBusinessProcess newBussinessProcess = objectFactory.createTBusinessProcess();
             newBussinessProcess.setCreated(DatatypeFactory.newInstance()
                     .newXMLGregorianCalendar(dateTimeFormatter.format(LocalDateTime.now())));
             newBussinessProcess.setScientificPaperId(scientificPaperId);
-            newBussinessProcess.setId("business-processes/" + id);
+            newBussinessProcess.setId("business-processes/" + scientificPaperId);
 
             TBusinessProcess.ReviewCycles tReviewCycles = objectFactory.createTBusinessProcessReviewCycles();
             newBussinessProcess.setReviewCycles(tReviewCycles);
 
-            TReviewCycle cycle = objectFactory.createTReviewCycle();
-            cycle.setStatus(ReviewCycleStatus.PENDING.toString());
+            TReviewCycle cycle = createNewReviewCycle(authorId, scientificPaperId);
             tReviewCycles.getReviewCycle().add(cycle);
 
-            TReviewCycle.Phases phases = objectFactory.createTReviewCyclePhases();
-
-            cycle.setPhases(phases);
-
-            // create submitted phase
-            // author should create scientific paper and cover letter
-            // editor should create review template
-            TPhase firstPhase = objectFactory.createTPhase();
-            firstPhase.setCanAdvance(false);
-            firstPhase.setTitle(PhaseTitle.SUBMITTED.toString());
-            phases.getPhase().add(firstPhase);
-            // create actor tasks for phase submitted
-            TPhase.ActorTasks actorTasks = objectFactory.createTPhaseActorTasks();
-
-            // author created scientific paper
-            TActorTask createScientificPaper = new TActorTask(UserType.AUTHOR, authorId, DocumentType.SCIENTIFIC_PAPER,
-                    scientificPaperId, true);
-
-            // author should create cover letter
-            TActorTask createCoverLetter = new TActorTask(UserType.AUTHOR, authorId, DocumentType.COVER_LETTER,
-                    "", false);
-
-            // editor should create review template
-            TActorTask createReviewTemplate = new TActorTask(UserType.EDITOR, "", DocumentType.REVIEW,
-                    "", false);
-
-            actorTasks.getActorTask().add(createScientificPaper);
-            actorTasks.getActorTask().add(createCoverLetter);
-            actorTasks.getActorTask().add(createReviewTemplate);
-
             save(newBussinessProcess);
-
-            return id;
         } catch (JAXBException | DatatypeConfigurationException | XMLDBException e) {
             throw new RepositoryException("Failed to create new business process");
         }
@@ -141,6 +101,44 @@ public class BusinessProcessRepository {
         } catch (XMLDBException | JAXBException e) {
             throw new RepositoryException("Failed to update business process");
         }
+    }
+
+    public TReviewCycle createNewReviewCycle(String authorId, String scientificPaperId) {
+        ObjectFactory objectFactory = new ObjectFactory();
+        TReviewCycle cycle = objectFactory.createTReviewCycle();
+        cycle.setStatus(ReviewCycleStatus.PENDING.toString());
+
+        TReviewCycle.Phases phases = objectFactory.createTReviewCyclePhases();
+
+        cycle.setPhases(phases);
+
+        // create submitted phase
+        // author should create scientific paper and cover letter
+        // editor should create review template
+        TPhase firstPhase = objectFactory.createTPhase();
+        firstPhase.setCanAdvance(false);
+        firstPhase.setTitle(PhaseTitle.SUBMITTED.toString());
+        phases.getPhase().add(firstPhase);
+        // create actor tasks for phase submitted
+        TPhase.ActorTasks actorTasks = objectFactory.createTPhaseActorTasks();
+
+        // author created scientific paper
+        TActorTask createScientificPaper = new TActorTask(UserType.AUTHOR, authorId, DocumentType.SCIENTIFIC_PAPER,
+                scientificPaperId, true);
+
+        // author should create cover letter
+        TActorTask createCoverLetter = new TActorTask(UserType.AUTHOR, authorId, DocumentType.COVER_LETTER,
+                "", false);
+
+        // editor should create review template
+        TActorTask createReviewTemplate = new TActorTask(UserType.EDITOR, "", DocumentType.REVIEW,
+                "", false);
+
+        actorTasks.getActorTask().add(createScientificPaper);
+        actorTasks.getActorTask().add(createCoverLetter);
+        actorTasks.getActorTask().add(createReviewTemplate);
+
+        return cycle;
     }
 
     private void save(TBusinessProcess businessProcess) throws XMLDBException, JAXBException {

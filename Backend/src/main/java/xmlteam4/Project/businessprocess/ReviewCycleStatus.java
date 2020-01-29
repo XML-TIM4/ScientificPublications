@@ -4,7 +4,8 @@ public enum ReviewCycleStatus {
     PENDING("pending"),
     REJECTED("rejected"),
     ACCEPTED("accepted"),
-    REVISE("revise");
+    REVISE("revise"),
+    WITHDRAWN("withdrawn");
 
     private String name;
 
