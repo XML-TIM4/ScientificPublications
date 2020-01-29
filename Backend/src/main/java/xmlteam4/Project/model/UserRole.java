@@ -1,6 +1,6 @@
 package xmlteam4.Project.model;
 
 public enum UserRole {
-    AUTHOR,
-    EDITOR
+    ROLE_AUTHOR,
+    ROLE_EDITOR
 }

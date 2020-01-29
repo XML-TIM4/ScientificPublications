@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="https://github.com/XML-TIM4/ScientificPublications"
+    xmlns="https://github.com/XML-TIM4/ScientificPublications">
+    <xs:element name="business-process" type="TBusinessProcess"/>
+    <xs:complexType name="TBusinessProcess">
+        <xs:sequence>
+            <xs:element name="review-cycles">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="review-cycle"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="created" type="xs:date"/>
+        <xs:attribute name="scientific-paper-id" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="TReviewCycle">
+        <xs:sequence>
+            <xs:element name="phases">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="phase" type="TPhase"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="status" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="pending"/>
+                    <xs:enumeration value="rejected"/>
+                    <xs:enumeration value="accepted"/>
+                    <xs:enumeration value="revise"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="TPhase">
+        <xs:sequence>
+            <xs:element name="actor-tasks">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="actor-task"
+                            type="TActorTask"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="title" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="submitted"/>
+                    <xs:enumeration value="review"/>
+                    <xs:enumeration value="reviewed"/>
+                    <xs:enumeration value="rejected"/>
+                    <xs:enumeration value="accepted"/>
+                    <xs:enumeration value="revise"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute default="false" name="can-advance" type="xs:boolean"/>
+    </xs:complexType>
+    <xs:complexType name="TActorTask">
+        <xs:attribute name="user-type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="author"/>
+                    <xs:enumeration value="editor"/>
+                    <xs:enumeration value="reviewer"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="user-id" type="xs:string" use="required"/>
+        <xs:attribute default="false" name="finished" type="xs:boolean"/>
+        <xs:attribute name="document-id" type="xs:string"/>
+        <xs:attribute name="document-type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="scientific-paper"/>
+                    <xs:enumeration value="review"/>
+                    <xs:enumeration value="cover-letter"/>
+                    <xs:enumeration value="notification"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+</xs:schema>

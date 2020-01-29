@@ -172,7 +172,9 @@ public class ScientificPaperService {
         document.getDocumentElement().setAttribute("id", paperId);
 
         NodeList authors = document.getElementsByTagName("author");
+
         idGenerator.generateUserIDs(authors);
+
 
         Node abstr = document.getElementsByTagName("abstract").item(0);
         idGenerator.generateChildlessElementID(abstr, paperId + "/abstract", "abstract");

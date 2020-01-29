@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
@@ -28,9 +29,13 @@ public class StartupService {
     private UserRepository userRepository;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private CRUDService crudService;
 
-    @Autowired IDGenerator idGenerator;
+    @Autowired
+    private IDGenerator idGenerator;
 
     @Value("${user-collection-id}")
     private String userCollectionId;
@@ -64,8 +69,9 @@ public class StartupService {
                 TUser user = new TUser();
                 user.setEditor(true);
                 user.setId(TARGET_NAMESPACE + "/users/" + idGenerator.createID());
-                user.setPassword("admin");
+                user.setPassword(passwordEncoder.encode("adminadmin"));
                 user.setEmail("admin@admin.com");
+                user.setExpertise("");
                 users.getUser().add(user);
                 String usersXML = userRepository.marshallAll(users);
                 resource = (XMLResource) col.createResource("users.xml", XMLResource.RESOURCE_TYPE);
