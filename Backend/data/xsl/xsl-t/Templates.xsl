@@ -14,12 +14,17 @@
     </xsl:template>
 
     <xsl:template name="TComment">
-        <xsl:param name="comment"/>
+        <xsl:param name="comments"/>
+        <xsl:param name="scientificId"/>
+        <xsl:for-each select="$comments/*">
         <div>
-            <p><xsl:value-of select="$comment/sc:review-reference"/></p>
-            <p><xsl:value-of select="$comment/sc:comment-text"/></p>
+            <a><xsl:attribute name="href">http://localhost:8080/scientific-papers/<xsl:value-of select="$scientificId"/>#<xsl:value-of select="./sc:review-reference"/></xsl:attribute>
+                Referenca
+            </a>
+            <p><xsl:value-of select="./sc:comment-text"/></p>
             <br/>
         </div>
+        </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="sc:question" name="TQuestion">

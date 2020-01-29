@@ -43,7 +43,7 @@ public class CoverLetterRepository {
 
     public String create(String id, String coverLetter) throws RepositoryException {
         try {
-            crudService.storeDocument(coverLetter, id, coverLetter);
+            crudService.storeDocument(coverLetterCollectionId, id, coverLetter);
         } catch (CRUDServiceException e) {
             throw new RepositoryException("Failed to create cover letter");
         }

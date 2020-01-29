@@ -99,7 +99,7 @@ public class CoverLetterServiceTests {
 
         String id = coverLetterService.create(scientificPaperId, cl);
 
-        String found = coverLetterService.findOne(id);
+        String found = coverLetterService.getCoverLetterXML(id);
 
         System.out.println(found);
         assertNotNull(found, "Found not null");
@@ -187,7 +187,7 @@ public class CoverLetterServiceTests {
 
         String id = coverLetterService.create(scientificPaperId, cl);
 
-        String found = coverLetterService.findOneHTML(id);
+        String found = coverLetterService.getCoverLetterHTML(id);
 
         System.out.println(found);
         assertNotNull(found, "Found not null");
@@ -292,7 +292,7 @@ public class CoverLetterServiceTests {
 
         String id = coverLetterService.create(scientificPaperId, cl);
 
-        String found = coverLetterService.findOne(id);
+        String found = coverLetterService.getCoverLetterXML(id);
 
 
         ByteArrayOutputStream stream = xslTransformer.generatePDF(found, "data/xsl/xsl-fo/CoverLetterToPDF.xsl");

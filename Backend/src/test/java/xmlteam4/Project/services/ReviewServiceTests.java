@@ -184,6 +184,7 @@ public class ReviewServiceTests {
                 "        </reviewer>\n" +
                 "        <date>2006-05-04</date>\n" +
                 "        <recommendation>accept</recommendation>\n" +
+                "        <scientific-paper-id>1111111111111111111</scientific-paper-id>\n" +
                 "    </review-metadata>\n" +
                 "    <questionnaire>\n" +
                 "        <question type=\"text\">\n" +
@@ -252,6 +253,7 @@ public class ReviewServiceTests {
                 "        </reviewer>\n" +
                 "        <date>2006-05-04</date>\n" +
                 "        <recommendation>accept</recommendation>\n" +
+                "        <scientific-paper-id>42fasf234</scientific-paper-id>\n" +
                 "    </review-metadata>\n" +
                 "    <questionnaire>\n" +
                 "        <question type=\"text\">\n" +
