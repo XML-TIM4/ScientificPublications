@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <review xmlns="https://github.com/XML-TIM4/ScientificPublications"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/XMLSchemas/Review.xsd">
+ xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/data/schemas/Review.xsd">
     <review-metadata>
         <reviewer>
             <name>
                 <first-name>first-name0</first-name>
                 <last-name>last-name0</last-name>
             </name>
-            <email> @ .a</email>
+            <email>admin@admin.com</email>
             <affiliation>
                 <university>university0</university>
                 <city>city0</city>
@@ -18,7 +18,7 @@
         </reviewer>
         <date>2006-05-04</date>
         <recommendation>accept</recommendation>
-        <scientific-paper-id>42faslf23f</scientific-paper-id>
+        <scientific-paper-id>asdfqwer</scientific-paper-id>
     </review-metadata>
     <questionnaire>
         <question>

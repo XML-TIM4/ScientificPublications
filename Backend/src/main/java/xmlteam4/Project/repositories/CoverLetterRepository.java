@@ -25,7 +25,7 @@ public class CoverLetterRepository {
     private QueryService queryService;
 
     public String findOne(String id) throws RepositoryException {
-        String xPathExp = String.format("//CoverLetter[@id=\"%s\"]", id);
+        String xPathExp = String.format("//cover-letter[@id=\"%s\"]", id);
         try {
             ResourceSet resultSet = queryService.executeXPathQuery(coverLetterCollectionId, xPathExp);
 

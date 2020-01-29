@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <users xmlns="https://github.com/XML-TIM4/ScientificPublications"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/Backend/data/schemas/Users.xsd">
+ xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/data/schemas/Users.xsd">
     <user author-id="" is-editor="false">
         <username>Mue5OFa6-_wuKF</username>
         <password>^*f#W*#05*$</password>

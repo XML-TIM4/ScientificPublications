@@ -10,7 +10,9 @@ import org.w3c.dom.NodeList;
 import xmlteam4.Project.exceptions.CRUDServiceException;
 import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.exceptions.TransformationException;
+import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.CoverLetterRepository;
+import xmlteam4.Project.repositories.UserRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.sparql.SparqlService;
@@ -18,6 +20,7 @@ import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXM
 import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
 import java.io.ByteArrayInputStream;
+import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
 
 @Service
 public class CoverLetterService {
@@ -30,6 +33,9 @@ public class CoverLetterService {
 
     @Autowired
     private XSLTransformer xslTransformer;
+
+    @Autowired
+    private IDGenerator idGenerator;
 
     @Autowired
     private DOMParser domParser;
@@ -78,23 +84,20 @@ public class CoverLetterService {
     public String create(String scientificPaperId, String xml) throws Exception {
         Document document = domParser.buildDocument(xml, coverLetterSchemaPath);
 
-        String id = IDGenerator.createID();
-        document.getDocumentElement().setAttribute("id", id);
+        String id = idGenerator.createID();
+        String fullUrl = TARGET_NAMESPACE + "/cover-letters/" + id;
+                document.getDocumentElement().setAttribute("id", fullUrl);
 
         NodeList paragraphs = document.getElementsByTagName("paragraph");
         for (int i = 0; i < paragraphs.getLength(); ++i) {
-            IDGenerator.generateParagraphID(paragraphs.item(i), id + "/paragraphs/" + (i + 1));
+            idGenerator.generateParagraphID(paragraphs.item(i), fullUrl + "/paragraphs/" + (i + 1));
         }
 
         NodeList authors = document.getElementsByTagName("author");
-        for (int i = 0; i < authors.getLength(); ++i) {
-            IDGenerator.generateChildlessElementID(authors.item(i), id + "/authors/" + (i + 1), "author");
-        }
+        idGenerator.generateUserIDs(authors);
 
         NodeList editors = document.getElementsByTagName("editor");
-        for (int i = 0; i < editors.getLength(); ++i) {
-            IDGenerator.generateChildlessElementID(editors.item(i), id + "/editors/" + (i + 1), "editor");
-        }
+        idGenerator.generateUserIDs(editors);
 
         String scientificPaper = scientificPaperService.getScientificPaperXML(scientificPaperId);
 

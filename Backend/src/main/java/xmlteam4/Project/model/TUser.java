@@ -47,7 +47,7 @@ import java.util.Collection;
         "email",
         "id"
 })
-@XmlRootElement(name = "user")
+@XmlRootElement(name = "user", namespace = "https://github.com/XML-TIM4/ScientificPublications")
 public class TUser implements UserDetails {
 
     @XmlElement(namespace = "https://github.com/XML-TIM4/ScientificPublications", required = true)
