@@ -183,7 +183,9 @@
     <xsl:template match="sc:quote/sc:quote-text">"<xsl:value-of select="."/>"</xsl:template>
 
     <xsl:template match="sc:publication">
-        <xsl:text> </xsl:text><xsl:value-of select="sc:title" />, <xsl:value-of select="sc:publisher" />, <xsl:value-of select="sc:place" />
+        <xsl:variable name="link" select="sc:url"/>
+        <xsl:text> </xsl:text><xsl:value-of select="sc:title" />, <xsl:value-of select="sc:publisher" />, <xsl:value-of
+            select="sc:place" /><fo:basic-link color="blue" external-destination="{$link}">[^]</fo:basic-link>
     </xsl:template>
 
     <xsl:template match="sc:bold">

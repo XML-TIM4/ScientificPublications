@@ -153,7 +153,8 @@
     </xsl:template>
 
     <xsl:template match="sc:publication">
-        <xsl:value-of select="sc:title" />, <xsl:value-of select="sc:publisher" />, <xsl:value-of select="sc:place" />
+        <xsl:value-of select="sc:title" />, <xsl:value-of select="sc:publisher" />, <xsl:value-of
+            select="sc:place" /><a><xsl:attribute name="href"><xsl:value-of select="sc:url"/></xsl:attribute>[^]</a>
     </xsl:template>
 
 

@@ -21,8 +21,6 @@ import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
 import java.io.ByteArrayInputStream;
 
-import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
-
 @Service
 public class ReviewService {
 
@@ -89,8 +87,7 @@ public class ReviewService {
         Document document = domParser.buildDocument(xml, reviewSchemaPath);
 
         String id = idGenerator.createID();
-        String fullUrl = TARGET_NAMESPACE + "/reviews/" + id;
-        document.getDocumentElement().setAttribute("id", fullUrl);
+        document.getDocumentElement().setAttribute("id", id);
 
         NodeList reviewers = document.getElementsByTagName("reviewer");
         idGenerator.generateUserIDs(reviewers);
@@ -107,7 +104,7 @@ public class ReviewService {
             throw new CRUDServiceException("Status of paper is not uploaded!");
         }
 
-        document.getElementsByTagName("scientific-paper-reference").item(0).setTextContent(scientificPaperId);
+        document.getElementsByTagName("scientific-paper-id").item(0).setTextContent(scientificPaperId);
 
        // String newXml = documentXMLTransformer.toXMLString(document);
 
