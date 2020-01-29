@@ -36,11 +36,11 @@ public class CoverLetterController {
     }
 
     @PostMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
-    public ResponseEntity<String> createCoverLetter(@RequestParam("scientific-paper") String scientificPaperId,
+    public ResponseEntity<String> createCoverLetter(@RequestParam("cover-letter") String coverLetterId,
                                                     @RequestBody String xml) {
 
         try {
-            return new ResponseEntity<>(coverLetterService.create(scientificPaperId,xml),HttpStatus.OK);
+            return new ResponseEntity<>(coverLetterService.create(coverLetterId,xml),HttpStatus.OK);
         }catch (Exception e){
 
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -10,6 +10,7 @@ import org.w3c.dom.NodeList;
 import xmlteam4.Project.exceptions.CRUDServiceException;
 import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.exceptions.TransformationException;
+import xmlteam4.Project.model.ScientificPaperStatus;
 import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.CoverLetterRepository;
 import xmlteam4.Project.repositories.UserRepository;
@@ -107,7 +108,7 @@ public class CoverLetterService {
 
         Document scientificDocument = domParser.buildDocument(scientificPaper,scientificPaperSchemaPath);
 
-        if(!document.getElementsByTagName("").item(0).getTextContent().equals("uploaded")){
+        if(!scientificDocument.getElementsByTagName("status").item(0).getTextContent().equals(ScientificPaperStatus.UPLOADED.toString())){
             throw new CRUDServiceException("Status of paper is not uploaded!");
         }
 
