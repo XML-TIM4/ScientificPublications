@@ -14,7 +14,6 @@ import xmlteam4.Project.businessprocess.*;
 import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.utilities.exist.CRUDService;
 import xmlteam4.Project.utilities.exist.QueryService;
-import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -37,10 +36,6 @@ public class BusinessProcessRepository {
 
     @Autowired
     private QueryService queryService;
-
-    @Autowired
-    private IDGenerator idGenerator;
-
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -75,17 +70,15 @@ public class BusinessProcessRepository {
         }
     }
 
-    public String createBusinessProcess(String scientificPaperId, String authorId) throws RepositoryException {
+    public void createBusinessProcess(String scientificPaperId, String authorId) throws RepositoryException {
         try {
             ObjectFactory objectFactory = new ObjectFactory();
-
-            String id = idGenerator.createID();
 
             TBusinessProcess newBussinessProcess = objectFactory.createTBusinessProcess();
             newBussinessProcess.setCreated(DatatypeFactory.newInstance()
                     .newXMLGregorianCalendar(dateTimeFormatter.format(LocalDateTime.now())));
             newBussinessProcess.setScientificPaperId(scientificPaperId);
-            newBussinessProcess.setId("business-processes/" + id);
+            newBussinessProcess.setId("business-processes/" + scientificPaperId);
 
             TBusinessProcess.ReviewCycles tReviewCycles = objectFactory.createTBusinessProcessReviewCycles();
             newBussinessProcess.setReviewCycles(tReviewCycles);
@@ -125,8 +118,6 @@ public class BusinessProcessRepository {
             actorTasks.getActorTask().add(createReviewTemplate);
 
             save(newBussinessProcess);
-
-            return id;
         } catch (JAXBException | DatatypeConfigurationException | XMLDBException e) {
             throw new RepositoryException("Failed to create new business process");
         }
