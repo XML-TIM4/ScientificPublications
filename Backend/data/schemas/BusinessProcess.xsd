@@ -34,6 +34,7 @@
                     <xs:enumeration value="rejected"/>
                     <xs:enumeration value="accepted"/>
                     <xs:enumeration value="revise"/>
+                    <xs:enumeration value="withdrawn"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
