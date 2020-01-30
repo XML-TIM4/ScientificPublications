@@ -34,6 +34,13 @@ public class UserRepository {
     @Autowired
     private QueryService queryService;
 
+    public Users getAllUsers() throws XMLDBException, JAXBException {
+        Collection col = crudService.getOrCreateCollection(userCollectionId, 0);
+
+        XMLResource resource = (XMLResource) col.getResource("users.xml");
+        return unmarshallAll(resource.getContentAsDOM());
+    }
+
 
     public TUser findOneByEmail(String email) throws RepositoryException {
         String xPathExp = String.format("//user[email='%s']", email);
@@ -110,5 +117,11 @@ public class UserRepository {
         marshaller.marshal(users, os);
 
         return os.toString();
+    }
+
+    private Users unmarshallAll(Node node) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance("xmlteam4.Project.model");
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        return (Users) unmarshaller.unmarshal(node);
     }
 }

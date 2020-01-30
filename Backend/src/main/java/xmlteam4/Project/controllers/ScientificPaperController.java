@@ -6,10 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import xmlteam4.Project.model.TUser;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import xmlteam4.Project.services.ScientificPaperService;
+
+import java.util.List;
 
 
 @RestController
@@ -66,5 +67,10 @@ public class ScientificPaperController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping(value = "/search")
+    public ResponseEntity<List<String>> searchScientificPapers() {
+        throw new NotImplementedException();
     }
 }

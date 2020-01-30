@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import xmlteam4.Project.exceptions.CRUDServiceException;
 import xmlteam4.Project.exceptions.RepositoryException;
-import xmlteam4.Project.exceptions.TransformationException;
 import xmlteam4.Project.model.ScientificPaperStatus;
 import xmlteam4.Project.repositories.ReviewRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
@@ -72,9 +70,8 @@ public class ReviewService {
         return review;
     }
 
-
     public String getReviewHTML(String id) throws Exception {
-        return xslTransformer.generateHTML(getReviewXML(id),reviewToHTML);
+        return xslTransformer.generateXML(getReviewXML(id),reviewToHTML);
     }
 
     public InputStreamResource getReviewPDF(String id) throws Exception{
@@ -82,8 +79,8 @@ public class ReviewService {
                 reviewToPDF).toByteArray()));
     }
 
-
-    public String create(String scientificPaperId, String xml) throws Exception {
+    public String create(String xml) throws Exception {
+        // TODO: check method
         Document document = domParser.buildDocument(xml, reviewSchemaPath);
 
         String id = idGenerator.createID();
@@ -106,11 +103,9 @@ public class ReviewService {
 
         document.getElementsByTagName("scientific-paper-id").item(0).setTextContent(scientificPaperId);
 
-       // String newXml = documentXMLTransformer.toXMLString(document);
+        String rdfa = xslTransformer.generateXML(documentXMLTransformer.toXMLString(document),reviewToRDFa);
 
-        String rdfa = xslTransformer.generateHTML(documentXMLTransformer.toXMLString(document),reviewToRDFa);
-
-        String rdf = xslTransformer.generateHTML(rdfa, grddl);
+        String rdf = xslTransformer.generateXML(rdfa, grddl);
 
         sparqlService.createGraph("/reviews/"+id, rdf);
 

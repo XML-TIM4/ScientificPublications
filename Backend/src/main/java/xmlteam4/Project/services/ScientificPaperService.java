@@ -79,7 +79,7 @@ public class ScientificPaperService {
     }
 
     public String getScientificPaperHTML(String id) throws Exception {
-        return xslTransformer.generateHTML(getScientificPaperXML(id), scientificPaperToHTML);
+        return xslTransformer.generateXML(getScientificPaperXML(id), scientificPaperToHTML);
     }
 
     public InputStreamResource getScientificPaperPDF(String id) throws Exception {
@@ -107,11 +107,11 @@ public class ScientificPaperService {
                 .setTextContent(ScientificPaperStatus.UPLOADED.toString());
 
         // transform to rdfa
-        String rdfa = xslTransformer.generateHTML(documentXMLTransformer.toXMLString(document),
+        String rdfa = xslTransformer.generateXML(documentXMLTransformer.toXMLString(document),
                 scientificPaperToRDFa);
 
         // transform to rdf/xml
-        String rdf = xslTransformer.generateHTML(rdfa, grddl);
+        String rdf = xslTransformer.generateXML(rdfa, grddl);
 
         // create new business process for document
         businessProcessService.createBusinessProcess(id);
@@ -129,7 +129,8 @@ public class ScientificPaperService {
 
         if (businessProcess == null)
             throw new EntityNotFoundException("Cannot revise nonexistent document");
-        else if (!getActiveCycle(businessProcess).getStatus().equals(ReviewCycleStatus.REVISE.toString()))
+        else if (!businessProcessService.getActiveCycle(businessProcess).getStatus()
+                .equals(ReviewCycleStatus.REVISE.toString()))
             throw new BusinessProcessException("Cannot revise rejected, accepted, withdrawn or already revised " +
                     "scientific paper");
 
@@ -162,7 +163,7 @@ public class ScientificPaperService {
 
         // deal with rdf
         String newXml = documentXMLTransformer.toXMLString(document);
-        String rdf = xslTransformer.generateHTML(newXml, grddl);
+        String rdf = xslTransformer.generateXML(newXml, grddl);
         String graphName = "/scientific-papers/" + id;
         sparqlService.deleteGraph(graphName);
         sparqlService.createGraph(graphName, rdf);
@@ -176,19 +177,24 @@ public class ScientificPaperService {
         if (paper == null)
             throw new EntityNotFoundException("Cannot withdrawn nonexistent scientific paper");
 
+        TBusinessProcess businessProcess = businessProcessService.findById(id);
+
+        if (!businessProcessService.getActiveCycle(businessProcess).getStatus()
+                .equals(ReviewCycleStatus.PENDING.toString()))
+            throw new BusinessProcessException("Cannot withdraw scientific paper if review cycle is finished");
+
         Document document = domParser.buildDocument(paper, scientificPaperSchemaPath);
 
         document.getElementsByTagName("status").item(0)
                 .setTextContent(ScientificPaperStatus.WITHDRAWN.toString());
         String rdfa = documentXMLTransformer.toXMLString(document);
-        String rdf = xslTransformer.generateHTML(rdfa, grddl);
+        String rdf = xslTransformer.generateXML(rdfa, grddl);
 
         String graphName = "/scientific-papers/" + id;
         sparqlService.deleteGraph(graphName);
         sparqlService.createGraph(graphName, rdf);
 
-        TBusinessProcess businessProcess = businessProcessService.findById(id);
-        TReviewCycle activeCycle = getActiveCycle(businessProcess);
+        TReviewCycle activeCycle = businessProcessService.getActiveCycle(businessProcess);
         activeCycle.setStatus(ReviewCycleStatus.WITHDRAWN.toString());
         businessProcessService.updateBusinessProcess(businessProcess);
 
@@ -197,18 +203,18 @@ public class ScientificPaperService {
     }
 
     private void setIDs(String id, Document document) throws BadParametersException {
-        document.getDocumentElement().setAttribute("id",  id);
+        document.getDocumentElement().setAttribute("id", id);
 
         NodeList authors = document.getElementsByTagName("author");
 
         idGenerator.generateUserIDs(authors);
 
         Node abstr = document.getElementsByTagName("abstract").item(0);
-        idGenerator.generateChildlessElementID(abstr,  id + "/abstract", "abstract");
+        idGenerator.generateChildlessElementID(abstr, id + "/abstract", "abstract");
 
         NodeList sections = document.getElementsByTagName("section");
         for (int i = 0; i < sections.getLength(); ++i) {
-            idGenerator.generateSectionID(sections.item(i),  id + "/sections/" + (i + 1));
+            idGenerator.generateSectionID(sections.item(i), id + "/sections/" + (i + 1));
         }
     }
 
@@ -248,15 +254,5 @@ public class ScientificPaperService {
         }
 
         return false;
-    }
-
-    private TPhase getActivePhase(TBusinessProcess businessProcess) {
-        TReviewCycle activeCycle = getActiveCycle(businessProcess);
-        return activeCycle.getPhases().getPhase().get(activeCycle.getPhases().getPhase().size() - 1);
-    }
-
-    private TReviewCycle getActiveCycle(TBusinessProcess businessProcess) {
-        return (TReviewCycle) businessProcess.getReviewCycles().getReviewCycle()
-                .get(businessProcess.getReviewCycles().getReviewCycle().size() - 1);
     }
 }

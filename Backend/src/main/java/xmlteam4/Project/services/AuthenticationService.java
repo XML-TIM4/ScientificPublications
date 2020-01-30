@@ -38,7 +38,7 @@ public class AuthenticationService {
         newUser.setExpertise(user.getExpertise());
         newUser.setEmail(user.getEmail());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        newUser.setEditor(user.getEditor());
+        newUser.setEditor(false);
 
         return userMapper.toDTO(userRepository.save(newUser));
     }

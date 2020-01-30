@@ -4,7 +4,6 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
-import org.apache.tomcat.websocket.Transformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import xmlteam4.Project.exceptions.TransformationException;
@@ -26,7 +25,7 @@ public class XSLTransformer {
     @Autowired
     private TransformerFactory transformerFactory;
 
-    public String generateHTML(String source, String xsltTemplatePath) throws TransformationException {
+    public String generateXML(String source, String xsltTemplatePath) throws TransformationException {
         try {
             File tf = new File(xsltTemplatePath); // template file
             StringWriter out = new StringWriter(); // result
