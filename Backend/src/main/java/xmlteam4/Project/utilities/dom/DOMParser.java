@@ -37,6 +37,20 @@ public class DOMParser {
         return document;
     }
 
+    public Document buildDocumentFromFile(String filePath, String schemaPath) throws SAXException, ParserConfigurationException, IOException, DocumentParsingFailedException {
+        documentBuilderFactory.setSchema(loadSchema(schemaPath));
+
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        File file = new File(filePath);
+
+        Document document = documentBuilder.parse(file);
+
+        if (document == null)
+            throw new DocumentParsingFailedException("Failed to parse document");
+
+        return document;
+    }
+
     private Schema loadSchema(String schemaPath) throws SAXException {
         return schemaFactory.newSchema(new File(schemaPath));
     }
