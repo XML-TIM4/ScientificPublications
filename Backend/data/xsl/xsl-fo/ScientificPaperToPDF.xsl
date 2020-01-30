@@ -75,12 +75,14 @@
                     <xsl:for-each select="sc:scientific-paper/sc:references/sc:reference">
                         <fo:block>
                             <fo:inline>
+                                <xsl:variable name="link" select="sc:publication/sc:url"/>
                                 <xsl:for-each select="sc:authors/sc:name">
                                     <xsl:if test="position()=last()">and&#160;</xsl:if>
                                     <xsl:value-of select="sc:first-name"/>&#160;<xsl:for-each select="sc:middle-name"><xsl:value-of select="."/>&#160;</xsl:for-each>
                                     <xsl:value-of select="sc:last-name"/><xsl:if test="not(position()=last())">,&#160;</xsl:if>
                                 </xsl:for-each>
-                                &#160;(<xsl:value-of select="sc:publication/sc:year"/>).&#160;<xsl:value-of select="sc:publication/sc:title"/>,&#160;<xsl:value-of select="sc:publication/sc:publisher"/>,&#160;<xsl:value-of select="sc:publication/sc:place"/>
+                                &#160;(<xsl:value-of select="sc:publication/sc:year"/>).&#160;<xsl:value-of select="sc:publication/sc:title"/>,&#160;<xsl:value-of
+                                    select="sc:publication/sc:publisher"/>,&#160;<xsl:value-of select="sc:publication/sc:place"/><fo:basic-link color="blue" external-destination="{$link}">[^]</fo:basic-link>
                             </fo:inline>
                         </fo:block>
                     </xsl:for-each>

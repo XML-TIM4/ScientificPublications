@@ -58,10 +58,10 @@ public class ScientificPaperRepository {
         if (oldScientificPaperData == null) {
             throw new RepositoryException("Failed to update nonexistent scientific paper");
         }
-        String justId = id.substring(id.lastIndexOf('/') + 1);
-        delete(justId);
+
+        delete(id);
         try {
-            crudService.storeDocument(scientificPaperCollectionId, justId, scientificPaper);
+            crudService.storeDocument(scientificPaperCollectionId, id, scientificPaper);
         } catch (CRUDServiceException e) {
             throw new RepositoryException("Failed to update scientific paper");
         }

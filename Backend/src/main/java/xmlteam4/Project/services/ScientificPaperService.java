@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
-
 @Service
 public class ScientificPaperService {
     @Autowired
@@ -199,20 +197,18 @@ public class ScientificPaperService {
     }
 
     private void setIDs(String id, Document document) throws BadParametersException {
-        String paperId = TARGET_NAMESPACE + "/scientific-papers/" + id;
-        document.getDocumentElement().setAttribute("id", paperId);
+        document.getDocumentElement().setAttribute("id",  id);
 
         NodeList authors = document.getElementsByTagName("author");
 
         idGenerator.generateUserIDs(authors);
 
-
         Node abstr = document.getElementsByTagName("abstract").item(0);
-        idGenerator.generateChildlessElementID(abstr, paperId + "/abstract", "abstract");
+        idGenerator.generateChildlessElementID(abstr,  id + "/abstract", "abstract");
 
         NodeList sections = document.getElementsByTagName("section");
         for (int i = 0; i < sections.getLength(); ++i) {
-            idGenerator.generateSectionID(sections.item(i), paperId + "/sections/" + (i + 1));
+            idGenerator.generateSectionID(sections.item(i),  id + "/sections/" + (i + 1));
         }
     }
 

@@ -47,7 +47,8 @@
                             <xsl:value-of select="sc:first-name"/>&#160;<xsl:for-each select="sc:middle-name"><xsl:value-of select="."/>&#160;</xsl:for-each>
                             <xsl:value-of select="sc:last-name"/><xsl:if test="not(position()=last())">,&#160;</xsl:if>
                         </xsl:for-each>
-                        &#160;(<xsl:value-of select="sc:publication/sc:year"/>).&#160;<xsl:value-of select="sc:publication/sc:title"/>,&#160;<xsl:value-of select="sc:publication/sc:publisher"/>,&#160;<xsl:value-of select="sc:publication/sc:place"/>
+                        &#160;(<xsl:value-of select="sc:publication/sc:year"/>).&#160;<xsl:value-of select="sc:publication/sc:title"/>,&#160;<xsl:value-of select="sc:publication/sc:publisher"/>,&#160;<xsl:value-of
+                            select="sc:publication/sc:place"/><a><xsl:attribute name="href"><xsl:value-of select="sc:publication/sc:url"/></xsl:attribute>[^]</a>
                     </div>
                 </xsl:for-each>
 

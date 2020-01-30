@@ -86,12 +86,11 @@ public class CoverLetterService {
         Document document = domParser.buildDocument(xml, coverLetterSchemaPath);
 
         String id = idGenerator.createID();
-        String fullUrl = TARGET_NAMESPACE + "/cover-letters/" + id;
-                document.getDocumentElement().setAttribute("id", fullUrl);
+        document.getDocumentElement().setAttribute("id", id);
 
         NodeList paragraphs = document.getElementsByTagName("paragraph");
         for (int i = 0; i < paragraphs.getLength(); ++i) {
-            idGenerator.generateParagraphID(paragraphs.item(i), fullUrl + "/paragraphs/" + (i + 1));
+            idGenerator.generateParagraphID(paragraphs.item(i), id + "/paragraphs/" + (i + 1));
         }
 
         NodeList authors = document.getElementsByTagName("author");
