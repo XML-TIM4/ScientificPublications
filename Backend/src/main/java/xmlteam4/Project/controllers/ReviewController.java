@@ -12,7 +12,6 @@ import xmlteam4.Project.services.ReviewService;
 @RestController
 @RequestMapping("/reviews")
 public class ReviewController {
-
     @Autowired
     private ReviewService reviewService;
 
@@ -22,7 +21,6 @@ public class ReviewController {
                                             @RequestHeader HttpHeaders httpHeaders) {
 
         MediaType contentType = httpHeaders.getContentType();
-
 
         try {
             if (MediaType.TEXT_HTML.equals(contentType)) {
@@ -39,15 +37,25 @@ public class ReviewController {
 
     }
 
-    @Secured("ROLE_AUTHOR")
+    @Secured("ROLE_EDITOR")
     @PostMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
-    public ResponseEntity<String> createReview(@RequestBody String xml) {
+    public ResponseEntity<String> createReviewTemplate(@RequestBody String xml) {
         try {
-            return new ResponseEntity<>(reviewService.create(xml), HttpStatus.OK);
+            return new ResponseEntity<>(reviewService.createReviewTemplate(xml), HttpStatus.OK);
         } catch (Exception e) {
-
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
 
+    @Secured("ROLE_AUTHOR")
+    @PutMapping(value = "/{template-id}", consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
+    public ResponseEntity<String> createReview(@PathVariable("template-id") String templateId,
+                                               @RequestBody String xml) {
+        try {
+            // TODO: make creatReview(String templateId, String xml);
+            return new ResponseEntity<>(reviewService.createReviewTemplate(xml), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

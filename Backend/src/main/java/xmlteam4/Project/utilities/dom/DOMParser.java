@@ -9,11 +9,9 @@ import xmlteam4.Project.exceptions.DocumentParsingFailedException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.File;
-import java.io.IOException;
 import java.io.StringReader;
 
 @Component
@@ -24,31 +22,29 @@ public class DOMParser {
     @Autowired
     private SchemaFactory schemaFactory;
 
-    public Document buildDocument(String xml, String schemaPath) throws SAXException, ParserConfigurationException, IOException, DocumentParsingFailedException {
-        documentBuilderFactory.setSchema(loadSchema(schemaPath));
+    public Document buildDocument(String xml, String schemaPath) throws DocumentParsingFailedException {
+        try {
+            documentBuilderFactory.setSchema(loadSchema(schemaPath));
 
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
-        Document document = documentBuilder.parse(new InputSource(new StringReader(xml)));
-
-        if (document == null)
+            return documentBuilder.parse(new InputSource(new StringReader(xml)));
+        } catch (Exception e) {
             throw new DocumentParsingFailedException("Failed to parse document");
-
-        return document;
+        }
     }
 
-    public Document buildDocumentFromFile(String filePath, String schemaPath) throws SAXException, ParserConfigurationException, IOException, DocumentParsingFailedException {
-        documentBuilderFactory.setSchema(loadSchema(schemaPath));
+    public Document buildDocumentFromFile(String filePath, String schemaPath) throws DocumentParsingFailedException {
+        try {
+            documentBuilderFactory.setSchema(loadSchema(schemaPath));
 
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        File file = new File(filePath);
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            File file = new File(filePath);
 
-        Document document = documentBuilder.parse(file);
-
-        if (document == null)
+            return documentBuilder.parse(file);
+        } catch (Exception e) {
             throw new DocumentParsingFailedException("Failed to parse document");
-
-        return document;
+        }
     }
 
     private Schema loadSchema(String schemaPath) throws SAXException {

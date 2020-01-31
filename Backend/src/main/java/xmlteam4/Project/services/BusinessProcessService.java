@@ -58,4 +58,44 @@ public class BusinessProcessService {
         return activePhase.getActorTasks().getActorTask().stream()
                 .filter(at -> at.getDocumentType().equals(documentType.toString())).collect(Collectors.toList()).get(0);
     }
+
+    public TActorTask getTaskByDocumentTypeAndUserTypeAndUserEmail(TPhase activePhase, DocumentType documentType,
+                                                                   UserType userType, String userEmail) {
+        return activePhase.getActorTasks().getActorTask().stream()
+                .filter(at -> at.getDocumentType().equals(documentType.toString())
+                        && at.getUserType().equals(userType.toString())
+                        && at.getUserId().equals(userEmail))
+                .collect(Collectors.toList())
+                .get(0);
+    }
+
+    public TPhase createReviewPhase(String firstReviewer, String secondReviewer) {
+        ObjectFactory factory = new ObjectFactory();
+        TPhase reviewPhase = factory.createTPhase();
+        reviewPhase.setTitle(PhaseTitle.REVIEW.toString());
+        reviewPhase.setCanAdvance(false);
+
+        TPhase.ActorTasks reviewTasks = factory.createTPhaseActorTasks();
+
+        TActorTask firstReview = factory.createTActorTask();
+        firstReview.setFinished(false);
+        firstReview.setDocumentId("");
+        firstReview.setUserId(firstReviewer);
+        firstReview.setUserType(UserType.REVIEWER.toString());
+        firstReview.setDocumentType(DocumentType.REVIEW.toString());
+
+        TActorTask secondReview = factory.createTActorTask();
+        secondReview.setFinished(false);
+        secondReview.setDocumentId("");
+        secondReview.setUserId(secondReviewer);
+        firstReview.setUserType(UserType.REVIEWER.toString());
+        firstReview.setDocumentType(DocumentType.REVIEW.toString());
+
+        reviewTasks.getActorTask().add(firstReview);
+        reviewTasks.getActorTask().add(secondReview);
+
+        reviewPhase.setActorTasks(reviewTasks);
+
+        return reviewPhase;
+    }
 }

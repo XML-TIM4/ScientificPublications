@@ -27,9 +27,9 @@ public class XSLTransformer {
 
     public String generateXML(String source, String xsltTemplatePath) throws TransformationException {
         try {
-            File tf = new File(xsltTemplatePath); // template file
-            StringWriter out = new StringWriter(); // result
-            StringReader src = new StringReader(source); // source string
+            File tf = new File(xsltTemplatePath);
+            StringWriter out = new StringWriter();
+            StringReader src = new StringReader(source);
 
             Transformer t = transformerFactory.newTransformer(new StreamSource(tf));
 
@@ -38,44 +38,34 @@ public class XSLTransformer {
             t.transform(s, r);
             return out.toString();
         } catch (TransformerException e) {
-            throw new TransformationException("Failed to transform document");
+            throw new TransformationException("Failed to generate XML");
         }
     }
 
-    public ByteArrayOutputStream generatePDF(String sourceStr, String xslt_fo_TemplatePath) throws Exception {
+    public ByteArrayOutputStream generatePDF(String sourceStr, String xslt_fo_TemplatePath) throws TransformationException {
+        try {
+            File xslFile = new File(xslt_fo_TemplatePath);
 
-        // xslt_fo_TemplatePath = XSL_FILE2;
-        // File ssourceStr = new File(INPUT_FILE2);
+            StreamSource transformSource = new StreamSource(xslFile);
 
-        // Point to the XSL-FO file
-        File xslFile = new File(xslt_fo_TemplatePath);
+            StreamSource source = new StreamSource(new StringReader(sourceStr));
 
-        // Create transformation source
-        StreamSource transformSource = new StreamSource(xslFile);
+            FOUserAgent userAgent = fopFactory.newFOUserAgent();
 
-        // Initialize the transformation subject
-        StreamSource source = new StreamSource(new StringReader(sourceStr));
-        // StreamSource source = new StreamSource(ssourceStr);
+            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
-        // Initialize user agent needed for the transformation
-        FOUserAgent userAgent = fopFactory.newFOUserAgent();
+            Transformer xslFoTransformer = transformerFactory.newTransformer(transformSource);
 
-        // Create the output stream to store the results
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, userAgent, outStream);
 
-        // Initialize the XSL-FO transformer object
-        Transformer xslFoTransformer = transformerFactory.newTransformer(transformSource);
+            Result res = new SAXResult(fop.getDefaultHandler());
 
-        // Construct FOP instance with desired output format
-        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, userAgent, outStream);
+            xslFoTransformer.transform(source, res);
 
-        // Resulting SAX events
-        Result res = new SAXResult(fop.getDefaultHandler());
-
-        // Start XSLT transformation and FOP processing
-        xslFoTransformer.transform(source, res);
-
-        return outStream;
+            return outStream;
+        } catch (Exception e) {
+            throw new TransformationException("Failed to generate PDF");
+        }
     }
 
 }
