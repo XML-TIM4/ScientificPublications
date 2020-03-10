@@ -225,6 +225,10 @@ public class ScientificPaperService {
         return new Pair<>(authorIds, String.join(",", keywords));
     }
 
+    public List<String> basicScientificPaperSearch(String searchText) throws RepositoryException {
+        return scientificPaperRepository.basicSearch(searchText);
+    }
+
     private void setIDs(String id, Document document) throws BadParametersException {
         document.getDocumentElement().setAttribute("id", id);
 

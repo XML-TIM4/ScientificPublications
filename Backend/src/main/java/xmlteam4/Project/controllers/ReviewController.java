@@ -52,8 +52,7 @@ public class ReviewController {
     public ResponseEntity<String> createReview(@PathVariable("template-id") String templateId,
                                                @RequestBody String xml) {
         try {
-            // TODO: make creatReview(String templateId, String xml);
-            return new ResponseEntity<>(reviewService.createReviewTemplate(xml), HttpStatus.OK);
+            return new ResponseEntity<>(reviewService.createReview(templateId, xml), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

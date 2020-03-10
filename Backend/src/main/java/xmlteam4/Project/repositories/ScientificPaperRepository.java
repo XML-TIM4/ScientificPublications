@@ -12,6 +12,10 @@ import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.utilities.exist.CRUDService;
 import xmlteam4.Project.utilities.exist.QueryService;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Repository
 public class ScientificPaperRepository {
@@ -75,4 +79,28 @@ public class ScientificPaperRepository {
             throw new RepositoryException("Failed to delete scientific paper");
         }
     }
+
+    public List<String> basicSearch(String searchText) throws RepositoryException {
+        String xPathExp = String.format("//scientific-paper[//*[contains(text(), '%s')]]/@id", searchText);
+
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(scientificPaperCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            List<XMLResource> resources = queryService.extractAllResources(resultSet);
+            List<String> resStrings = new ArrayList<>();
+
+            for (XMLResource res : resources)
+                resStrings.add(res.getContent().toString());
+
+            ((EXistResource) resources).freeResources();
+            return resStrings;
+        } catch (XMLDBException e) {
+            throw new RepositoryException("Failed to search scientific papers");
+        }
+    }
+
+    // TODO: advancedSearch(Map<String, String> metadata)
 }

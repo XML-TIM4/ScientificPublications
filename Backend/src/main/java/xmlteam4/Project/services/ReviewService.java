@@ -162,4 +162,8 @@ public class ReviewService {
 
         return reviewRepository.create(id, rdfa);
     }
+
+    public String createReview(String templateId, String xml) {
+        return null;
+    }
 }
