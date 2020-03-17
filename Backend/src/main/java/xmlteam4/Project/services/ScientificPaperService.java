@@ -10,6 +10,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import xmlteam4.Project.DTOs.SearchDTO;
+import xmlteam4.Project.DTOs.SearchResultDTO;
 import xmlteam4.Project.businessprocess.DocumentType;
 import xmlteam4.Project.businessprocess.ReviewCycleStatus;
 import xmlteam4.Project.businessprocess.TBusinessProcess;
@@ -225,8 +227,12 @@ public class ScientificPaperService {
         return new Pair<>(authorIds, String.join(",", keywords));
     }
 
-    public List<String> basicScientificPaperSearch(String searchText) throws RepositoryException {
-        return scientificPaperRepository.basicSearch(searchText);
+    public SearchResultDTO basicScientificPaperSearch(SearchDTO searchDTO) throws RepositoryException {
+        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
+            return scientificPaperRepository.basicSearch(searchDTO.getText(),
+                    ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+        else
+            return scientificPaperRepository.basicSearch(searchDTO.getText());
     }
 
     private void setIDs(String id, Document document) throws BadParametersException {

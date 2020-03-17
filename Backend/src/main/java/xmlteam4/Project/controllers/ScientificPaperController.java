@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import xmlteam4.Project.DTOs.SearchDTO;
+import xmlteam4.Project.DTOs.SearchResultDTO;
+import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.services.ScientificPaperService;
 
 import java.util.List;
@@ -70,7 +73,16 @@ public class ScientificPaperController {
     }
 
     @PostMapping(value = "/search")
-    public ResponseEntity<List<String>> searchScientificPapers() {
-        throw new NotImplementedException();
+    public ResponseEntity<Object> searchScientificPapers(@RequestBody SearchDTO searchDTO) {
+        try {
+            if (searchDTO.getBasic())
+                return new ResponseEntity<>(scientificPaperService
+                        .basicScientificPaperSearch(searchDTO), HttpStatus.OK);
+            else
+                // TODO: make advanced search by metadata
+                throw new NotImplementedException();
+        } catch (RepositoryException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

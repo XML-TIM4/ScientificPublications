@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.base.XMLDBException;
 import org.xmldb.api.modules.XMLResource;
+import xmlteam4.Project.DTOs.SearchResultDTO;
 import xmlteam4.Project.exceptions.CRUDServiceException;
 import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.utilities.exist.CRUDService;
@@ -80,23 +81,64 @@ public class ScientificPaperRepository {
         }
     }
 
-    public List<String> basicSearch(String searchText) throws RepositoryException {
-        String xPathExp = String.format("//scientific-paper[//*[contains(text(), '%s')]]/@id", searchText);
+    public SearchResultDTO basicSearch(String searchText) throws RepositoryException {
+        String papers = String.format("//scientific-paper[//*[contains(text(), '%s')] " +
+                        "and /metadata/status/text() == 'accepted']/@id",
+                searchText);
 
         try {
-            ResourceSet resultSet = queryService.executeXPathQuery(scientificPaperCollectionId, xPathExp);
+            ResourceSet papersSet = queryService.executeXPathQuery(scientificPaperCollectionId, papers);
 
-            if (resultSet == null)
-                return null;
+            SearchResultDTO searchResultDTO = new SearchResultDTO();
 
-            List<XMLResource> resources = queryService.extractAllResources(resultSet);
-            List<String> resStrings = new ArrayList<>();
+            if (papersSet != null) {
+                List<XMLResource> resources = queryService.extractAllResources(papersSet);
 
-            for (XMLResource res : resources)
-                resStrings.add(res.getContent().toString());
+                for (XMLResource res : resources)
+                    searchResultDTO.getOwnPaperIds().add(res.getContent().toString());
 
-            ((EXistResource) resources).freeResources();
-            return resStrings;
+                ((EXistResource) papersSet).freeResources();
+            }
+
+            return searchResultDTO;
+        } catch (XMLDBException e) {
+            throw new RepositoryException("Failed to search scientific papers");
+        }
+    }
+
+    public SearchResultDTO basicSearch(String searchText, String authorID) throws RepositoryException {
+        String ownPapers = String.format("//scientific-paper[//*[contains(text(), '%s')] " +
+                        "and /authors/author/@id == '%s']/@id",
+                searchText, authorID);
+
+        String otherPapers = String.format("//scientific-paper[//*[contains(text(), '%s')] " +
+                        "and /authors/author/@id != '%s and /metadata/status/text() == 'accepted']/@id",
+                searchText, authorID);
+        try {
+            ResourceSet ownPapersSet = queryService.executeXPathQuery(scientificPaperCollectionId, ownPapers);
+            ResourceSet otherPapersSet = queryService.executeXPathQuery(scientificPaperCollectionId, otherPapers);
+
+            SearchResultDTO searchResultDTO = new SearchResultDTO();
+
+            if (ownPapers != null) {
+                List<XMLResource> resources = queryService.extractAllResources(ownPapersSet);
+
+                for (XMLResource res : resources)
+                    searchResultDTO.getOwnPaperIds().add(res.getContent().toString());
+
+                ((EXistResource) ownPapersSet).freeResources();
+            }
+
+            if (otherPapersSet != null) {
+                List<XMLResource> resources = queryService.extractAllResources(otherPapersSet);
+
+                for (XMLResource res : resources)
+                    searchResultDTO.getOtherPaperIds().add(res.getContent().toString());
+
+                ((EXistResource) otherPapersSet).freeResources();
+            }
+
+            return searchResultDTO;
         } catch (XMLDBException e) {
             throw new RepositoryException("Failed to search scientific papers");
         }
