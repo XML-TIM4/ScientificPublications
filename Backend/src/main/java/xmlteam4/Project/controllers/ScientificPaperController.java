@@ -7,13 +7,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import xmlteam4.Project.DTOs.SearchDTO;
 import xmlteam4.Project.DTOs.SearchResultDTO;
 import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.services.ScientificPaperService;
-
-import java.util.List;
 
 
 @RestController
@@ -75,12 +72,13 @@ public class ScientificPaperController {
     @PostMapping(value = "/search")
     public ResponseEntity<Object> searchScientificPapers(@RequestBody SearchDTO searchDTO) {
         try {
+            SearchResultDTO searchResultDTO;
             if (searchDTO.getBasic())
-                return new ResponseEntity<>(scientificPaperService
-                        .basicScientificPaperSearch(searchDTO), HttpStatus.OK);
+                searchResultDTO = scientificPaperService.basicScientificPaperSearch(searchDTO);
             else
-                // TODO: make advanced search by metadata
-                throw new NotImplementedException();
+                searchResultDTO = scientificPaperService.advancedScientificPaperSearch(searchDTO);
+
+            return new ResponseEntity<>(searchResultDTO, HttpStatus.OK);
         } catch (RepositoryException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

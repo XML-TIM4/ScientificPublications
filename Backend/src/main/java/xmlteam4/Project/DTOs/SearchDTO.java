@@ -3,18 +3,21 @@ package xmlteam4.Project.DTOs;
 import xmlteam4.Project.model.ScientificPaperCategory;
 import xmlteam4.Project.model.ScientificPaperStatus;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class SearchDTO {
+    @NotNull
     private Boolean basic;
     private String text;
-    private Long revised;
-    private Long received;
-    private Long accepted;
+    private Date revised;
+    private Date received;
+    private Date accepted;
     private String version;
     private ScientificPaperStatus status;
     private ScientificPaperCategory category;
-    private ArrayList<String> keywords;
+    private ArrayList<String> keywords = new ArrayList<>();
 
     public String getText() {
         return text;
@@ -24,27 +27,27 @@ public class SearchDTO {
         this.text = text;
     }
 
-    public Long getRevised() {
+    public Date getRevised() {
         return revised;
     }
 
-    public void setRevised(Long revised) {
+    public void setRevised(Date revised) {
         this.revised = revised;
     }
 
-    public Long getReceived() {
+    public Date getReceived() {
         return received;
     }
 
-    public void setReceived(Long received) {
+    public void setReceived(Date received) {
         this.received = received;
     }
 
-    public Long getAccepted() {
+    public Date getAccepted() {
         return accepted;
     }
 
-    public void setAccepted(Long accepted) {
+    public void setAccepted(Date accepted) {
         this.accepted = accepted;
     }
 

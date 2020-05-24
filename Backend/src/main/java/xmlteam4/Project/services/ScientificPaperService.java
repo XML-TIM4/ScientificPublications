@@ -235,6 +235,14 @@ public class ScientificPaperService {
             return scientificPaperRepository.basicSearch(searchDTO.getText());
     }
 
+    public SearchResultDTO advancedScientificPaperSearch(SearchDTO searchDTO) {
+        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
+            return scientificPaperRepository.advancedSearch(searchDTO,
+                    ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+        else
+            return scientificPaperRepository.advancedSearch(searchDTO);
+    }
+
     private void setIDs(String id, Document document) throws BadParametersException {
         document.getDocumentElement().setAttribute("id", id);
 

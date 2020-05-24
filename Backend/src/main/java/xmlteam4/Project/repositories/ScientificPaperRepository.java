@@ -1,5 +1,6 @@
 package xmlteam4.Project.repositories;
 
+import org.apache.commons.text.StringSubstitutor;
 import org.exist.xmldb.EXistResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,13 +8,17 @@ import org.springframework.stereotype.Repository;
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.base.XMLDBException;
 import org.xmldb.api.modules.XMLResource;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import xmlteam4.Project.DTOs.SearchDTO;
 import xmlteam4.Project.DTOs.SearchResultDTO;
 import xmlteam4.Project.exceptions.CRUDServiceException;
 import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.utilities.exist.CRUDService;
 import xmlteam4.Project.utilities.exist.QueryService;
+import xmlteam4.Project.utilities.sparql.SparqlService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +33,9 @@ public class ScientificPaperRepository {
 
     @Autowired
     private QueryService queryService;
+
+    @Autowired
+    private SparqlService sparqlService;
 
 
     public String findOne(String id) throws RepositoryException {
@@ -102,7 +110,7 @@ public class ScientificPaperRepository {
 
             return searchResultDTO;
         } catch (XMLDBException e) {
-            throw new RepositoryException("Failed to search scientific papers");
+            throw new RepositoryException("Scientific papers search failed");
         }
     }
 
@@ -112,7 +120,7 @@ public class ScientificPaperRepository {
                 searchText, authorID);
 
         String otherPapers = String.format("//scientific-paper[//*[contains(text(), '%s')] " +
-                        "and /authors/author/@id != '%s and /metadata/status/text() == 'accepted']/@id",
+                        "and /authors/author/@id != '%s' and /metadata/status/text() == 'accepted']/@id",
                 searchText, authorID);
         try {
             ResourceSet ownPapersSet = queryService.executeXPathQuery(scientificPaperCollectionId, ownPapers);
@@ -140,9 +148,35 @@ public class ScientificPaperRepository {
 
             return searchResultDTO;
         } catch (XMLDBException e) {
-            throw new RepositoryException("Failed to search scientific papers");
+            throw new RepositoryException("Scientific papers search failed");
         }
     }
 
-    // TODO: advancedSearch(Map<String, String> metadata)
+    public SearchResultDTO advancedSearch(SearchDTO searchDTO) {
+        String condition = "graph ?g { ?s <https://schema.org/datePublished> {accepted} . ?s" +
+                " <https://schema.org/dateCreated> {received} . ?s <https://schema.org/dateModified> {revised} . ?s " +
+                "<https://schema.org/version> {version} . ?s <https://schema.org/creativeWorkStatus> accepted . ?s " +
+                "<https://schema.org/genre> {category} . ?s <https://schema.org/keywords> ?keywords . FILTER" +
+                "(CONTAINS(UCASE(str(?keywords)), UCASE({keywords})))";
+
+        HashMap<String, String> substitutionMap = new HashMap<>();
+        substitutionMap.put("accepted", searchDTO.getAccepted() != null ? searchDTO.getAccepted().toString() : "?o");
+        substitutionMap.put("received", searchDTO.getReceived() != null ? searchDTO.getReceived().toString() : "?o");
+        substitutionMap.put("revised", searchDTO.getRevised() != null ? searchDTO.getRevised().toString() : "?o");
+        substitutionMap.put("version", searchDTO.getVersion() != null ? searchDTO.getVersion() : "?o");
+        substitutionMap.put("category", searchDTO.getCategory() != null ? searchDTO.getCategory().toString() : "?o");
+        substitutionMap.put("keywords", String.join(",", searchDTO.getKeywords()));
+
+        StringSubstitutor substitutor = new StringSubstitutor(substitutionMap);
+
+        sparqlService.queryAll(substitutor.replace(condition));
+        // implement queryAll return
+        return null;
+    }
+
+    public SearchResultDTO advancedSearch(SearchDTO searchDTO, String authorID) {
+        // make two queries, first will fetch own papers by metadata regardless of status, second will fetch others'
+        // papers by metadata with status accepted
+        throw new NotImplementedException();
+    }
 }
