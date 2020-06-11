@@ -1,0 +1,11 @@
+<mat-card class="mat-card-flat mat-elevation-z5">
+  <mat-card-title style="font-weight: lighter">
+    {{paper.title}}
+  </mat-card-title>
+  <mat-card-subtitle fxLayout="column">
+    <span>{{paper.category}}</span>
+    <div>
+      {{ paper.date | date }}
+    </div>
+  </mat-card-subtitle>
+</mat-card>

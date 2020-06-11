@@ -1,0 +1,33 @@
+<p>reviewer-selection works!</p>
+<p>papers-to-review works!</p>
+<div class="mat-elevation-z3" fxLayout="row" fxHide.sm fxHide.xs fxLayoutAlign="center bottom">
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput type="text" formControlName="title" id="search-title">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Category</mat-label>
+      <input matInput type="text" formControlName="category" id="search-category">
+    </mat-form-field>
+
+  </form>
+</div>
+
+<div fxLayout="column" fxLayoutAlign="center center">
+  <mat-card class="mat-card-flat card-deck-container" id="loaded-events-list" style="height: 680px;">
+    <mat-card-header>
+      <p style="font-weight: bolder;">Reviewers</p>
+      <span fxFlex></span>
+      <p style="margin-right: 70px; font-weight: lighter" id="number-of-results">Results found: {{reviewers.length}}</p>
+    </mat-card-header>
+
+    <div fxLayout="row wrap" class="card-deck-container" fxLayout.xs="column wrap">
+      <div fxFlex="24" fxFlex.sm="30" fxFlex.xs="80" class="card-item" *ngFor="let reviewer of reviewers">
+        <app-reviewer-section [reviewer]="reviewer"></app-reviewer-section>
+      </div>
+    </div>
+  </mat-card>
+
+</div>
