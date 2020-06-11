@@ -6,9 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import xmlteam4.Project.model.TUser;
+import xmlteam4.Project.DTOs.SearchDTO;
+import xmlteam4.Project.DTOs.SearchResultDTO;
+import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.services.ScientificPaperService;
 
 
@@ -65,6 +66,21 @@ public class ScientificPaperController {
             return new ResponseEntity<>(scientificPaperService.withdrawScientificPaper(id), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping(value = "/search")
+    public ResponseEntity<Object> searchScientificPapers(@RequestBody SearchDTO searchDTO) {
+        try {
+            SearchResultDTO searchResultDTO;
+            if (searchDTO.getBasic())
+                searchResultDTO = scientificPaperService.basicScientificPaperSearch(searchDTO);
+            else
+                searchResultDTO = scientificPaperService.advancedScientificPaperSearch(searchDTO);
+
+            return new ResponseEntity<>(searchResultDTO, HttpStatus.OK);
+        } catch (RepositoryException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -179,5 +180,16 @@ public class TUser implements UserDetails {
 
     public void setExpertise(String expertise) {
         this.expertise = expertise;
+    }
+
+    public int getExpertiseScoreForKeywords(String[] keywords) {
+        int score = 0;
+
+        for (String keyword : keywords) {
+            if (this.expertise.contains(keyword))
+                score++;
+        }
+
+        return score;
     }
 }

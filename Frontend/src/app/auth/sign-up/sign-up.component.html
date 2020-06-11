@@ -20,9 +20,9 @@
             Password is required!
           </mat-error>
         </mat-form-field>
-        <mat-form-field>
-          <input type="checkBox" [value]="editor" formControlName="editor">
-        </mat-form-field>
+          <label>Editor:</label>
+          <mat-checkbox type="checkBox" [value]="editor" formControlName="editor"></mat-checkbox>
+
         <mat-form-field>
           <input matInput placeholder="Expertise" formControlName="expertise">
           <mat-error *ngIf="expertise.invalid && expertise.touched">

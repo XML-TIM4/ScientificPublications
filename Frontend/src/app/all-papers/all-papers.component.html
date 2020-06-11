@@ -1,0 +1,63 @@
+<div class="mat-elevation-z3 div-search" fxLayout="row" fxHide.sm fxHide.xs fxLayoutAlign="center bottom">
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Title</mat-label>
+    <input matInput type="text" formControlName="title" id="search-title">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Category</mat-label>
+      <input matInput type="text" formControlName="category" id="search-category">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <input
+        matInput
+        formControlName="startDate"
+        [matDatepicker]="pickerAfter"
+        placeholder="Events starting after"
+        id="search-start-date">
+      <mat-datepicker-toggle *ngIf="!searchForm.get('startDate').value; else clearStartDate" matSuffix [for]="pickerAfter"></mat-datepicker-toggle>
+      <mat-datepicker #pickerAfter></mat-datepicker>
+      <ng-template #clearStartDate>
+        <button mat-icon-button matSuffix (click)="searchForm.patchValue({startDate: null})">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </ng-template>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <input matInput formControlName="endDate" [matDatepicker]="pickerBefore" placeholder="Events starting before" id="search-end-date">
+      <mat-datepicker-toggle *ngIf="!searchForm.get('endDate').value; else clearEndDate" matSuffix [for]="pickerBefore"></mat-datepicker-toggle>
+      <mat-datepicker #pickerBefore></mat-datepicker>
+      <ng-template #clearEndDate>
+        <button mat-icon-button matSuffix (click)="searchForm.patchValue({endDate: null})">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </ng-template>
+    </mat-form-field>
+
+    <button mat-button color="primary" type="submit">
+      <mat-icon>search</mat-icon>
+      <span>Search</span>
+    </button>
+
+  </form>
+</div>
+
+<div fxLayout="column" fxLayoutAlign="center center">
+    <mat-card class="mat-card-flat card-deck-container" id="loaded-events-list" style="height: 680px;">
+      <mat-card-header>
+        <p style="font-weight: bolder;">Papers</p>
+        <span fxFlex></span>
+        <p style="margin-right: 70px; font-weight: lighter" id="number-of-results">Results found: {{papers.length}}</p>
+      </mat-card-header>
+
+      <div fxLayout="row wrap" class="card-deck-container" fxLayout.xs="column wrap">
+        <div fxFlex="24" fxFlex.sm="30" fxFlex.xs="80" class="card-item" *ngFor="let paper of papers">
+          <app-paper-section [paper]="paper"></app-paper-section>
+        </div>
+      </div>
+    </mat-card>
+
+</div>

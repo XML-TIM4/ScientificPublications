@@ -5,20 +5,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import xmlteam4.Project.services.CoverLetterService;
 
 @RestController
 @RequestMapping("/cover-letters")
 public class CoverLetterController {
-
     @Autowired
     private CoverLetterService coverLetterService;
 
     @GetMapping(value = "/{id}", produces = {MediaType.TEXT_HTML_VALUE, MediaType.APPLICATION_XML_VALUE,
             MediaType.APPLICATION_PDF_VALUE})
-    public ResponseEntity getCoverLetter(@PathVariable("id") String id,
-                                         @RequestHeader HttpHeaders httpHeaders) {
+    public ResponseEntity<Object> getCoverLetter(@PathVariable("id") String id,
+                                                 @RequestHeader HttpHeaders httpHeaders) {
         MediaType contentType = httpHeaders.getContentType();
 
         try {
@@ -35,14 +35,12 @@ public class CoverLetterController {
         }
     }
 
+    @Secured("ROLE_AUTHOR")
     @PostMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
-    public ResponseEntity<String> createCoverLetter(@RequestParam("cover-letter") String coverLetterId,
-                                                    @RequestBody String xml) {
-
+    public ResponseEntity<String> createCoverLetter(@RequestBody String xml) {
         try {
-            return new ResponseEntity<>(coverLetterService.create(coverLetterId,xml),HttpStatus.OK);
-        }catch (Exception e){
-
+            return new ResponseEntity<>(coverLetterService.create(xml), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
