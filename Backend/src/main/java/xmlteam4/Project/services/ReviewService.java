@@ -1,17 +1,18 @@
 package xmlteam4.Project.services;
 
-import org.exist.http.NotFoundException;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import xmlteam4.Project.exceptions.CRUDServiceException;
+import xmlteam4.Project.businessprocess.*;
+import xmlteam4.Project.exceptions.BusinessProcessException;
+import xmlteam4.Project.exceptions.DocumentParsingFailedException;
 import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.exceptions.TransformationException;
-import xmlteam4.Project.model.ScientificPaperStatus;
+import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.ReviewRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
@@ -19,7 +20,10 @@ import xmlteam4.Project.utilities.sparql.SparqlService;
 import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
 import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
+import javax.mail.MessagingException;
+import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
+import java.util.List;
 
 @Service
 public class ReviewService {
@@ -40,10 +44,19 @@ public class ReviewService {
     private IDGenerator idGenerator;
 
     @Autowired
+    private SparqlService sparqlService;
+
+    @Autowired
+    private BusinessProcessService businessProcessService;
+
+    @Autowired
+    private ReviewerService reviewerService;
+
+    @Autowired
     private ScientificPaperService scientificPaperService;
 
     @Autowired
-    private SparqlService sparqlService;
+    private NotificationService notificationService;
 
     @Value("${review-schema-path}")
     private String reviewSchemaPath;
@@ -64,56 +77,93 @@ public class ReviewService {
     private String reviewToPDF;
 
 
-    public String getReviewXML(String id) throws NotFoundException, RepositoryException{
-        String review = reviewRepository.findOne(id);
-        if (review == null) {
-            throw new NotFoundException("Review not found");
-        }
-        return review;
+    public String getReviewXML(String id) throws RepositoryException {
+        return reviewRepository.findOne(id);
     }
 
-
-    public String getReviewHTML(String id) throws Exception {
-        return xslTransformer.generateHTML(getReviewXML(id),reviewToHTML);
+    public String getReviewHTML(String id) throws RepositoryException, TransformationException {
+        return xslTransformer.generateXML(getReviewXML(id), reviewToHTML);
     }
 
-    public InputStreamResource getReviewPDF(String id) throws Exception{
+    public InputStreamResource getReviewPDF(String id) throws RepositoryException, TransformationException {
         return new InputStreamResource(new ByteArrayInputStream(xslTransformer.generatePDF(getReviewXML(id),
                 reviewToPDF).toByteArray()));
     }
 
-
-    public String create(String scientificPaperId, String xml) throws Exception {
+    public String createReviewTemplate(String xml) throws DocumentParsingFailedException, RepositoryException,
+            BusinessProcessException, TransformationException, TransformerException, MessagingException {
         Document document = domParser.buildDocument(xml, reviewSchemaPath);
 
+        // extract paper id
+        String scientificPaperId = document.getElementsByTagName("scientific-paper-id").item(0).getTextContent();
+
+        if (scientificPaperId == null)
+            throw new DocumentParsingFailedException("Review is missing scientific paper id");
+
+        TBusinessProcess businessProcess = businessProcessService.findById(scientificPaperId);
+
+        TReviewCycle activeCycle = businessProcessService.getActiveCycle(businessProcess);
+
+        // check if cycle is active
+        if (activeCycle.getStatus().equals(ReviewCycleStatus.PENDING.toString()))
+            throw new BusinessProcessException("Review can be created only if review cycle is still active");
+
+        TPhase activePhase = businessProcessService.getActivePhase(activeCycle);
+        TUser loggedIn = (TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // active phase has to be submitted, author has created cover letter before and review template task is
+        // not finished
+        if (!(activePhase.getTitle().equals(PhaseTitle.SUBMITTED.toString())
+                && businessProcessService.getTaskByDocumentType(activePhase, DocumentType.COVER_LETTER).isFinished()
+                && !businessProcessService.getTaskByDocumentType(activePhase, DocumentType.REVIEW).isFinished())) {
+            throw new BusinessProcessException("Wrong review cycle phase or task is already completed");
+        }
+        // create ids
         String id = idGenerator.createID();
         document.getDocumentElement().setAttribute("id", id);
 
-        NodeList reviewers = document.getElementsByTagName("reviewer");
-        idGenerator.generateUserIDs(reviewers);
+        // choose reviewers
+        Document scientificPaper = domParser.buildDocument(scientificPaperService
+                .getScientificPaperXML(scientificPaperId), scientificPaperSchemaPath);
 
-        String scientificPaper = scientificPaperService.getScientificPaperXML(scientificPaperId);
+        Pair<List<String>, String> requiredData =
+                scientificPaperService.extractDataForSelectionOfReviewers(scientificPaper);
 
-        if(scientificPaper == null){
-            throw new CRUDServiceException("Scientific paper doesn't exist.");
-        }
+        Pair<TUser, TUser> chosenReviewers = reviewerService.selectReviewers(requiredData.getKey(),
+                requiredData.getValue());
 
-        Document scientificDocument = domParser.buildDocument(scientificPaper,scientificPaperSchemaPath);
+        // make review phase
+        TPhase reviewPhase = businessProcessService.createReviewPhase(chosenReviewers.getKey().getEmail(),
+                chosenReviewers.getValue().getEmail());
 
-        if(!scientificDocument.getElementsByTagName("status").item(0).getTextContent().equals(ScientificPaperStatus.UPLOADED.toString())){
-            throw new CRUDServiceException("Status of paper is not uploaded!");
-        }
+        // finish all tasks in submitted phase and set can advance true
+        activePhase.setCanAdvance(true);
 
-        document.getElementsByTagName("scientific-paper-id").item(0).setTextContent(scientificPaperId);
+        TActorTask createReviewTemplateTask = businessProcessService.getTaskByDocumentType(activePhase,
+                DocumentType.REVIEW);
+        createReviewTemplateTask.setUserId(loggedIn.getEmail());
+        createReviewTemplateTask.setDocumentId(id);
+        createReviewTemplateTask.setFinished(true);
 
-       // String newXml = documentXMLTransformer.toXMLString(document);
+        activeCycle.getPhases().getPhase().add(reviewPhase);
 
-        String rdfa = xslTransformer.generateHTML(documentXMLTransformer.toXMLString(document),reviewToRDFa);
+        // update business process
+        businessProcessService.updateBusinessProcess(businessProcess);
 
-        String rdf = xslTransformer.generateHTML(rdfa, grddl);
+        // notify reviewers
+        notificationService.notifyUser(chosenReviewers.getKey(), id, DocumentType.REVIEW,
+                "Your review has been requested.");
+        notificationService.notifyUser(chosenReviewers.getValue(), id, DocumentType.REVIEW,
+                "Your review has been requested.");
 
-        sparqlService.createGraph("/reviews/"+id, rdf);
+        // make rdfa and save to exist base
+        // metadata will not be saved until reviewers finish
+        String rdfa = xslTransformer.generateXML(documentXMLTransformer.toXMLString(document), reviewToRDFa);
 
         return reviewRepository.create(id, rdfa);
+    }
+
+    public String createReview(String templateId, String xml) {
+        return null;
     }
 }

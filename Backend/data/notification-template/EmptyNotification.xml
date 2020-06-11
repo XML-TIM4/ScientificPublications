@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notification xmlns="https://github.com/XML-TIM4/ScientificPublications"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/D:/ScientificPublications/Backend/data/schemas/Notification.xsd">
+    <notification-metadata>
+        <recipient-email/>
+        <recipient-name/>
+        <date/>
+        <document-id/>
+        <document-collection/>
+    </notification-metadata>
+    <content/>
+</notification>
