@@ -1,6 +1,6 @@
 package xmlteam4.Project.services;
 
-import org.exist.http.NotFoundException;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -9,7 +9,13 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import xmlteam4.Project.businessprocess.*;
+import org.xml.sax.SAXException;
+import xmlteam4.Project.DTOs.SearchDTO;
+import xmlteam4.Project.DTOs.SearchResultDTO;
+import xmlteam4.Project.businessprocess.DocumentType;
+import xmlteam4.Project.businessprocess.ReviewCycleStatus;
+import xmlteam4.Project.businessprocess.TBusinessProcess;
+import xmlteam4.Project.businessprocess.TReviewCycle;
 import xmlteam4.Project.exceptions.*;
 import xmlteam4.Project.model.ScientificPaperAbstractTitles;
 import xmlteam4.Project.model.ScientificPaperStatus;
@@ -21,11 +27,16 @@ import xmlteam4.Project.utilities.sparql.SparqlService;
 import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
 import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
+import javax.mail.MessagingException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -51,6 +62,9 @@ public class ScientificPaperService {
     @Autowired
     private BusinessProcessService businessProcessService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Value("${scientific-paper-schema-path}")
@@ -69,30 +83,23 @@ public class ScientificPaperService {
     private String scientificPaperToPDF;
 
 
-    public String getScientificPaperXML(String id) throws Exception {
-        String paper = scientificPaperRepository.findOne(id);
-
-        if (paper == null) {
-            throw new NotFoundException(String.format("Scientific paper with id %s is not found", id));
-        }
-        return paper;
+    public String getScientificPaperXML(String id) throws RepositoryException {
+        return scientificPaperRepository.findOne(id);
     }
 
-    public String getScientificPaperHTML(String id) throws Exception {
-        return xslTransformer.generateHTML(getScientificPaperXML(id), scientificPaperToHTML);
+    public String getScientificPaperHTML(String id) throws RepositoryException, TransformationException {
+        return xslTransformer.generateXML(getScientificPaperXML(id), scientificPaperToHTML);
     }
 
-    public InputStreamResource getScientificPaperPDF(String id) throws Exception {
+    public InputStreamResource getScientificPaperPDF(String id) throws RepositoryException, TransformationException {
         return new InputStreamResource(new ByteArrayInputStream(xslTransformer.generatePDF(getScientificPaperXML(id),
                 scientificPaperToPDF).toByteArray()));
     }
 
-    public String createScientificPaper(String xml) throws Exception {
+    public String createScientificPaper(String xml) throws DocumentParsingFailedException, UnauthorizedException, BadParametersException, TransformerException, TransformationException, RepositoryException, EntityAlreadyExistsException, MessagingException, SAXException, ParserConfigurationException, IOException {
         Document document = domParser.buildDocument(xml, scientificPaperSchemaPath);
 
-        if (document == null)
-            throw new DocumentParsingFailedException("Document is not valid");
-        else if (!checkAbstract(document))
+        if (!checkAbstract(document))
             throw new DocumentParsingFailedException("Invalid abstract titles");
         else if (!checkIfCreatorIsAuthor(document))
             throw new UnauthorizedException("In order to create a scientific paper you have to be an author");
@@ -107,11 +114,11 @@ public class ScientificPaperService {
                 .setTextContent(ScientificPaperStatus.UPLOADED.toString());
 
         // transform to rdfa
-        String rdfa = xslTransformer.generateHTML(documentXMLTransformer.toXMLString(document),
+        String rdfa = xslTransformer.generateXML(documentXMLTransformer.toXMLString(document),
                 scientificPaperToRDFa);
 
         // transform to rdf/xml
-        String rdf = xslTransformer.generateHTML(rdfa, grddl);
+        String rdf = xslTransformer.generateXML(rdfa, grddl);
 
         // create new business process for document
         businessProcessService.createBusinessProcess(id);
@@ -119,26 +126,28 @@ public class ScientificPaperService {
         // create graph and save to rdf database
         sparqlService.createGraph("/scientific-papers/" + id, rdf);
 
+        // notify user via email
+        TUser loggedIn = (TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        notificationService.notifyUser(loggedIn, id, DocumentType.SCIENTIFIC_PAPER, "Your scientific paper has been " +
+                "successfully submitted.");
+
         // save rdfa to xml database
         return scientificPaperRepository.create(id, rdfa);
     }
 
-    public String reviseScientificPaper(String id, String xml) throws Exception {
+    public String reviseScientificPaper(String id, String xml) throws RepositoryException, BusinessProcessException, DocumentParsingFailedException, UnauthorizedException, BadParametersException, TransformerException, TransformationException {
         // check if scientific paper can be revised
         TBusinessProcess businessProcess = businessProcessService.findById(id);
 
-        if (businessProcess == null)
-            throw new EntityNotFoundException("Cannot revise nonexistent document");
-        else if (!getActiveCycle(businessProcess).getStatus().equals(ReviewCycleStatus.REVISE.toString()))
+        if (!businessProcessService.getActiveCycle(businessProcess).getStatus()
+                .equals(ReviewCycleStatus.REVISE.toString()))
             throw new BusinessProcessException("Cannot revise rejected, accepted, withdrawn or already revised " +
                     "scientific paper");
 
         // build and validate new scientific paper version
         Document document = domParser.buildDocument(xml, scientificPaperSchemaPath);
 
-        if (document == null)
-            throw new DocumentParsingFailedException("Document is not valid");
-        else if (!checkAbstract(document))
+        if (!checkAbstract(document))
             throw new DocumentParsingFailedException("Invalid abstract titles");
         else if (!checkIfCreatorIsAuthor(document))
             throw new UnauthorizedException("In order to revise a scientific paper you have to be an author");
@@ -162,7 +171,7 @@ public class ScientificPaperService {
 
         // deal with rdf
         String newXml = documentXMLTransformer.toXMLString(document);
-        String rdf = xslTransformer.generateHTML(newXml, grddl);
+        String rdf = xslTransformer.generateXML(newXml, grddl);
         String graphName = "/scientific-papers/" + id;
         sparqlService.deleteGraph(graphName);
         sparqlService.createGraph(graphName, rdf);
@@ -170,25 +179,27 @@ public class ScientificPaperService {
         return scientificPaperRepository.update(id, newXml);
     }
 
-    public Boolean withdrawScientificPaper(String id) throws Exception {
+    public Boolean withdrawScientificPaper(String id) throws RepositoryException, BusinessProcessException, DocumentParsingFailedException, TransformerException, TransformationException {
         String paper = getScientificPaperXML(id);
 
-        if (paper == null)
-            throw new EntityNotFoundException("Cannot withdrawn nonexistent scientific paper");
+        TBusinessProcess businessProcess = businessProcessService.findById(id);
+
+        if (!businessProcessService.getActiveCycle(businessProcess).getStatus()
+                .equals(ReviewCycleStatus.PENDING.toString()))
+            throw new BusinessProcessException("Cannot withdraw scientific paper if review cycle is finished");
 
         Document document = domParser.buildDocument(paper, scientificPaperSchemaPath);
 
         document.getElementsByTagName("status").item(0)
                 .setTextContent(ScientificPaperStatus.WITHDRAWN.toString());
         String rdfa = documentXMLTransformer.toXMLString(document);
-        String rdf = xslTransformer.generateHTML(rdfa, grddl);
+        String rdf = xslTransformer.generateXML(rdfa, grddl);
 
         String graphName = "/scientific-papers/" + id;
         sparqlService.deleteGraph(graphName);
         sparqlService.createGraph(graphName, rdf);
 
-        TBusinessProcess businessProcess = businessProcessService.findById(id);
-        TReviewCycle activeCycle = getActiveCycle(businessProcess);
+        TReviewCycle activeCycle = businessProcessService.getActiveCycle(businessProcess);
         activeCycle.setStatus(ReviewCycleStatus.WITHDRAWN.toString());
         businessProcessService.updateBusinessProcess(businessProcess);
 
@@ -196,19 +207,55 @@ public class ScientificPaperService {
         return true;
     }
 
+    public Pair<List<String>, String> extractDataForSelectionOfReviewers(Document scientificPaper) {
+        List<String> authorIds = new ArrayList<>();
+
+        NodeList authors = scientificPaper.getElementsByTagName("authors").item(0).getChildNodes();
+
+        for (int i = 0; i < authors.getLength(); i++) {
+            authorIds.add(authors.item(i).getChildNodes().item(1).getTextContent());
+        }
+
+        List<String> keywords = new ArrayList<>();
+
+        NodeList keywordNodes = scientificPaper.getElementsByTagName("keywords").item(0).getChildNodes();
+
+        for (int i = 0; i < keywordNodes.getLength(); i++) {
+            keywords.add(keywordNodes.item(i).getTextContent());
+        }
+
+        return new Pair<>(authorIds, String.join(",", keywords));
+    }
+
+    public SearchResultDTO basicScientificPaperSearch(SearchDTO searchDTO) throws RepositoryException {
+        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
+            return scientificPaperRepository.basicSearch(searchDTO.getText(),
+                    ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+        else
+            return scientificPaperRepository.basicSearch(searchDTO.getText());
+    }
+
+    public SearchResultDTO advancedScientificPaperSearch(SearchDTO searchDTO) {
+        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
+            return scientificPaperRepository.advancedSearch(searchDTO,
+                    ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+        else
+            return scientificPaperRepository.advancedSearch(searchDTO);
+    }
+
     private void setIDs(String id, Document document) throws BadParametersException {
-        document.getDocumentElement().setAttribute("id",  id);
+        document.getDocumentElement().setAttribute("id", id);
 
         NodeList authors = document.getElementsByTagName("author");
 
         idGenerator.generateUserIDs(authors);
 
         Node abstr = document.getElementsByTagName("abstract").item(0);
-        idGenerator.generateChildlessElementID(abstr,  id + "/abstract", "abstract");
+        idGenerator.generateChildlessElementID(abstr, id + "/abstract", "abstract");
 
         NodeList sections = document.getElementsByTagName("section");
         for (int i = 0; i < sections.getLength(); ++i) {
-            idGenerator.generateSectionID(sections.item(i),  id + "/sections/" + (i + 1));
+            idGenerator.generateSectionID(sections.item(i), id + "/sections/" + (i + 1));
         }
     }
 
@@ -248,15 +295,5 @@ public class ScientificPaperService {
         }
 
         return false;
-    }
-
-    private TPhase getActivePhase(TBusinessProcess businessProcess) {
-        TReviewCycle activeCycle = getActiveCycle(businessProcess);
-        return activeCycle.getPhases().getPhase().get(activeCycle.getPhases().getPhase().size() - 1);
-    }
-
-    private TReviewCycle getActiveCycle(TBusinessProcess businessProcess) {
-        return (TReviewCycle) businessProcess.getReviewCycles().getReviewCycle()
-                .get(businessProcess.getReviewCycles().getReviewCycle().size() - 1);
     }
 }

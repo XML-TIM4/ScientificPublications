@@ -9,6 +9,9 @@ import org.xmldb.api.modules.XUpdateQueryService;
 
 import javax.xml.transform.Result;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static xmlteam4.Project.utilities.exist.XUpdateTemplate.*;
 
 @Component
@@ -114,6 +117,23 @@ public class QueryService {
                 res = (XMLResource) i.nextResource();
             }
             return res;
+        } catch (XMLDBException e) {
+            return null;
+        }
+    }
+
+    public List<XMLResource> extractAllResources(ResourceSet resourceSet) {
+        if (resourceSet == null)
+            return null;
+
+        try {
+            ResourceIterator i = resourceSet.getIterator();
+            List<XMLResource> resources = new ArrayList<>();
+
+            while (i.hasMoreResources()) {
+                resources.add((XMLResource) i.nextResource());
+            }
+            return resources;
         } catch (XMLDBException e) {
             return null;
         }

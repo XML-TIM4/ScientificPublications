@@ -4,16 +4,17 @@ import org.exist.http.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import xmlteam4.Project.exceptions.CRUDServiceException;
+import xmlteam4.Project.businessprocess.*;
+import xmlteam4.Project.exceptions.BusinessProcessException;
+import xmlteam4.Project.exceptions.DocumentParsingFailedException;
+import xmlteam4.Project.exceptions.EntityNotFoundException;
 import xmlteam4.Project.exceptions.RepositoryException;
-import xmlteam4.Project.exceptions.TransformationException;
-import xmlteam4.Project.model.ScientificPaperStatus;
 import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.CoverLetterRepository;
-import xmlteam4.Project.repositories.UserRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 import xmlteam4.Project.utilities.sparql.SparqlService;
@@ -21,11 +22,9 @@ import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXM
 import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
 import java.io.ByteArrayInputStream;
-import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
 
 @Service
 public class CoverLetterService {
-
     @Autowired
     private SparqlService sparqlService;
 
@@ -45,7 +44,7 @@ public class CoverLetterService {
     private DocumentXMLTransformer documentXMLTransformer;
 
     @Autowired
-    private ScientificPaperService scientificPaperService;
+    private BusinessProcessService businessProcessService;
 
     @Value("${cover-letter-schema-path}")
     private String coverLetterSchemaPath;
@@ -74,7 +73,7 @@ public class CoverLetterService {
     }
 
     public String getCoverLetterHTML(String id) throws Exception {
-        return xslTransformer.generateHTML(getCoverLetterXML(id),coverLetterToHTML);
+        return xslTransformer.generateXML(getCoverLetterXML(id), coverLetterToHTML);
     }
 
     public InputStreamResource getCoverLetterPDF(String id) throws Exception {
@@ -82,10 +81,61 @@ public class CoverLetterService {
                 coverLetterToPDF).toByteArray()));
     }
 
-    public String create(String scientificPaperId, String xml) throws Exception {
+    public String create(String xml) throws Exception {
         Document document = domParser.buildDocument(xml, coverLetterSchemaPath);
 
+        // parsing failed, document is not valid
+        if (document == null)
+            throw new DocumentParsingFailedException("Document is not valid");
+
+        String scientificPaperId = document.getElementsByTagName("scientific-paper-reference").item(0)
+                .getTextContent();
+
+        // check if cover letter has set scientific paper id
+        if (scientificPaperId == null)
+            throw new EntityNotFoundException("Cannot create cover letter for nonexistent scientific paper");
+
+        TBusinessProcess businessProcess = businessProcessService.findById(scientificPaperId);
+
+        // business proces is null = scientific paper does not exist
+        if (businessProcess == null)
+            throw new EntityNotFoundException("Cannot create cover letter for nonexistent scientific paper");
+
+        TReviewCycle reviewCycle = businessProcessService.getActiveCycle(businessProcess);
+
+        // check if review cycle is pending
+        if (!reviewCycle.getStatus().equals(ReviewCycleStatus.PENDING.toString()))
+            throw new BusinessProcessException("Cannot create cover letter for finished review cycle");
+
+        TPhase activePhase = businessProcessService.getActivePhase(reviewCycle);
+
+        // phase has to be submitted
+        if (activePhase.getTitle().equals(PhaseTitle.SUBMITTED.toString()))
+            throw new BusinessProcessException("Cannot create cover letter at this phase of review cycle");
+
+        TActorTask createCoverLetterTask = businessProcessService.getTaskByDocumentType(activePhase,
+                DocumentType.COVER_LETTER);
+
+        // cannot create cover letter if task is already finished
+        if (createCoverLetterTask.isFinished())
+            throw new BusinessProcessException("Cover letter is already created");
+
+        TUser loggedInUser = (TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // cannot create cover letter if user is not also the creator of scientific paper
+        if (!createCoverLetterTask.getUserId().equals(loggedInUser.getEmail()))
+            throw new BusinessProcessException("Only user that uploaded scientific paper can upload cover letter");
+
         String id = idGenerator.createID();
+
+        // set task to finished
+        createCoverLetterTask.setDocumentId(id);
+        createCoverLetterTask.setFinished(true);
+
+        // update business process
+        businessProcessService.updateBusinessProcess(businessProcess);
+
+        // set metadata and id's
         document.getDocumentElement().setAttribute("id", id);
 
         NodeList paragraphs = document.getElementsByTagName("paragraph");
@@ -99,29 +149,11 @@ public class CoverLetterService {
         NodeList editors = document.getElementsByTagName("editor");
         idGenerator.generateUserIDs(editors);
 
-        String scientificPaper = scientificPaperService.getScientificPaperXML(scientificPaperId);
-
-        if(scientificPaper == null){
-            throw new CRUDServiceException("Scientific paper doesn't exist.");
-        }
-
-        Document scientificDocument = domParser.buildDocument(scientificPaper,scientificPaperSchemaPath);
-
-        if(!scientificDocument.getElementsByTagName("status").item(0).getTextContent().equals(ScientificPaperStatus.UPLOADED.toString())){
-            throw new CRUDServiceException("Status of paper is not uploaded!");
-        }
-
-        document.getElementsByTagName("scientific-paper-reference").item(0).setTextContent(scientificPaperId);
-
-       // String newXml = documentXMLTransformer.toXMLString(document);
-
-        String rdfa = xslTransformer.generateHTML(documentXMLTransformer.toXMLString(document),coverLetterToRDFa);
-
-        String rdf = xslTransformer.generateHTML(rdfa, grddl);
-
-        sparqlService.createGraph("/cover-letters/"+id, rdf);
+        // deal with rdf
+        String rdfa = xslTransformer.generateXML(documentXMLTransformer.toXMLString(document), coverLetterToRDFa);
+        String rdf = xslTransformer.generateXML(rdfa, grddl);
+        sparqlService.createGraph("/cover-letters/" + id, rdf);
 
         return coverLetterRepository.create(id, rdfa);
     }
-
 }
