@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.base.XMLDBException;
 import org.xmldb.api.modules.XMLResource;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import xmlteam4.Project.DTOs.SearchDTO;
 import xmlteam4.Project.DTOs.SearchResultDTO;
 import xmlteam4.Project.exceptions.CRUDServiceException;
@@ -20,7 +19,6 @@ import xmlteam4.Project.utilities.sparql.SparqlService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Repository
@@ -169,14 +167,49 @@ public class ScientificPaperRepository {
 
         StringSubstitutor substitutor = new StringSubstitutor(substitutionMap);
 
-        sparqlService.queryAll(substitutor.replace(condition));
-        // implement queryAll return
-        return null;
+        ArrayList<String> graphNames = sparqlService.queryAll(substitutor.replace(condition));
+        SearchResultDTO searchResult = new SearchResultDTO();
+        searchResult.setOtherPaperIds(graphNames);
+
+        return searchResult;
     }
 
     public SearchResultDTO advancedSearch(SearchDTO searchDTO, String authorID) {
-        // make two queries, first will fetch own papers by metadata regardless of status, second will fetch others'
-        // papers by metadata with status accepted
-        throw new NotImplementedException();
+        String condition = "graph ?g { ?s <https://schema.org/datePublished> {accepted} . ?s" +
+                " <https://schema.org/dateCreated> {received} . ?s <https://schema.org/dateModified> {revised} . ?s " +
+                "<https://schema.org/version> {version} . ?s <https://schema.org/creativeWorkStatus> {status} . ?s " +
+                "<https://schema.org/genre> {category} . ?s <https://schema.org/keywords> ?keywords . ?s " +
+                "<https://schema.org/author> {author} . FILTER" +
+                "(CONTAINS(UCASE(str(?keywords)), UCASE({keywords})))";
+
+        HashMap<String, String> substitutionMap = new HashMap<>();
+        substitutionMap.put("accepted", searchDTO.getAccepted() != null ? searchDTO.getAccepted().toString() : "?o");
+        substitutionMap.put("received", searchDTO.getReceived() != null ? searchDTO.getReceived().toString() : "?o");
+        substitutionMap.put("revised", searchDTO.getRevised() != null ? searchDTO.getRevised().toString() : "?o");
+        substitutionMap.put("version", searchDTO.getVersion() != null ? searchDTO.getVersion() : "?o");
+        substitutionMap.put("category", searchDTO.getCategory() != null ? searchDTO.getCategory().toString() : "?o");
+        substitutionMap.put("keywords", String.join(",", searchDTO.getKeywords()));
+        substitutionMap.put("status", searchDTO.getStatus() != null ? searchDTO.getStatus().name() : "?o");
+        substitutionMap.put("author", authorID);
+
+
+        StringSubstitutor substitutor = new StringSubstitutor(substitutionMap);
+        ArrayList<String> graphNames = sparqlService.queryAll(substitutor.replace(condition));
+        SearchResultDTO searchResult = new SearchResultDTO();
+        searchResult.setOwnPaperIds(graphNames);
+
+        condition = "graph ?g { ?s <https://schema.org/datePublished> {accepted} . ?s" +
+                " <https://schema.org/dateCreated> {received} . ?s <https://schema.org/dateModified> {revised} . ?s " +
+                "<https://schema.org/version> {version} . ?s <https://schema.org/creativeWorkStatus> accepted . ?s " +
+                "<https://schema.org/genre> {category} . ?s <https://schema.org/keywords> ?keywords . ?s <https://schema" +
+                ".org/author> ?a . FILTER" +
+                "(CONTAINS(UCASE(str(?keywords)), UCASE({keywords}))) . FILTER(?a != ?{author})";
+
+        substitutionMap.remove("status");
+        substitutor = new StringSubstitutor(substitutionMap);
+        graphNames = sparqlService.queryAll(substitutor.replace(condition));
+        searchResult.setOtherPaperIds(graphNames);
+
+        return searchResult;
     }
 }

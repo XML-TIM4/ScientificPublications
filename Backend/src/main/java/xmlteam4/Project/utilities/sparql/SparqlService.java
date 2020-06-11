@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 @Component
 public class SparqlService {
@@ -45,20 +46,19 @@ public class SparqlService {
         processor.execute();
     }
 
-    public void queryGraph(String graphName, String condition) {
-        String query = SparqlUtil.selectData(FusekiAuthenticationUtilities.endpoint + graphName, condition);
-        QueryExecution execution = QueryExecutionFactory.sparqlService(FusekiAuthenticationUtilities.queryEndpoint,
-                query);
-
-        ResultSet results = execution.execSelect();
-        // TODO
-    }
-
-    public void queryAll(String condition) {
+    public ArrayList<String> queryAll(String condition) {
         String query = SparqlUtil.selectFromAllGraphs(condition);
         QueryExecution execution = QueryExecutionFactory.sparqlService(FusekiAuthenticationUtilities.queryEndpoint,
                 query);
 
         ResultSet resultSet = execution.execSelect();
+
+        ArrayList<String> results = new ArrayList<>();
+
+        while (resultSet.hasNext()) {
+            results.add(resultSet.next().getLiteral("g").getString());
+        }
+
+        return results;
     }
 }

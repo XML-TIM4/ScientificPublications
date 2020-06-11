@@ -93,5 +93,10 @@
         </keywords>
     </xsl:template>
 
+    <xsl:template match="//author">
+        <author property="sh:author" datatype="sh:Person" content="{@id}">
+            <xsl:apply-templates select="node()|@*"/>
+        </author>
+    </xsl:template>
 
 </xsl:stylesheet>
