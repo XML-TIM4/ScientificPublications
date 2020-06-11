@@ -1,0 +1,17 @@
+<p>my-reviews works!</p>
+<div fxLayout="column" fxLayoutAlign="center center">
+  <mat-card class="mat-card-flat card-deck-container" id="loaded-events-list" style="height: 680px;">
+    <mat-card-header>
+      <p style="font-weight: bolder;">My papers</p>
+      <span fxFlex></span>
+      <p style="margin-right: 70px; font-weight: lighter" id="number-of-results">Results found: {{papers.length}}</p>
+    </mat-card-header>
+
+    <div fxLayout="row wrap" class="card-deck-container" fxLayout.xs="column wrap">
+      <div fxFlex="24" fxFlex.sm="30" fxFlex.xs="80" class="card-item" *ngFor="let paper of papers">
+        <app-paper-section [paper]="paper"></app-paper-section>
+      </div>
+    </div>
+  </mat-card>
+
+</div>

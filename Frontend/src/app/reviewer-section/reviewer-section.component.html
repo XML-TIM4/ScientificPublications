@@ -1,0 +1,12 @@
+<p>reviewer-section works!</p>
+<mat-card class="mat-card-flat mat-elevation-z5">
+  <mat-card-title style="font-weight: lighter">
+    {{reviewer.title}}
+  </mat-card-title>
+  <mat-card-subtitle fxLayout="column">
+    <span>{{reviewer.category}}</span>
+    <div>
+      {{ reviewer.date | date }}
+    </div>
+  </mat-card-subtitle>
+</mat-card>
