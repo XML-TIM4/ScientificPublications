@@ -25,6 +25,9 @@ import {
 import { ReviewerSectionComponent } from './reviewer-section/reviewer-section.component';
 import { HeaderComponent } from './header/header.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {AuthInterceptorService} from './services/auth-interceptor.service';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -42,6 +45,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
     HeaderComponent
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
@@ -56,7 +60,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
     NoopAnimationsModule,
     MatCheckboxModule
   ],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }, DatePipe ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

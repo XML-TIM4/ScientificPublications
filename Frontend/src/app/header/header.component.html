@@ -6,13 +6,18 @@
   </button>
   <span class="spacer"></span>
 
-  <div>
+  <div *ngIf="!isAuthenticated">
+    <button mat-button routerLink="/login">Login</button>
+    <button mat-button routerLink="/signup">Sign up</button>
+  </div>
+
+
+  <div *ngIf="isAuthenticated">
     <button mat-button routerLink="/my-papers">My Papers</button>
     <button mat-button routerLink="/all-papers">All Papers</button>
     <button mat-button routerLink="/my-reviews">My Reviews</button>
     <button mat-button routerLink="/papers-to-review">Papers To Review</button>
     <button mat-button routerLink="/all-reviews">Reviews In Progress</button>
-    <button mat-button routerLink="/login">Login</button>
-    <button mat-button routerLink="/signup">Sing in</button>
+    <button mat-button routerLink="/logout">Logout</button>
   </div>
 </mat-toolbar>

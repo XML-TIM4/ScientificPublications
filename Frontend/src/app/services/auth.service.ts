@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject} from 'rxjs';
 import {User} from '../model/user.model';
 import {tap} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 export interface IUserRegister {
   password: string;
@@ -29,7 +30,7 @@ export class AuthService {
   user = new BehaviorSubject<User>(null);
   private tokenExpirationTimer: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   private handleAuthentication(token: string) {
     const parsedToken: IToken = this.parseJwt(token);
@@ -40,7 +41,7 @@ export class AuthService {
       parsedToken.authority
     );
     this.user.next(user);
-    localStorage.setItem('userToken', token);
+    localStorage.setItem('token', token);
   }
 
   signup(registerUser: IUserRegister) {
@@ -56,7 +57,7 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<{token: string}>(
+    return this.http.post<string>(
       'http://localhost:8080/api/login',
       {
         email,
@@ -64,18 +65,21 @@ export class AuthService {
       }
     ).pipe(
       tap(resData => {
-        this.handleAuthentication(resData.token);
+        console.log(resData);
+        this.handleAuthentication(resData);
       })
     );
   }
 
   logout() {
     this.user.next(null);
-    localStorage.removeItem('userToken');
+    localStorage.removeItem('token');
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
+    this.router.navigate(['/login']);
   }
+
 
   parseJwt = (token: string): IToken => {
     const base64Url = token.split('.')[1];
