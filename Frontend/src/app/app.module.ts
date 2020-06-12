@@ -25,6 +25,7 @@ import {
 import { ReviewerSectionComponent } from './reviewer-section/reviewer-section.component';
 import { HeaderComponent } from './header/header.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
     MatToolbarModule,
     MatNativeDateModule,
     NoopAnimationsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
