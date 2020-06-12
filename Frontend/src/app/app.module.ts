@@ -58,7 +58,8 @@ import {DatePipe} from '@angular/common';
     MatToolbarModule,
     MatNativeDateModule,
     NoopAnimationsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    HttpClientModule
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }, DatePipe ],
   bootstrap: [AppComponent]
