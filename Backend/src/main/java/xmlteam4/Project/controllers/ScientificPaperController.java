@@ -71,6 +71,7 @@ public class ScientificPaperController {
 
     @PostMapping(value = "/search")
     public ResponseEntity<Object> searchScientificPapers(@RequestBody SearchDTO searchDTO) {
+        System.out.println(searchDTO.toString());
         try {
             SearchResultDTO searchResultDTO;
             if (searchDTO.getBasic())

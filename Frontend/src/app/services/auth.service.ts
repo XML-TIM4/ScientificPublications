@@ -34,6 +34,7 @@ export class AuthService {
 
   private handleAuthentication(token: string) {
     const parsedToken: IToken = this.parseJwt(token);
+    console.log('jwt ', parsedToken);
     const expirationDate = new Date(parsedToken.expiration * 1000);
     const user = new User(
       token,
@@ -57,7 +58,7 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<string>(
+    return this.http.post<{token: string}>(
       'http://localhost:8080/api/login',
       {
         email,
@@ -65,8 +66,8 @@ export class AuthService {
       }
     ).pipe(
       tap(resData => {
-        console.log(resData);
-        this.handleAuthentication(resData);
+        console.log(resData.token);
+        this.handleAuthentication(resData.token);
       })
     );
   }

@@ -2,41 +2,78 @@
 <div class="mat-elevation-z3" fxLayout="row" fxHide.sm fxHide.xs fxLayoutAlign="center bottom">
   <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline">
-      <mat-label>Title</mat-label>
-      <input matInput type="text" formControlName="title" id="search-title">
+      <mat-label>Text</mat-label>
+      <input matInput type="text" formControlName="text" id="search-text">
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Category</mat-label>
-      <input matInput type="text" formControlName="category" id="search-category">
+      <mat-label>Version</mat-label>
+      <input matInput type="text" formControlName="version" id="search-version">
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline">
+      <mat-label>Paper status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let status of paperStatus" [value]="status">
+            {{status}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline">
+      <mat-label>Paper category</mat-label>
+      <mat-select formControlName="category">
+        <mat-option *ngFor="let category of paperCategory" [value]="category">
+          {{category}}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <input
-        matInput
-        formControlName="startDate"
-        [matDatepicker]="pickerAfter"
-        placeholder="Events starting after"
-        id="search-start-date">
-      <mat-datepicker-toggle *ngIf="!searchForm.get('startDate').value; else clearStartDate" matSuffix [for]="pickerAfter"></mat-datepicker-toggle>
-      <mat-datepicker #pickerAfter></mat-datepicker>
-      <ng-template #clearStartDate>
-        <button mat-icon-button matSuffix (click)="searchForm.patchValue({startDate: null})">
+      <input matInput formControlName="revised" [matDatepicker]="pickRevised" placeholder="Paper revised" id="search-revised">
+      <mat-datepicker-toggle *ngIf="!searchForm.get('revised').value; else clearRevised" matSuffix [for]="pickRevised"></mat-datepicker-toggle>
+      <mat-datepicker #pickRevised></mat-datepicker>
+      <ng-template #clearRevised>
+        <button mat-icon-button matSuffix (click)="searchForm.patchValue({revised: null})">
           <mat-icon>clear</mat-icon>
         </button>
       </ng-template>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <input matInput formControlName="endDate" [matDatepicker]="pickerBefore" placeholder="Events starting before" id="search-end-date">
-      <mat-datepicker-toggle *ngIf="!searchForm.get('endDate').value; else clearEndDate" matSuffix [for]="pickerBefore"></mat-datepicker-toggle>
-      <mat-datepicker #pickerBefore></mat-datepicker>
-      <ng-template #clearEndDate>
-        <button mat-icon-button matSuffix (click)="searchForm.patchValue({endDate: null})">
+      <input matInput formControlName="received" [matDatepicker]="pickReceived" placeholder="Paper received" id="search-received">
+      <mat-datepicker-toggle *ngIf="!searchForm.get('received').value; else clearReceived" matSuffix [for]="pickReceived"></mat-datepicker-toggle>
+      <mat-datepicker #pickReceived></mat-datepicker>
+      <ng-template #clearReceived>
+        <button mat-icon-button matSuffix (click)="searchForm.patchValue({received: null})">
           <mat-icon>clear</mat-icon>
         </button>
       </ng-template>
     </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <input matInput formControlName="accepted" [matDatepicker]="pickAccepted" placeholder="Paper accepted" id="search-accepted">
+      <mat-datepicker-toggle *ngIf="!searchForm.get('accepted').value; else clearAccepted" matSuffix [for]="pickAccepted"></mat-datepicker-toggle>
+      <mat-datepicker #pickAccepted></mat-datepicker>
+      <ng-template #clearAccepted>
+        <button mat-icon-button matSuffix (click)="searchForm.patchValue({accepted: null})">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </ng-template>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Keywords</mat-label>
+      <input matInput type="text" formControlName="keywords" id="search-keywords">
+    </mat-form-field>
+
+    <button mat-button color="primary" type="submit">
+      <mat-icon>search</mat-icon>
+      <span>Search</span>
+    </button>
+
 
   </form>
 </div>

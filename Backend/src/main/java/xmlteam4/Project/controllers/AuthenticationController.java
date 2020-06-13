@@ -44,7 +44,6 @@ public class AuthenticationController {
             authenticationManager.authenticate(token);
             UserDetails details = userDetailsService.loadUserByUsername(loginDTO.getEmail());
             String temp = tokenUtils.generateToken(details);
-            System.out.println(temp);
             return new ResponseEntity<>(new AuthenticationResponse(temp), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Invalid email or password", HttpStatus.BAD_REQUEST);

@@ -28,6 +28,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {AuthInterceptorService} from './services/auth-interceptor.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {DatePipe} from '@angular/common';
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
@@ -44,23 +45,24 @@ import {DatePipe} from '@angular/common';
     ReviewerSectionComponent,
     HeaderComponent
   ],
-  imports: [
-    HttpClientModule,
-    BrowserModule,
-    AppRoutingModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatNativeDateModule,
-    NoopAnimationsModule,
-    MatCheckboxModule,
-    HttpClientModule
-  ],
+    imports: [
+        HttpClientModule,
+        BrowserModule,
+        AppRoutingModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatNativeDateModule,
+        NoopAnimationsModule,
+        MatCheckboxModule,
+        HttpClientModule,
+        MatSelectModule
+    ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }, DatePipe ],
   bootstrap: [AppComponent]
 })

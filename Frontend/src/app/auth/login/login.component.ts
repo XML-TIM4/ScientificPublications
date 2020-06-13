@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
       resData => {
         console.log(resData);
         this.loginForm.reset();
-        this.router.navigate(['/']);
+        this.router.navigate(['/all-papers']);
       },
       error => {
         if (error.status === 401) {
