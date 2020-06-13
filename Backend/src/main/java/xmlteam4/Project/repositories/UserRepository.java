@@ -78,7 +78,7 @@ public class UserRepository {
 
             Collection col = crudService.getOrCreateCollection(userCollectionId, 0);
 
-            queryService.append(col, userCollectionId, "/users", userXml);
+            queryService.append(col, "users.xml", "/users", userXml);
 
             return user;
         } catch (XMLDBException | JAXBException e) {

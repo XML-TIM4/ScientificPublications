@@ -12,6 +12,8 @@ import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.UserRepository;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 
+import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
+
 @Service
 public class AuthenticationService {
     @Autowired
@@ -34,7 +36,7 @@ public class AuthenticationService {
 
         ObjectFactory objectFactory = new ObjectFactory();
         TUser newUser = objectFactory.createTUser();
-        newUser.setId(idGenerator.createID());
+        newUser.setId(TARGET_NAMESPACE + "/users/" + idGenerator.createID());
         newUser.setExpertise(user.getExpertise());
         newUser.setEmail(user.getEmail());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
