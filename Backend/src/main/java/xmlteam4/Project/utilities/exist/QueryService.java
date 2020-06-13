@@ -7,8 +7,6 @@ import org.xmldb.api.modules.XMLResource;
 import org.xmldb.api.modules.XPathQueryService;
 import org.xmldb.api.modules.XUpdateQueryService;
 
-import javax.xml.transform.Result;
-
 import java.util.ArrayList;
 import java.util.List;
 
