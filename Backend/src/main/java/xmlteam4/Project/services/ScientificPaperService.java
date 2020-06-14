@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -102,7 +103,7 @@ public class ScientificPaperService {
 
         if (!checkAbstract(document))
             throw new DocumentParsingFailedException("Invalid abstract titles");
-        else if (!checkIfCreatorIsAuthor(document))
+        else if (!checkIfCreatorIsAuthor(xml))
             throw new UnauthorizedException("In order to create a scientific paper you have to be an author");
 
         // set ids
@@ -150,7 +151,7 @@ public class ScientificPaperService {
 
         if (!checkAbstract(document))
             throw new DocumentParsingFailedException("Invalid abstract titles");
-        else if (!checkIfCreatorIsAuthor(document))
+        else if (!checkIfCreatorIsAuthor(xml))
             throw new UnauthorizedException("In order to revise a scientific paper you have to be an author");
 
         // set new id's and metadata
@@ -288,17 +289,9 @@ public class ScientificPaperService {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean checkIfCreatorIsAuthor(Document document) {
-        NodeList authors = document.getElementsByTagName("author");
+    private boolean checkIfCreatorIsAuthor(String xml) {
         String creatorEmail = ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getEmail();
-
-        for (int i = 0; i < authors.getLength(); i++) {
-            // check if author's email equals creator's email
-            if (authors.item(i).getChildNodes().item(1).getTextContent().equals(creatorEmail))
-                return true;
-        }
-
-        return false;
+        return xml.contains(creatorEmail);
     }
 }
