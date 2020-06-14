@@ -48,7 +48,7 @@ public class AuthenticationController {
 
             String jwt = tokenUtils.generateToken(authentication);
 
-            return new ResponseEntity<>(jwt, HttpStatus.OK);
+            return new ResponseEntity<>(new AuthenticationResponse(jwt), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Invalid email or password", HttpStatus.BAD_REQUEST);
         }

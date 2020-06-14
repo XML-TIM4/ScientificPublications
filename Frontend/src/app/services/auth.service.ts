@@ -14,10 +14,10 @@ export interface IUserRegister {
 
 interface IFullToken {
   sub: string;
-  audience: string;
-  created: number;
+  iss: string;
+  iat: number;
   exp: number;
-  authorities: string;
+  roles: string;
 }
 
 export interface IToken {
@@ -66,7 +66,7 @@ export class AuthService {
       }
     ).pipe(
       tap(resData => {
-        console.log(resData.token);
+        console.log(resData.token, ' PIPE LOGINA');
         this.handleAuthentication(resData.token);
       })
     );
@@ -90,9 +90,9 @@ export class AuthService {
     }).join(''));
 
     const fullToken: IFullToken = JSON.parse(jsonPayload);
-
+    console.log(fullToken.roles);
     return {
-      authority: fullToken.authorities.split(',')[0],
+      authority: fullToken.roles.split(',')[0],
       expiration: fullToken.exp
     };
   }

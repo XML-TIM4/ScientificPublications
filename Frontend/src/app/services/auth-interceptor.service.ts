@@ -8,6 +8,7 @@ export class AuthInterceptorService implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
+    console.log('NESTO');
     return this.authService.user.pipe(
       take(1),
       exhaustMap(user => {
@@ -15,7 +16,7 @@ export class AuthInterceptorService implements HttpInterceptor {
           return next.handle(req);
         }
         let headersModified = req.headers;
-        headersModified = headersModified.append('Authorization', user.token);
+        headersModified = headersModified.append('Authorization', 'Bearer ' + user.token);
         const modifiedReq = req.clone({
           headers: headersModified
         });

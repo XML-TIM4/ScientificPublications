@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(email, password).subscribe(
       resData => {
-        console.log(resData);
+        console.log(resData, ' login');
         this.loginForm.reset();
         this.router.navigate(['/all-papers']);
       },

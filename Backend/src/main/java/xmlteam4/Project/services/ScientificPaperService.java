@@ -237,7 +237,6 @@ public class ScientificPaperService {
 
     public SearchResultDTO advancedScientificPaperSearch(SearchDTO searchDTO) {
         if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-            System.out.println("ODJE SAM " +SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             return scientificPaperRepository.advancedSearch(searchDTO,
                     ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         }else

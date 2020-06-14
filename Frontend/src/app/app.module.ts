@@ -28,7 +28,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {AuthInterceptorService} from './services/auth-interceptor.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {DatePipe} from '@angular/common';
-import {MatSelectModule} from "@angular/material/select";
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
