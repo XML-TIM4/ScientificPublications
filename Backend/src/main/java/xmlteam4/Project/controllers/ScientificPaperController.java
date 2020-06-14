@@ -71,9 +71,7 @@ public class ScientificPaperController {
     }
 
     @PostMapping(value = "/search")
-    @PreAuthorize("hasAuthority('ROLE_AUTHOR') or hasAuthority('ROLE_EDITOR')")
     public ResponseEntity<Object> searchScientificPapers(@RequestBody SearchDTO searchDTO) {
-        System.out.println(searchDTO.toString());
         try {
             SearchResultDTO searchResultDTO;
             if (searchDTO.getBasic())

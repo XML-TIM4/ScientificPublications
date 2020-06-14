@@ -88,9 +88,8 @@ public class ScientificPaperRepository {
     }
 
     public SearchResultDTO basicSearch(String searchText) throws RepositoryException {
-        String papers = String.format("//scientific-paper[//*[contains(text(), '%s')] " +
-                        "and /metadata/status/text() == 'accepted']/@id",
-                searchText);
+        String papers = String.format("data(//scientific-paper[.//*/text()[contains(., '%s')] " +
+                "and ./metadata/status/text() = 'accepted']/@id)", searchText);
 
         try {
             ResourceSet papersSet = queryService.executeXPathQuery(scientificPaperCollectionId, papers);
@@ -100,10 +99,10 @@ public class ScientificPaperRepository {
             if (papersSet != null) {
                 List<XMLResource> resources = queryService.extractAllResources(papersSet);
 
-                for (XMLResource res : resources)
-                    searchResultDTO.getOwnPaperIds().add(res.getContent().toString());
-
-                ((EXistResource) papersSet).freeResources();
+                for (XMLResource res : resources) {
+                    searchResultDTO.getOtherPaperIds().add(res.getContent().toString());
+                    ((EXistResource) res).freeResources();
+                }
             }
 
             return searchResultDTO;
@@ -113,12 +112,12 @@ public class ScientificPaperRepository {
     }
 
     public SearchResultDTO basicSearch(String searchText, String authorID) throws RepositoryException {
-        String ownPapers = String.format("//scientific-paper[//*[contains(text(), '%s')] " +
-                        "and /authors/author/@id == '%s']/@id",
+        String ownPapers = String.format("data(//scientific-paper[.//*/text()[contains(., '%s')] " +
+                        "and ./authors/author/@id = '%s']/@id)",
                 searchText, authorID);
 
-        String otherPapers = String.format("//scientific-paper[//*[contains(text(), '%s')] " +
-                        "and /authors/author/@id != '%s' and /metadata/status/text() == 'accepted']/@id",
+        String otherPapers = String.format("data(//scientific-paper[.//*/text()[contains(., '%s')] " +
+                        "and ./authors/author/@id != '%s' and ./metadata/status/text() = 'accepted']/@id)",
                 searchText, authorID);
         try {
             ResourceSet ownPapersSet = queryService.executeXPathQuery(scientificPaperCollectionId, ownPapers);
@@ -129,19 +128,20 @@ public class ScientificPaperRepository {
             if (ownPapers != null) {
                 List<XMLResource> resources = queryService.extractAllResources(ownPapersSet);
 
-                for (XMLResource res : resources)
+                for (XMLResource res : resources) {
                     searchResultDTO.getOwnPaperIds().add(res.getContent().toString());
+                    ((EXistResource) res).freeResources();
+                }
 
-                ((EXistResource) ownPapersSet).freeResources();
             }
 
             if (otherPapersSet != null) {
                 List<XMLResource> resources = queryService.extractAllResources(otherPapersSet);
 
-                for (XMLResource res : resources)
+                for (XMLResource res : resources) {
                     searchResultDTO.getOtherPaperIds().add(res.getContent().toString());
-
-                ((EXistResource) otherPapersSet).freeResources();
+                    ((EXistResource) res).freeResources();
+                }
             }
 
             return searchResultDTO;

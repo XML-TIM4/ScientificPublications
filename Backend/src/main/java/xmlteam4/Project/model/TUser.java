@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 
 /**
@@ -69,7 +68,7 @@ public class TUser implements UserDetails {
 
         if (isEditor()) {
             authorities.add(new Authority(UserRole.ROLE_EDITOR));
-        }else{
+        } else {
             authorities.add(new Authority(UserRole.ROLE_AUTHOR));
         }
 

@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -228,7 +229,9 @@ public class ScientificPaperService {
     }
 
     public SearchResultDTO basicScientificPaperSearch(SearchDTO searchDTO) throws RepositoryException {
-        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated())
             return scientificPaperRepository.basicSearch(searchDTO.getText(),
                     ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         else
@@ -236,10 +239,12 @@ public class ScientificPaperService {
     }
 
     public SearchResultDTO advancedScientificPaperSearch(SearchDTO searchDTO) {
-        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
             return scientificPaperRepository.advancedSearch(searchDTO,
                     ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
-        }else
+        } else
             return scientificPaperRepository.advancedSearch(searchDTO);
     }
 
