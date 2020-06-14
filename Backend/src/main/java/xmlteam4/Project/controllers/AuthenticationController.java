@@ -46,9 +46,7 @@ public class AuthenticationController {
                             loginDTO.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            TUser user = (TUser) authentication.getPrincipal();
-
-            String jwt = tokenUtils.generateToken(user.getUsername());
+            String jwt = tokenUtils.generateToken(authentication);
 
             return new ResponseEntity<>(jwt, HttpStatus.OK);
         } catch (Exception e) {
