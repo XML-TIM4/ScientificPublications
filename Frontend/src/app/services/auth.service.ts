@@ -90,10 +90,17 @@ export class AuthService {
     }).join(''));
 
     const fullToken: IFullToken = JSON.parse(jsonPayload);
-    return {
-      authority: fullToken.roles,
-      expiration: fullToken.exp
-    };
+    if (fullToken.roles.split(',').length > 1) {
+      return {
+        authority: fullToken.roles.split(',')[1],
+        expiration: fullToken.exp
+      };
+    } else {
+      return {
+        authority: fullToken.roles,
+        expiration: fullToken.exp
+      };
+    }
   }
 
 }

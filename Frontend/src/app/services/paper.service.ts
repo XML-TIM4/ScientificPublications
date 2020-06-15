@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaderResponse, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaderResponse, HttpHeaders, HttpRequest} from "@angular/common/http";
 
 export interface IPaperSearch {
   basic: boolean;
@@ -43,8 +43,16 @@ export class PaperService {
   }
 
   findOne(paperId: string, type: string) {
-    return this.http.get<any>('http://localhost:8080/api/scientific-papers/' + paperId,
-      {headers: new HttpHeaders({'Content-Type': type})});
+    // const httpOptions = {
+    //   headers: new HttpHeaders({
+    //     'Content-Type':  type,
+    //     'Accept':  type,
+    //     'Response-Type': 'text'
+    //   }),
+    //   responseType: 'text'
+    // };
+
+    return this.http.get('http://localhost:8080/api/scientific-papers/' + paperId, {headers: new HttpHeaders({'Content-Type': type, 'Accept': type, 'Response-Type': 'text'}), responseType: 'text'});
 
   }
 
