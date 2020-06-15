@@ -30,6 +30,8 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {DatePipe} from '@angular/common';
 import {MatSelectModule} from '@angular/material/select';
 import {MatRadioModule} from "@angular/material/radio";
+import { EditPaperComponent } from './xonomy/edit-paper/edit-paper.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -44,13 +46,15 @@ import {MatRadioModule} from "@angular/material/radio";
     AllReviewsComponent,
     PaperSectionComponent,
     ReviewerSectionComponent,
-    HeaderComponent
+    HeaderComponent,
+    EditPaperComponent
   ],
   imports: [
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
     MatCardModule,
     MatFormFieldModule,
     MatButtonModule,

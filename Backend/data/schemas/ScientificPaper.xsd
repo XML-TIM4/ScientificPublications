@@ -326,7 +326,7 @@
             <xs:element name="underline" type="TDecorator"/>
         </xs:choice>
     </xs:complexType>
-    <xs:complexType mixed="true" name="TQuote">
+    <xs:complexType name="TQuote">
         <xs:sequence>
             <xs:element name="quote-text">
                 <xs:simpleType>
