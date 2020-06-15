@@ -28,10 +28,6 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import { EditPaperComponent } from './xonomy/edit-paper/edit-paper.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,13 +41,14 @@ import { MatInputModule } from '@angular/material/input';
     AllReviewsComponent,
     PaperSectionComponent,
     ReviewerSectionComponent,
-    HeaderComponent
+    HeaderComponent,
     EditPaperComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
     MatCardModule,
     MatFormFieldModule,
     MatButtonModule,
@@ -63,15 +60,6 @@ import { MatInputModule } from '@angular/material/input';
     NoopAnimationsModule,
     MatCheckboxModule
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule
-    ],
   providers: [],
   bootstrap: [AppComponent]
 })
