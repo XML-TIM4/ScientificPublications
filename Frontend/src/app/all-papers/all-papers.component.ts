@@ -58,26 +58,34 @@ export class AllPapersComponent implements OnInit {
 
 
       this.papers = [];
-      for(let i = 0; i < resData.ownPaperIds.length; i++) {
+      for (let i = 0; i < resData.ownPaperIds.length; i++) {
         this.paperService.findOne(resData.ownPaperIds[i], 'application/xml').subscribe((resPaper => {
           const text = '' + resPaper + '';
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(text, 'application/xml');
 
-          this.papers.push({title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue, category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
-            date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue, author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue});
+          this.papers.push({
+            id: resData.ownPaperIds[i],
+            title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
+            category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
+            date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,
+            author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue});
          }));
       }
 
-      for(let i = 0; i < resData.otherPaperIds.length; i++) {
+      for (let i = 0; i < resData.otherPaperIds.length; i++) {
         this.paperService.findOne(resData.otherPaperIds[i], 'application/xml').subscribe((resPaper => {
           const text = '' + resPaper + '';
           console.log(text);
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(text, 'application/xml');
 
-          this.papers.push({title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue, category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
-            date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue, author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue});
+          this.papers.push({
+            id: resData.otherPaperIds[i],
+            title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
+            category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
+            date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,
+            author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue});
         }));
       }
 

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { EmptyDocuments } from '../../../shared/empty-documents';
+import '../../../assets/xonomy-files/xonomy.js';
 
-declare const Xonomy: any;
+declare var Xonomy: any;
 
 @Component({
   selector: 'app-edit-paper',
@@ -11,6 +12,8 @@ declare const Xonomy: any;
 export class EditPaperComponent implements OnInit {
 
   xonomyEditor;
+  @Input()
+  xmlString;
 
   documentSpecification = {
     elements: {
@@ -539,6 +542,7 @@ export class EditPaperComponent implements OnInit {
 
   ngOnInit() {
     this.xonomyEditor = document.getElementById('xonomy-editor');
+
     const temp = EmptyDocuments.emptyScientificPaper;
     Xonomy.render(temp, this.xonomyEditor, this.documentSpecification);
   }

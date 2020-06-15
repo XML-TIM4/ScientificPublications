@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Paper} from '../model/paper.model';
-import {IPaperSearch, PaperService} from "../services/paper.service";
+import {IPaperSearch, PaperService} from '../services/paper.service';
+import {EditPaperComponent} from '../xonomy/edit-paper/edit-paper.component';
 
 @Component({
   selector: 'app-my-papers',
@@ -12,6 +13,7 @@ export class MyPapersComponent implements OnInit {
 
   searchForm: FormGroup;
   papers: Paper[] = [];
+  myPapersComponent = '';
 
   constructor(private paperService: PaperService) { }
 
@@ -33,12 +35,11 @@ export class MyPapersComponent implements OnInit {
       this.papers = [];
       for (let i = 0; i < resData.ownPaperIds.length; i++) {
         this.paperService.findOne(resData.ownPaperIds[i], 'application/xml').subscribe((resPaper => {
-          const text = '' + resPaper + '';
-          console.log(text);
           const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(text, 'application/xml');
+          const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
 
           this.papers.push({
+            id: resData.ownPaperIds[i],
             title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
             category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
             date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,
@@ -52,4 +53,9 @@ export class MyPapersComponent implements OnInit {
 
   }
 
+  call(id: string) {
+    this.paperService.findOne(id, 'application/xml').subscribe((resPaper => {
+      this.myPapersComponent = resPaper;
+    }));
+  }
 }

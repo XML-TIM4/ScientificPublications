@@ -29,7 +29,7 @@ import {AuthInterceptorService} from './services/auth-interceptor.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {DatePipe} from '@angular/common';
 import {MatSelectModule} from '@angular/material/select';
-import {MatRadioModule} from "@angular/material/radio";
+import {MatRadioModule} from '@angular/material/radio';
 import { EditPaperComponent } from './xonomy/edit-paper/edit-paper.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 

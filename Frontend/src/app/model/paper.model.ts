@@ -3,4 +3,5 @@ export class Paper {
   category: string;
   date: string;
   author: string;
+  id: string;
 }

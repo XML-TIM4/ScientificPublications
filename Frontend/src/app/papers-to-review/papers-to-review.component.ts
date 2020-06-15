@@ -30,6 +30,7 @@ export class PapersToReviewComponent implements OnInit {
       accepted: new FormControl(null),
     });
     this.papers[0] = {
+      id: '142',
       title: 'Test Person 2',
       category: 'Section 2',
       date: '87654321',
