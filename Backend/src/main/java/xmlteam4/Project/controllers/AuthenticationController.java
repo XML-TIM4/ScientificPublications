@@ -37,7 +37,6 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    //@PreAuthorize("!(hasAuthority('ROLE_AUTHOR') or hasAuthority('ROLE_EDITOR'))")
     public ResponseEntity login(@Valid @RequestBody LoginDTO loginDTO) {
         final Authentication authentication;
         System.out.println(loginDTO);
@@ -56,7 +55,6 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    @PreAuthorize("!(hasAuthority('ROLE_AUTHOR') or hasAuthority('ROLE_EDITOR'))")
     public ResponseEntity<Object> register(@Valid @RequestBody UserDTO user) {
         try {
             return new ResponseEntity<>(authenticationService.register(user), HttpStatus.OK);

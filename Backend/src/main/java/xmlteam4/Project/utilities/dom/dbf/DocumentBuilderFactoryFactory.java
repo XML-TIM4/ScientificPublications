@@ -11,6 +11,7 @@ public class DocumentBuilderFactoryFactory implements FactoryBean<DocumentBuilde
         documentBuilderFactory.setNamespaceAware(true);
         documentBuilderFactory.setIgnoringComments(true);
         documentBuilderFactory.setValidating(false);
+        documentBuilderFactory.setIgnoringElementContentWhitespace(true);
 
         return documentBuilderFactory;
     }
