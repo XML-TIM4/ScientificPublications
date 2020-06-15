@@ -1,5 +1,10 @@
-<div class="mat-elevation-z3 div-search" fxLayout="row" fxHide.sm fxHide.xs fxLayoutAlign="center bottom">
+<div class="mat-elevation-z3" fxLayout="row" fxHide.sm fxHide.xs fxLayoutAlign="center bottom">
   <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+
+
+    <label>Basic:</label>
+    <mat-checkbox type="checkBox" [value]="isBasic" formControlName="basic"></mat-checkbox>
+
     <mat-form-field appearance="outline">
       <mat-label>Text</mat-label>
       <input matInput type="text" formControlName="text" id="search-text">

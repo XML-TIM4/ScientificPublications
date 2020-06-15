@@ -24,7 +24,8 @@ export class MyPapersComponent implements OnInit {
     this.papers[0] = {
       title: 'Test Person 2',
       category: 'Section 2',
-      date: '87654321'
+      date: '87654321',
+      author: 'Covek covek'
     };
   }
 

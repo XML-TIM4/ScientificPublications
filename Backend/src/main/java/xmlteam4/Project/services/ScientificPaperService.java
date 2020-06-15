@@ -295,7 +295,7 @@ public class ScientificPaperService {
 
         for (int i = 0; i < authors.getLength(); i++) {
             // check if author's email equals creator's email
-            if (authors.item(i).getChildNodes().item(1).getTextContent().equals(creatorEmail))
+            if (authors.item(i).getChildNodes().item(3).getTextContent().equals(creatorEmail))
                 return true;
         }
 

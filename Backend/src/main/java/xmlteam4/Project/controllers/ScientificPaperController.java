@@ -26,6 +26,8 @@ public class ScientificPaperController {
                                                      @RequestHeader HttpHeaders httpHeaders) {
         MediaType contentType = httpHeaders.getContentType();
 
+        System.out.println("HEDERI  " + httpHeaders);
+
         try {
             if (MediaType.TEXT_HTML.equals(contentType)) {
                 return new ResponseEntity<>(scientificPaperService.getScientificPaperHTML(id), HttpStatus.OK);

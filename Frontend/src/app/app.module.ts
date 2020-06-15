@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AllPapersComponent } from './all-papers/all-papers.component';
 import { MyPapersComponent } from './my-papers/my-papers.component';
 import { MyReviewsComponent } from './my-reviews/my-reviews.component';
@@ -29,6 +29,7 @@ import {AuthInterceptorService} from './services/auth-interceptor.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {DatePipe} from '@angular/common';
 import {MatSelectModule} from '@angular/material/select';
+import {MatRadioModule} from "@angular/material/radio";
 
 @NgModule({
   declarations: [
@@ -45,24 +46,26 @@ import {MatSelectModule} from '@angular/material/select';
     ReviewerSectionComponent,
     HeaderComponent
   ],
-    imports: [
-        HttpClientModule,
-        BrowserModule,
-        AppRoutingModule,
-        ReactiveFormsModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatNativeDateModule,
-        NoopAnimationsModule,
-        MatCheckboxModule,
-        HttpClientModule,
-        MatSelectModule
-    ],
+  imports: [
+    HttpClientModule,
+    BrowserModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatNativeDateModule,
+    NoopAnimationsModule,
+    MatCheckboxModule,
+    HttpClientModule,
+    MatSelectModule,
+    MatRadioModule,
+    FormsModule
+  ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }, DatePipe ],
   bootstrap: [AppComponent]
 })

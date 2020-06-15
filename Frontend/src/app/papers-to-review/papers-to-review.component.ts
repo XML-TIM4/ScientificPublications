@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Paper} from '../model/paper.model';
-import {IPaperSearch, PaperService} from "../services/paper.service";
+import {IPaperSearch, PaperService} from '../services/paper.service';
 
 @Component({
   selector: 'app-papers-to-review',
@@ -32,7 +32,8 @@ export class PapersToReviewComponent implements OnInit {
     this.papers[0] = {
       title: 'Test Person 2',
       category: 'Section 2',
-      date: '87654321'
+      date: '87654321',
+      author: 'Covek covek'
     };
   }
 

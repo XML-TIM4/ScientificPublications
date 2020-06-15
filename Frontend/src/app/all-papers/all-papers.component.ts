@@ -13,11 +13,17 @@ export class AllPapersComponent implements OnInit {
   papers: Paper[] = [];
   paperStatus: string[] = ['ACCEPTED', 'REJECTED', 'REVISION', 'WITHDRAWN', 'UPLOADED'];
   paperCategory: string[] = ['RESEARCH_PAPER', 'VIEWPOINT', 'TECHNICAL_PAPER', 'CONCEPTUAL_PAPER', 'CASE_STUDY', 'LITERATURE_REVIEW', 'GENERAL_REVIEW'];
+  isBasic: boolean;
+  ownPapers: string[] = [];
+  otherPapers: string[] = [];
 
   constructor(private paperService: PaperService) { }
 
   ngOnInit() {
+
+
     this.searchForm = new FormGroup({
+      basic: new FormControl(''),
       text: new FormControl(''),
       keywords: new FormControl(''),
       version: new FormControl(''),
@@ -31,16 +37,17 @@ export class AllPapersComponent implements OnInit {
     this.papers[0] = {
       title: 'Test Person 2',
       category: 'Section 2',
-      date: '87654321'
+      date: '87654321',
+      author: 'Covek covek'
     };
   }
 
   onSubmit() {
 
     const keywordz = this.searchForm.get('keywords').value.toString().split(',');
-    console.log(keywordz, '  OVO SU KEYWORDZZ');
+    console.log(this.searchForm.get('basic').value, ' BAZIK');
     const searchParams: IPaperSearch = {
-      basic: false,
+      basic: this.searchForm.get('basic').value,
       text: this.searchForm.get('text').value,
       revised: this.searchForm.get('revised').value !== null ? this.searchForm.get('revised').value.getTime() : null,
       received: this.searchForm.get('received').value !== null ? this.searchForm.get('received').value.getTime() : null,
@@ -51,8 +58,24 @@ export class AllPapersComponent implements OnInit {
       keywords: keywordz,
     };
 
-    this.paperService.search(searchParams).subscribe((resData =>{
-      console.log(resData);
+    this.paperService.search(searchParams).subscribe((resData => {
+      this.ownPapers = resData.ownPaperIds;
+      this.otherPapers = resData.otherPaperIds;
+
+
+      this.papers = [];
+      for(let i = 0; i < this.ownPapers.length; i++) {
+        this.paperService.findOne(this.ownPapers[i], 'text/xml').subscribe((resPaper => {
+          console.log(resPaper);
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(resPaper.toString(), 'text/xml');
+
+          this.papers.push({title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue, category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
+            date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue, author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue});
+        }));
+      }
+
+
     }));
 
   }

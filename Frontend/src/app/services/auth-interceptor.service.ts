@@ -8,7 +8,7 @@ export class AuthInterceptorService implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    console.log('NESTO');
+    console.log('prvo auth');
     return this.authService.user.pipe(
       take(1),
       exhaustMap(user => {

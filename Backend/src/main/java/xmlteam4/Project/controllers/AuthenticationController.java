@@ -37,9 +37,10 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    @PreAuthorize("!(hasAuthority('ROLE_AUTHOR') or hasAuthority('ROLE_EDITOR'))")
+    //@PreAuthorize("!(hasAuthority('ROLE_AUTHOR') or hasAuthority('ROLE_EDITOR'))")
     public ResponseEntity login(@Valid @RequestBody LoginDTO loginDTO) {
         final Authentication authentication;
+        System.out.println(loginDTO);
         try {
             authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),
