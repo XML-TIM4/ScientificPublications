@@ -36,7 +36,7 @@ public class CoverLetterController {
     }
 
     @Secured("ROLE_AUTHOR")
-    @PostMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createCoverLetter(@RequestBody String xml) {
         try {
             return new ResponseEntity<>(coverLetterService.create(xml), HttpStatus.OK);

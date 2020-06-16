@@ -41,7 +41,7 @@ public class BusinessProcessRepository {
 
 
     public TBusinessProcess findOneById(String id) throws RepositoryException {
-        String xPathExp = String.format("//business-process[id='%s']", id);
+        String xPathExp = String.format("//business-process[@id='%s']", "business-processes/" + id);
         try {
             ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
 
@@ -95,7 +95,8 @@ public class BusinessProcessRepository {
     public void updateBusinessProcess(TBusinessProcess businessProcess) throws RepositoryException {
         try {
             Collection col = crudService.getOrCreateCollection(businessProcessCollectionId, 0);
-            XMLResource resource = (XMLResource) col.getResource(businessProcess.getId() + ".xml");
+            XMLResource resource =
+                    (XMLResource) col.getResource(businessProcess.getId().replace("business-processes/", "") + ".xml");
             resource.setContent(marshallBusinessProcess(businessProcess));
             col.storeResource(resource);
         } catch (XMLDBException | JAXBException e) {
@@ -137,6 +138,8 @@ public class BusinessProcessRepository {
         actorTasks.getActorTask().add(createScientificPaper);
         actorTasks.getActorTask().add(createCoverLetter);
         actorTasks.getActorTask().add(createReviewTemplate);
+
+        firstPhase.setActorTasks(actorTasks);
 
         return cycle;
     }
