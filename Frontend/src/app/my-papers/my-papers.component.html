@@ -13,7 +13,7 @@
         <app-paper-section [paper]="paper"></app-paper-section>
         <mat-card-actions>
           <button mat-raised-button color="primary" (click)="call(paper.id)">EDIT</button>
-          <button mat-raised-button color="warn" >CANCEL</button>
+          <button mat-raised-button color="warn" (click)="cancel(paper.id)">CANCEL</button>
         </mat-card-actions>
       </div>
     </div>

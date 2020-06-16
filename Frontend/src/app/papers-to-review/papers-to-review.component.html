@@ -87,10 +87,16 @@
     </mat-card-header>
 
     <div fxLayout="row wrap" class="card-deck-container" fxLayout.xs="column wrap">
-      <div fxFlex="24" fxFlex.sm="30" fxFlex.xs="80" class="card-item" *ngFor="let paper of papers" [routerLink]="['/reviewer-selection']">
+      <div fxFlex="24" fxFlex.sm="30" fxFlex.xs="80" class="card-item" *ngFor="let paper of papers">
         <app-paper-section [paper]="paper"></app-paper-section>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="view(paper.id)">VIEW</button>
+          <button mat-raised-button color="primary" (click)="viewLetter(paper.id)">COVER LETTER</button>
+        </mat-card-actions>
       </div>
     </div>
   </mat-card>
 
 </div>
+
+<div style="margin-top: 50px;" [innerHTML]="theHtmlString"></div>

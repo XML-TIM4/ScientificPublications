@@ -74,7 +74,7 @@ public class CoverLetterRepository {
         }
     }
 
-    public String findOneByPaperId(String scientficPaperId) throws RepositoryException {
+    public String   findOneByPaperId(String scientficPaperId) throws RepositoryException {
         String xPathExp = String.format("data(//cover-letter[.//scientific-paper-reference = '%s']/@id)",
                 scientficPaperId);
         try {

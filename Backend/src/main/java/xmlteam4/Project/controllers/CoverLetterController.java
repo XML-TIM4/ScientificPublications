@@ -35,8 +35,8 @@ public class CoverLetterController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<Object> getCoverLetterId(@RequestParam String scientificPaperId) {
+    @GetMapping(value = "/paper/{id}", produces = "text/plain")
+    public ResponseEntity<String> getCoverLetterId(@PathVariable("id") String scientificPaperId) {
         try {
             return new ResponseEntity<>(coverLetterService.getCoverLetterId(scientificPaperId), HttpStatus.OK);
         } catch (Exception e) {

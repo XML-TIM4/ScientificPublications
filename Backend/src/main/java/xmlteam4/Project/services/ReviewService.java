@@ -105,7 +105,7 @@ public class ReviewService {
         TReviewCycle activeCycle = businessProcessService.getActiveCycle(businessProcess);
 
         // check if cycle is active
-        if (activeCycle.getStatus().equals(ReviewCycleStatus.PENDING.toString()))
+        if (!activeCycle.getStatus().equals(ReviewCycleStatus.PENDING.toString()))
             throw new BusinessProcessException("Review can be created only if review cycle is still active");
 
         TPhase activePhase = businessProcessService.getActivePhase(activeCycle);

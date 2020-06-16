@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Paper} from '../model/paper.model';
 import {IPaperSearch, PaperService} from '../services/paper.service';
+import {LetterService} from '../services/letter.service';
 
 @Component({
   selector: 'app-papers-to-review',
@@ -14,9 +15,10 @@ export class PapersToReviewComponent implements OnInit {
   papers: Paper[] = [];
   paperStatus: string[] = ['ACCEPTED', 'REJECTED', 'REVISION', 'WITHDRAWN', 'UPLOADED'];
   paperCategory: string[] = ['RESEARCH_PAPER', 'VIEWPOINT', 'TECHNICAL_PAPER', 'CONCEPTUAL_PAPER', 'CASE_STUDY', 'LITERATURE_REVIEW', 'GENERAL_REVIEW'];
+  theHtmlString: any;
 
 
-  constructor(private paperService: PaperService) { }
+  constructor(private paperService: PaperService, private letterService: LetterService) { }
 
   ngOnInit() {
     this.searchForm = new FormGroup({
@@ -29,19 +31,53 @@ export class PapersToReviewComponent implements OnInit {
       received: new FormControl(null),
       accepted: new FormControl(null),
     });
-    this.papers[0] = {
-      id: '142',
-      title: 'Test Person 2',
-      category: 'Section 2',
-      date: '87654321',
-      author: 'Covek covek'
+
+    const searchParams: IPaperSearch = {
+      basic: true,
+      text: '',
+      revised: null,
+      received: null,
+      accepted: null,
+      version: '',
+      status: 'ACCEPTED',
+      category: 'RESEARCH_PAPER',
+      keywords: [],
     };
+
+    this.paperService.searchEditor(searchParams).subscribe((resData => {
+
+      this.papers = [];
+      for (let i = 0; i < resData.otherPaperIds.length; i++) {
+
+        this.letterService.findByPaper(resData.otherPaperIds[i]).subscribe(( letterId => {
+          if (letterId !== '') {
+
+            this.paperService.findOne(resData.otherPaperIds[i].toString(), 'application/xml').subscribe((resPaper => {
+              const parser = new DOMParser();
+              const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
+
+              this.papers.push({
+                id: resData.otherPaperIds[i],
+                title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
+                category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
+                date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,
+                author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue
+              });
+            }));
+          }
+        }));
+
+      }
+
+
+    }));
+
+
   }
 
   onSubmit() {
 
     const keywordz = this.searchForm.get('keywords').value.toString().split(',');
-    console.log(keywordz, '  OVO SU KEYWORDZZ');
     const searchParams: IPaperSearch = {
       basic: false,
       text: this.searchForm.get('text').value,
@@ -54,10 +90,48 @@ export class PapersToReviewComponent implements OnInit {
       keywords: keywordz,
     };
 
-    this.paperService.search(searchParams).subscribe((resData =>{
-      console.log(resData);
+    this.paperService.searchEditor(searchParams).subscribe((resData => {
+
+      this.papers = [];
+      for (let i = 0; i < resData.otherPaperIds.length; i++) {
+
+        this.letterService.findByPaper(resData.otherPaperIds[i]).subscribe(( letterId => {
+          if (letterId !== '') {
+
+            this.paperService.findOne(letterId.toString(), 'application/xml').subscribe((resPaper => {
+              const parser = new DOMParser();
+              const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
+
+              this.papers.push({
+                id: resData.otherPaperIds[i],
+                title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
+                category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
+                date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,
+                author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue
+              });
+            }));
+          }
+        }));
+
+      }
+
+
+
     }));
 
   }
 
+  view(id: string) {
+      this.paperService.findOne(id, 'text/html').subscribe((resData => {
+        this.theHtmlString = resData;
+      }));
+  }
+
+  viewLetter(id: string) {
+      this.letterService.findByPaper(id).subscribe((letterId => {
+        this.letterService.findOne(letterId, 'text/html').subscribe((resData => {
+          this.theHtmlString = resData;
+        }));
+      }));
+  }
 }

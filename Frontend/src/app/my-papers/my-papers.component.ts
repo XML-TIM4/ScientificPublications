@@ -58,4 +58,16 @@ export class MyPapersComponent implements OnInit {
       this.myPapersComponent = resPaper;
     }));
   }
+
+  cancel(id: string) {
+    const temp = this.papers;
+    this.papers = [];
+    for(let i = 0; i < temp.length; i++) {
+      if (temp[i].id !== id) {
+        this.papers.push(temp[i]);
+      }
+    }
+    this.paperService.withdraw(id);
+
+  }
 }

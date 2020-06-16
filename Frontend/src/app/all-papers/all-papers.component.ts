@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Paper} from '../model/paper.model';
 import {IPaperSearch, PaperService} from '../services/paper.service';
+import * as FileSaver from "file-saver";
 
 @Component({
   selector: 'app-all-papers',
@@ -60,25 +61,23 @@ export class AllPapersComponent implements OnInit {
       this.papers = [];
       for (let i = 0; i < resData.ownPaperIds.length; i++) {
         this.paperService.findOne(resData.ownPaperIds[i], 'application/xml').subscribe((resPaper => {
-          const text = '' + resPaper + '';
           const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(text, 'application/xml');
+          const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
 
           this.papers.push({
-            id: resData.ownPaperIds[i],
-            title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
-            category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
-            date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,
-            author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue});
+             id: resData.ownPaperIds[i],
+             title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
+             category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
+             date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,
+             author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue});
          }));
       }
 
       for (let i = 0; i < resData.otherPaperIds.length; i++) {
         this.paperService.findOne(resData.otherPaperIds[i], 'application/xml').subscribe((resPaper => {
-          const text = '' + resPaper + '';
-          console.log(text);
+          console.log(resPaper);
           const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(text, 'application/xml');
+          const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
 
           this.papers.push({
             id: resData.otherPaperIds[i],
@@ -89,7 +88,14 @@ export class AllPapersComponent implements OnInit {
         }));
       }
 
-
+    //
+    //   for (let i = 0; i < resData.ownPaperIds.length; i++) {
+    //     this.paperService.findOnePdf(resData.ownPaperIds[i]).subscribe((resPaper => {
+    //
+    //       const filename = 'filename.pdf';
+    //       FileSaver.saveAs(resPaper, filename);
+    //     }));
+    //   }
 
     }));
 

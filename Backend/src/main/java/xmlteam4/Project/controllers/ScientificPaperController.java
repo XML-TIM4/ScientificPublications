@@ -84,4 +84,21 @@ public class ScientificPaperController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping(value = "/search-editor")
+    public ResponseEntity<Object> searchScientificPapersEditor(@RequestBody SearchDTO searchDTO) {
+        try {
+            SearchResultDTO searchResultDTO;
+            if (searchDTO.getBasic())
+                searchResultDTO = scientificPaperService.basicScientificPaperSearchEditor(searchDTO);
+            else
+                searchResultDTO = scientificPaperService.advancedScientificPaperSearchEditor(searchDTO);
+
+            return new ResponseEntity<>(searchResultDTO, HttpStatus.OK);
+        } catch (RepositoryException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

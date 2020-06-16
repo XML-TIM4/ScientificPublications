@@ -239,6 +239,10 @@ public class ScientificPaperService {
             return scientificPaperRepository.basicSearch(searchDTO.getText());
     }
 
+    public SearchResultDTO basicScientificPaperSearchEditor(SearchDTO searchDTO) throws RepositoryException {
+         return scientificPaperRepository.basicSearchEditor(searchDTO.getText());
+    }
+
     public SearchResultDTO advancedScientificPaperSearch(SearchDTO searchDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -247,6 +251,11 @@ public class ScientificPaperService {
                     ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         } else
             return scientificPaperRepository.advancedSearch(searchDTO);
+    }
+
+    public SearchResultDTO advancedScientificPaperSearchEditor(SearchDTO searchDTO) {
+
+        return scientificPaperRepository.advancedSearchEditor(searchDTO);
     }
 
     private void setIDs(String id, Document document) throws BadParametersException {
