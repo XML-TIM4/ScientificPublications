@@ -14,6 +14,15 @@
                     </xs:complexContent>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="editor">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="TAuthor">
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="date">
                 <xs:complexType>
                     <xs:simpleContent>
