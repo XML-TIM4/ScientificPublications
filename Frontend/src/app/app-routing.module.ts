@@ -20,7 +20,10 @@ const routes: Routes = [
   { path: 'my-papers', component: MyPapersComponent },
   { path: 'my-reviews', component: MyReviewsComponent },
   { path: 'papers-to-review', component: PapersToReviewComponent },
-  { path: 'reviewer-selection', component: ReviewerSelectionComponent }
+  { path: 'reviewer-selection', component: ReviewerSelectionComponent },
+  { path: 'edit-paper', component: EditPaperComponent },
+  { path: 'edit-paper/:id', component: EditPaperComponent }
+
 
 ];
 

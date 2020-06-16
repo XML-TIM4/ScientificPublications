@@ -12,7 +12,7 @@
       <div fxFlex="24" fxFlex.sm="30" fxFlex.xs="80" class="card-item" *ngFor="let paper of papers">
         <app-paper-section [paper]="paper"></app-paper-section>
         <mat-card-actions>
-          <button mat-raised-button color="primary" (click)="call(paper.id)">EDIT</button>
+          <button mat-raised-button color="primary" [routerLink]="['/edit-paper', paper.id]">EDIT</button>
           <button mat-raised-button color="warn" >CANCEL</button>
         </mat-card-actions>
       </div>
@@ -20,5 +20,3 @@
   </mat-card>
 
 </div>
-
-<app-edit-paper [xmlString]="this.myPapersComponent"></app-edit-paper>
