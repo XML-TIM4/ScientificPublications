@@ -166,4 +166,8 @@ public class ReviewService {
     public String createReview(String templateId, String xml) {
         return null;
     }
+
+    public String getReviewId(String scientificPaperId) throws RepositoryException {
+        return reviewRepository.findOneByPaperId(scientificPaperId);
+    }
 }

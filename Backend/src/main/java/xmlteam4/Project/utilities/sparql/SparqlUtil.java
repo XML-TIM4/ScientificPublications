@@ -21,7 +21,7 @@ public class SparqlUtil {
     /* Simple SPARQL query on a named graph */
     private static final String SELECT_NAMED_GRAPH_TEMPLATE = "SELECT ?g FROM <%1$s> WHERE { %2$s }";
 
-    private static final String SELECT_GRAPHS_TEMPLATE = "SELECT ?g WHERE { %1$s }";
+    private static final String SELECT_GRAPHS_TEMPLATE = "SELECT DISTINCT ?g WHERE { %1$s }";
 
 
     /* Plain text RDF serialization format */
@@ -52,6 +52,7 @@ public class SparqlUtil {
     }
 
     public static String selectFromAllGraphs(String sparqlCondition) {
+        System.out.println(String.format(SELECT_GRAPHS_TEMPLATE, sparqlCondition));
         return String.format(SELECT_GRAPHS_TEMPLATE, sparqlCondition);
     }
 }

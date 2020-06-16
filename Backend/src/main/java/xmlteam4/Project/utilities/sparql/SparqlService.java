@@ -55,8 +55,10 @@ public class SparqlService {
 
         ArrayList<String> results = new ArrayList<>();
 
+        String id;
         while (resultSet.hasNext()) {
-            results.add(resultSet.next().getLiteral("g").getString());
+            id = resultSet.next().get("g").toString().replace("3030/ScientificPaperDataset", "8080");
+            results.add(id);
         }
 
         return results;

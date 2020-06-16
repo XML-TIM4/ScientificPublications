@@ -37,6 +37,15 @@ public class ReviewController {
 
     }
 
+    @GetMapping
+    public ResponseEntity<Object> getReviewId(@RequestParam String scientificPaperId) {
+        try {
+            return new ResponseEntity<>(reviewService.getReviewId(scientificPaperId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @Secured("ROLE_EDITOR")
     @PostMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createReviewTemplate(@RequestBody String xml) {

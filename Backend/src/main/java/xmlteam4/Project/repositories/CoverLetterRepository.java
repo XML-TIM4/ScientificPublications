@@ -73,4 +73,22 @@ public class CoverLetterRepository {
             throw new RepositoryException("Failed to delete cover letter");
         }
     }
+
+    public String findOneByPaperId(String scientficPaperId) throws RepositoryException {
+        String xPathExp = String.format("data(//cover-letter[.//scientific-paper-reference = '%s']/@id)",
+                scientficPaperId);
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(coverLetterCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            XMLResource res = queryService.extractSingleResource(resultSet);
+            String retVal = res.getContent().toString();
+            ((EXistResource) res).freeResources();
+            return retVal;
+        } catch (XMLDBException e) {
+            throw new RepositoryException("Failed to find cover letter");
+        }
+    }
 }

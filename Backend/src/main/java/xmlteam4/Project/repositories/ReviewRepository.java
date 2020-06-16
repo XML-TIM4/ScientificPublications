@@ -74,4 +74,21 @@ public class ReviewRepository {
             throw new RepositoryException("Failed to delete review");
         }
     }
+
+    public String findOneByPaperId(String scientificPaperId) throws RepositoryException {
+        String xPathExp = String.format("data(//review[.//scientific-paper-id = '%s']/@id)", scientificPaperId);
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(reviewCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            XMLResource res = queryService.extractSingleResource(resultSet);
+            String retVal = res.getContent().toString();
+            ((EXistResource) res).freeResources();
+            return retVal;
+        } catch (XMLDBException e) {
+            throw new RepositoryException("Failed to find review");
+        }
+    }
 }
