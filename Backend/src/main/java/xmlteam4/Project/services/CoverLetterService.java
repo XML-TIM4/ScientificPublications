@@ -156,4 +156,8 @@ public class CoverLetterService {
 
         return coverLetterRepository.create(id, rdfa);
     }
+
+    public String getCoverLetterId(String scientificPaperId) throws RepositoryException {
+        return coverLetterRepository.findOneByPaperId(scientificPaperId);
+    }
 }

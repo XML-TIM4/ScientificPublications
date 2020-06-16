@@ -35,6 +35,15 @@ public class CoverLetterController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<Object> getCoverLetterId(@RequestParam String scientificPaperId) {
+        try {
+            return new ResponseEntity<>(coverLetterService.getCoverLetterId(scientificPaperId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @Secured("ROLE_AUTHOR")
     @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createCoverLetter(@RequestBody String xml) {
