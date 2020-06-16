@@ -32,8 +32,6 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatRadioModule} from '@angular/material/radio';
 import { EditPaperComponent } from './xonomy/edit-paper/edit-paper.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { EditCoverLetterComponent } from './xonomy/edit-cover-letter/edit-cover-letter.component';
-import { EditReviewComponent } from './xonomy/edit-review/edit-review.component';
 
 @NgModule({
   declarations: [
@@ -49,9 +47,7 @@ import { EditReviewComponent } from './xonomy/edit-review/edit-review.component'
     PaperSectionComponent,
     ReviewerSectionComponent,
     HeaderComponent,
-    EditPaperComponent,
-    EditCoverLetterComponent,
-    EditReviewComponent
+    EditPaperComponent
   ],
   imports: [
     HttpClientModule,

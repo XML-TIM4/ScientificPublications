@@ -16,19 +16,6 @@
                 <country>country0</country>
             </affiliation>
         </author>
-        <editor>
-            <name>
-                <first-name>first-name0</first-name>
-                <last-name>last-name0</last-name>
-            </name>
-            <email>admin@admin.com</email>
-            <affiliation>
-                <university>university0</university>
-                <city>city0</city>
-                <state>state0</state>
-                <country>country0</country>
-            </affiliation>
-        </editor>
         <date>2006-05-04</date>
         <scientific-paper-reference>scientific-paper-reference0</scientific-paper-reference>
     </cover-letter-metadata>
