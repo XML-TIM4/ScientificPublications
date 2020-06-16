@@ -42,7 +42,7 @@ public class BusinessProcessService {
     }
 
     public TReviewCycle getActiveCycle(TBusinessProcess businessProcess) {
-        return (TReviewCycle) businessProcess.getReviewCycles().getReviewCycle()
+        return businessProcess.getReviewCycles().getReviewCycle()
                 .get(businessProcess.getReviewCycles().getReviewCycle().size() - 1);
     }
 

@@ -110,7 +110,7 @@ public class CoverLetterService {
         TPhase activePhase = businessProcessService.getActivePhase(reviewCycle);
 
         // phase has to be submitted
-        if (activePhase.getTitle().equals(PhaseTitle.SUBMITTED.toString()))
+        if (!activePhase.getTitle().equals(PhaseTitle.SUBMITTED.toString()))
             throw new BusinessProcessException("Cannot create cover letter at this phase of review cycle");
 
         TActorTask createCoverLetterTask = businessProcessService.getTaskByDocumentType(activePhase,
@@ -123,7 +123,7 @@ public class CoverLetterService {
         TUser loggedInUser = (TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // cannot create cover letter if user is not also the creator of scientific paper
-        if (!createCoverLetterTask.getUserId().equals(loggedInUser.getEmail()))
+        if (!createCoverLetterTask.getUserId().equals(loggedInUser.getId()))
             throw new BusinessProcessException("Only user that uploaded scientific paper can upload cover letter");
 
         String id = idGenerator.createID();

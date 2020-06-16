@@ -179,7 +179,7 @@ public class TBusinessProcess {
     public static class ReviewCycles {
 
         @XmlElement(name = "review-cycle", namespace = "https://github.com/XML-TIM4/ScientificPublications", required = true)
-        protected List<Object> reviewCycle;
+        protected List<TReviewCycle> reviewCycle;
 
         /**
          * Gets the value of the reviewCycle property.
@@ -203,9 +203,9 @@ public class TBusinessProcess {
          *
          *
          */
-        public List<Object> getReviewCycle() {
+        public List<TReviewCycle> getReviewCycle() {
             if (reviewCycle == null) {
-                reviewCycle = new ArrayList<Object>();
+                reviewCycle = new ArrayList<>();
             }
             return this.reviewCycle;
         }
