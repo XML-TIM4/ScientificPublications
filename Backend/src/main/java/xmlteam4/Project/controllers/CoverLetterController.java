@@ -40,7 +40,7 @@ public class CoverLetterController {
         try {
             return new ResponseEntity<>(coverLetterService.getCoverLetterId(scientificPaperId), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("", HttpStatus.OK);
         }
     }
 

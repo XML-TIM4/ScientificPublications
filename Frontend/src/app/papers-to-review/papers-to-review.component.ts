@@ -22,6 +22,7 @@ export class PapersToReviewComponent implements OnInit {
 
   ngOnInit() {
     this.searchForm = new FormGroup({
+      basic: new FormControl(''),
       text: new FormControl(''),
       keywords: new FormControl(''),
       version: new FormControl(''),
@@ -78,13 +79,14 @@ export class PapersToReviewComponent implements OnInit {
   onSubmit() {
 
     const keywordz = this.searchForm.get('keywords').value.toString().split(',');
+    console.log(this.searchForm.get('basic').value, ' BAZIK');
     const searchParams: IPaperSearch = {
-      basic: false,
-      text: this.searchForm.get('text').value,
+      basic: this.searchForm.get('basic').value,
+      text: this.searchForm.get('text').value !== null ? this.searchForm.get('text').value : '',
       revised: this.searchForm.get('revised').value !== null ? this.searchForm.get('revised').value.getTime() : null,
       received: this.searchForm.get('received').value !== null ? this.searchForm.get('received').value.getTime() : null,
       accepted: this.searchForm.get('accepted').value !== null ? this.searchForm.get('accepted').value.getTime() : null,
-      version: this.searchForm.get('version').value,
+      version: this.searchForm.get('version').value !== null ? this.searchForm.get('version').value : '',
       status: this.searchForm.get('status').value !== '' ? this.searchForm.get('status').value : 'ACCEPTED',
       category: this.searchForm.get('category').value !== '' ? this.searchForm.get('category').value : 'RESEARCH_PAPER',
       keywords: keywordz,
@@ -98,7 +100,7 @@ export class PapersToReviewComponent implements OnInit {
         this.letterService.findByPaper(resData.otherPaperIds[i]).subscribe(( letterId => {
           if (letterId !== '') {
 
-            this.paperService.findOne(letterId.toString(), 'application/xml').subscribe((resPaper => {
+            this.paperService.findOne(resData.otherPaperIds[i].toString(), 'application/xml').subscribe((resPaper => {
               const parser = new DOMParser();
               const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
 
@@ -116,8 +118,8 @@ export class PapersToReviewComponent implements OnInit {
       }
 
 
-
     }));
+
 
   }
 
