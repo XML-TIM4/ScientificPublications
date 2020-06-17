@@ -9,6 +9,7 @@ import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.BusinessProcessRepository;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,5 +98,11 @@ public class BusinessProcessService {
         reviewPhase.setActorTasks(reviewTasks);
 
         return reviewPhase;
+    }
+
+    public List<String> getOwnReviewsIds() {
+        TUser loggedInUser = (TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return businessProcessRepository.getOwnReviewsIds(loggedInUser.getId());
     }
 }
