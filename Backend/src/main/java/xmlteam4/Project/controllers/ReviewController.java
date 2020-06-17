@@ -37,12 +37,12 @@ public class ReviewController {
 
     }
 
-    @GetMapping
-    public ResponseEntity<Object> getReviewId(@RequestParam String scientificPaperId) {
+    @GetMapping(value = "/paper/{id}", produces = "text/plain")
+    public ResponseEntity<Object> getReviewId(@PathVariable("id") String scientificPaperId) {
         try {
             return new ResponseEntity<>(reviewService.getReviewId(scientificPaperId), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("", HttpStatus.OK);
         }
     }
 
