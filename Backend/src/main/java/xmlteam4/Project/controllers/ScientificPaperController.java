@@ -41,8 +41,9 @@ public class ScientificPaperController {
     }
 
     @Secured("ROLE_AUTHOR")
-    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
+    @PostMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createScientificPaper(@RequestBody String xml) {
+        System.out.println("JOJO\n" + xml);
         try {
             return new ResponseEntity<>(scientificPaperService.createScientificPaper(xml), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -51,8 +52,9 @@ public class ScientificPaperController {
     }
 
     @Secured("ROLE_AUTHOR")
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_XML_VALUE)
+    @PutMapping(value = "/{id}")
     public ResponseEntity<String> reviseScientificPaper(@PathVariable("id") String id, @RequestBody String xml) {
+        System.out.println("JOJO\n" + xml);
         try {
             return new ResponseEntity<>(scientificPaperService.reviseScientificPaper(id, xml), HttpStatus.OK);
         } catch (Exception e) {

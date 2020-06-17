@@ -38,12 +38,6 @@
                 
             </div>
 
-            <div align="left">
-                <xsl:call-template name="TAuthor">
-                    <xsl:with-param name="author" select="sc:cover-letter/sc:cover-letter-metadata/sc:editor"/>
-                </xsl:call-template>
-            </div>
-
         </body>
 
 

@@ -40,12 +40,6 @@
                     </fo:block>
                 </fo:block>
 
-                <fo:block text-align="left" margin-top="10px" margin-bottom="10px">
-                    <xsl:call-template name="TAuthor">
-                        <xsl:with-param name="author" select="sc:cover-letter/sc:cover-letter-metadata/sc:editor"/>
-                    </xsl:call-template>
-                </fo:block>
-
             </fo:flow>
         </fo:page-sequence>
         </fo:root>

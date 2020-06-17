@@ -146,9 +146,6 @@ public class CoverLetterService {
         NodeList authors = document.getElementsByTagName("author");
         idGenerator.generateUserIDs(authors);
 
-        NodeList editors = document.getElementsByTagName("editor");
-        idGenerator.generateUserIDs(editors);
-
         // deal with rdf
         String rdfa = xslTransformer.generateXML(documentXMLTransformer.toXMLString(document), coverLetterToRDFa);
         String rdf = xslTransformer.generateXML(rdfa, grddl);
