@@ -88,8 +88,8 @@ public class BusinessProcessService {
         secondReview.setFinished(false);
         secondReview.setDocumentId("");
         secondReview.setUserId(secondReviewer);
-        firstReview.setUserType(UserType.REVIEWER.toString());
-        firstReview.setDocumentType(DocumentType.REVIEW.toString());
+        secondReview.setUserType(UserType.REVIEWER.toString());
+        secondReview.setDocumentType(DocumentType.REVIEW.toString());
 
         reviewTasks.getActorTask().add(firstReview);
         reviewTasks.getActorTask().add(secondReview);

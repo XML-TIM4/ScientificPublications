@@ -21,6 +21,8 @@ import xmlteam4.Project.utilities.idgenerator.IDGenerator;
 
 import javax.xml.bind.JAXBException;
 
+import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
+
 @Component
 public class StartupService {
     @Autowired
@@ -66,7 +68,7 @@ public class StartupService {
                 Users users = factory.createUsers();
                 TUser user = new TUser();
                 user.setEditor(true);
-                user.setId(idGenerator.createID());
+                user.setId(TARGET_NAMESPACE + "/users/" + idGenerator.createID());
                 user.setPassword(passwordEncoder.encode("adminadmin"));
                 user.setEmail("admin@admin.com");
                 user.setExpertise("");

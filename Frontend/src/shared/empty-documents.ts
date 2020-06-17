@@ -24,9 +24,10 @@ export class EmptyDocuments {
         'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications ' +
         'file:/data/schemas/CoverLetter.xsd"><cover-letter-metadata><author><name><first-name></first-name><last-name></last-name></name>' +
         '<email></email><affiliation><university></university><city></city><state></state><country></country></affiliation></author>' +
-        '<date></date><scientific-paper-reference>';
+        '<editor><name><first-name></first-name><last-name></last-name></name><email></email><affiliation><university></university>' +
+        '<city></city><state></state><country></country></affiliation></editor><date></date><scientific-paper-reference>';
         ret += scientificPaperReference;
-        ret += '</scientific-paper-reference></cover-letter-metadata><content></content></cover-letter>';
+        ret += '</scientific-paper-reference></cover-letter-metadata><content><signature></signature></content></cover-letter>';
         return ret;
     }
 }
