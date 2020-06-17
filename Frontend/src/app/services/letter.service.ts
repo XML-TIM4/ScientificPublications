@@ -18,4 +18,8 @@ export class LetterService {
     return this.http.get('http://localhost:8080/api/cover-letters/paper/' + paperId, {headers: new HttpHeaders({'Content-Type': 'text/plain', 'Accept': 'text/plain', 'Response-Type': 'text/plain'}), responseType: 'text'});
   }
 
+  create(xmlString: string) {
+    return this.http.post('http://localhost:8080/api/cover-letters', xmlString, {headers: new HttpHeaders({'Response-Type': 'text'}), responseType: 'text'});
+  }
+
 }

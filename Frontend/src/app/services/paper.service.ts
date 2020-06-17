@@ -70,5 +70,12 @@ export class PaperService {
     return this.http.delete('http://localhost:8080/api/scientific-papers/' + paperId);
   }
 
+  revise(paperId: string, xmlString: string) {
+    return this.http.put('http://localhost:8080/api/scientific-papers/' + paperId, xmlString,{headers: new HttpHeaders({'Response-Type': 'text'}), responseType: 'text'});
+  }
+
+  create(xmlString: string) {
+    return this.http.post('http://localhost:8080/api/scientific-papers', xmlString, {headers: new HttpHeaders({'Content-Type': 'text/xml', Accept: 'text/xml', 'Response-Type': 'text'}), responseType: 'text'});
+  }
 
 }

@@ -1,3 +1,4 @@
+import { LetterService } from 'src/app/services/letter.service';
 import { Component, OnInit } from '@angular/core';
 import { EmptyDocuments } from '../../../shared/empty-documents';
 import { ActivatedRoute } from '@angular/router';
@@ -352,14 +353,17 @@ export class EditCoverLetterComponent implements OnInit {
   };
 
   xmlString: string;
+  paperId: string;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private letterService: LetterService) { }
 
   ngOnInit() {
     this.xmlString = EmptyDocuments.emptyCoverLetter('');
+    this.paperId = '';
     this.xonomyEditor = document.getElementById('xonomy-editor');
     this.route.params.subscribe(params => {
       this.xmlString = EmptyDocuments.emptyCoverLetter(params.id);
+      this.paperId = params.id;
       this.renderXonomy();
     });
     this.renderXonomy();
@@ -388,6 +392,15 @@ export class EditCoverLetterComponent implements OnInit {
     const jsElement = Xonomy.harvestElement(div);
     that.recursiveUnwrap(jsElement);
     Xonomy.changed();
+  }
+
+  submitLetter() {
+    this.xmlString = Xonomy.harvest();
+    console.log(this.xmlString);
+    console.log(this.paperId);
+    this.letterService.create(this.xmlString).subscribe(data => {
+      console.log(data);
+    });
   }
 
 }

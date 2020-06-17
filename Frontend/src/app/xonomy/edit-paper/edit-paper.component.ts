@@ -558,6 +558,7 @@ export class EditPaperComponent implements OnInit {
     }
   };
   xmlString: string;
+  paperId: string;
   imageMapper = {};
 
   constructor(private route: ActivatedRoute, private paperService: PaperService) { }
@@ -565,10 +566,12 @@ export class EditPaperComponent implements OnInit {
   ngOnInit() {
     // Xonomy.referenceToThis = this;
     this.xmlString = EmptyDocuments.emptyScientificPaper;
+    this.paperId = '';
     this.xonomyEditor = document.getElementById('xonomy-editor');
     this.route.params.subscribe(params => {
       this.paperService.findOne(params.id, 'application/xml').subscribe((resPaper => {
         this.xmlString = resPaper;
+        this.paperId = params.id;
         this.renderXonomy();
       }));
     });
@@ -646,6 +649,22 @@ export class EditPaperComponent implements OnInit {
     const jsElement = Xonomy.harvestElement(div);
     that.recursiveUnwrap(jsElement);
     Xonomy.changed();
+  }
+
+  submitPaper() {
+    this.xmlString = Xonomy.harvest();
+    this.xmlString = this.replaceImageTextBack(this.xmlString);
+    console.log(this.xmlString);
+    console.log(this.paperId);
+    if (this.paperId === '') {
+      this.paperService.create(this.xmlString).subscribe(data => {
+        console.log(data);
+      });
+    } else {
+      this.paperService.create(this.xmlString).subscribe(data => {
+        console.log(data);
+      });
+    }
   }
 
 }
