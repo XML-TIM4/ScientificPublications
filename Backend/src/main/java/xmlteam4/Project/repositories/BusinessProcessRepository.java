@@ -25,6 +25,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class BusinessProcessRepository {
@@ -166,5 +168,38 @@ public class BusinessProcessRepository {
         JAXBContext context = JAXBContext.newInstance(TBusinessProcess.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         return (TBusinessProcess) unmarshaller.unmarshal(node);
+    }
+
+    public List<String> getOwnReviewsIds(String userId) {
+        String xPathExp = String
+                .format("data(//business-process[.//review-cycle[last() and ./@status = 'pending' and .//phase[last()" +
+                        " and ./@title = 'review' and ./@can-advance = 'false' and .//actor-task/@user-id = " +
+                        "'%s']]]/@scientific-paper-id)", userId);
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            ResourceIterator i = resultSet.getIterator();
+            XMLResource res = null;
+            List<String> retVal = new ArrayList<>();
+
+            while (i.hasMoreResources()) {
+                res = (XMLResource) i.nextResource();
+                retVal.add(res.getContentAsDOM().getTextContent());
+            }
+
+            if (res != null)
+                try {
+                    ((EXistResource) res).freeResources();
+                } catch (XMLDBException exception) {
+                    exception.printStackTrace();
+                }
+
+            return retVal;
+        } catch (XMLDBException e) {
+            return new ArrayList<>();
+        }
     }
 }

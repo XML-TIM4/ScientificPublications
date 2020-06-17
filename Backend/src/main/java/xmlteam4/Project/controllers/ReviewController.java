@@ -34,8 +34,8 @@ public class ReviewController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
     }
+
 
     @GetMapping
     public ResponseEntity<Object> getReviewId(@RequestParam String scientificPaperId) {
