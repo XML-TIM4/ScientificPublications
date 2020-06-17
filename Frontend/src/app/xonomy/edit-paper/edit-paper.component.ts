@@ -1,6 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EmptyDocuments } from '../../../shared/empty-documents';
-import '../../../assets/xonomy-files/xonomy.js';
+import { ActivatedRoute } from '@angular/router';
+import { PaperService } from 'src/app/services/paper.service';
+import * as uuid from 'uuid';
 
 declare var Xonomy: any;
 
@@ -12,11 +14,29 @@ declare var Xonomy: any;
 export class EditPaperComponent implements OnInit {
 
   xonomyEditor;
-  @Input()
-  xmlString;
 
   documentSpecification = {
     elements: {
+      received: {
+        oneliner: true,
+        asker(defaultString) {return '<b>Cannot change value</b>'; }
+      },
+      revised: {
+        oneliner: true,
+        asker(defaultString) {return '<b>Cannot change value</b>'; }
+      },
+      accepted: {
+        oneliner: true,
+        asker(defaultString) {return '<b>Cannot change value</b>'; }
+      },
+      version: {
+        oneliner: true,
+        asker(defaultString) {return '<b>Cannot change value</b>'; }
+      },
+      status: {
+        oneliner: true,
+        asker(defaultString) {return '<b>Cannot change value</b>'; }
+      },
       category: {
         oneliner: true,
         asker: Xonomy.askPicklist,
@@ -537,14 +557,75 @@ export class EditPaperComponent implements OnInit {
       }
     }
   };
+  xmlString: string;
+  imageMapper = {};
 
-  constructor() { }
+  constructor(private route: ActivatedRoute, private paperService: PaperService) { }
 
   ngOnInit() {
+    Xonomy.referenceToThis = this;
+    this.xmlString = EmptyDocuments.emptyScientificPaper;
     this.xonomyEditor = document.getElementById('xonomy-editor');
+    this.route.params.subscribe(params => {
+      this.paperService.findOne(params.id, 'application/xml').subscribe((resPaper => {
+        this.xmlString = resPaper;
+        this.renderXonomy();
+      }));
+    });
+    this.renderXonomy();
+  }
 
-    const temp = EmptyDocuments.emptyScientificPaper;
-    Xonomy.render(temp, this.xonomyEditor, this.documentSpecification);
+  getKeyByValue(object, value) {
+    for (const prop in object) {
+      if (object.hasOwnProperty(prop)) {
+        if (object[prop] === value) {
+          return prop;
+        }
+      }
+    }
+    return null;
+  }
+
+  onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+
+  replaceImageText(xmlString: string) {
+    const criteria = /<image>([^<]*)<\/image>/g;
+    const matches = xmlString.match(criteria);
+    if (!Array.isArray(matches)) {
+      return xmlString;
+    }
+    for (const match of matches.filter(this.onlyUnique)) {
+      const clean = match.substring(7, match.length - 8);
+      const imageId = uuid.v4();
+      this.imageMapper[imageId] = clean;
+      xmlString = xmlString.replace(RegExp(clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), imageId);
+    }
+    return xmlString;
+  }
+
+  replaceImageTextBack(xmlString: string) {
+    const criteria = /<image>([^<]*)<\/image>/g;
+    const matches = xmlString.match(criteria);
+    if (!Array.isArray(matches)) {
+      return xmlString;
+    }
+    for (const match of matches.filter(this.onlyUnique)) {
+      const imageId = match.substring(7, match.length - 8);
+      const clean = this.imageMapper[imageId];
+      if (clean === undefined) {
+        continue;
+      }
+      xmlString = xmlString.replace(RegExp(imageId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), clean);
+    }
+    return xmlString;
+  }
+
+  renderXonomy() {
+    this.xmlString = this.replaceImageText(this.xmlString);
+    Xonomy.render(this.xmlString, this.xonomyEditor, this.documentSpecification);
+    Xonomy.changed();
   }
 
   recursiveUnwrap(jsElement) {
