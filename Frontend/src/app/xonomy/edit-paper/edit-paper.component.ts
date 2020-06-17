@@ -563,7 +563,7 @@ export class EditPaperComponent implements OnInit {
   constructor(private route: ActivatedRoute, private paperService: PaperService) { }
 
   ngOnInit() {
-    Xonomy.referenceToThis = this;
+    // Xonomy.referenceToThis = this;
     this.xmlString = EmptyDocuments.emptyScientificPaper;
     this.xonomyEditor = document.getElementById('xonomy-editor');
     this.route.params.subscribe(params => {

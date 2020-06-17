@@ -1,3 +1,4 @@
+import { EditCoverLetterComponent } from './xonomy/edit-cover-letter/edit-cover-letter.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {LoginComponent} from './auth/login/login.component';
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'papers-to-review', component: PapersToReviewComponent },
   { path: 'reviewer-selection', component: ReviewerSelectionComponent },
   { path: 'edit-paper', component: EditPaperComponent },
-  { path: 'edit-paper/:id', component: EditPaperComponent }
+  { path: 'edit-paper/:id', component: EditPaperComponent },
+  { path: 'edit-cover-letter/:id', component: EditCoverLetterComponent }
 
 
 ];
