@@ -36,10 +36,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ScientificPaperService {
@@ -212,21 +209,17 @@ public class ScientificPaperService {
     public Pair<List<String>, String> extractDataForSelectionOfReviewers(Document scientificPaper) {
         List<String> authorIds = new ArrayList<>();
 
-        NodeList authors = scientificPaper.getElementsByTagName("authors").item(0).getChildNodes();
+        NodeList authors = scientificPaper.getElementsByTagName("author");
 
         for (int i = 0; i < authors.getLength(); i++) {
-            authorIds.add(authors.item(i).getChildNodes().item(1).getTextContent());
+            authorIds.add(authors.item(i).getChildNodes().item(3).getTextContent());
         }
 
-        List<String> keywords = new ArrayList<>();
+        String keywords =
+                scientificPaper.getElementsByTagName("keywords").item(0).getAttributes().getNamedItem("content")
+                        .getTextContent();
 
-        NodeList keywordNodes = scientificPaper.getElementsByTagName("keywords").item(0).getChildNodes();
-
-        for (int i = 0; i < keywordNodes.getLength(); i++) {
-            keywords.add(keywordNodes.item(i).getTextContent());
-        }
-
-        return new Pair<>(authorIds, String.join(",", keywords));
+        return new Pair<>(authorIds, keywords);
     }
 
     public SearchResultDTO basicScientificPaperSearch(SearchDTO searchDTO) throws RepositoryException {
@@ -240,7 +233,7 @@ public class ScientificPaperService {
     }
 
     public SearchResultDTO basicScientificPaperSearchEditor(SearchDTO searchDTO) throws RepositoryException {
-         return scientificPaperRepository.basicSearchEditor(searchDTO.getText());
+        return scientificPaperRepository.basicSearchEditor(searchDTO.getText());
     }
 
     public SearchResultDTO advancedScientificPaperSearch(SearchDTO searchDTO) {

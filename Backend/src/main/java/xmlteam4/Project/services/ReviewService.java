@@ -25,6 +25,8 @@ import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
+import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
+
 @Service
 public class ReviewService {
 
@@ -141,7 +143,7 @@ public class ReviewService {
 
         TActorTask createReviewTemplateTask = businessProcessService.getTaskByDocumentType(activePhase,
                 DocumentType.REVIEW);
-        createReviewTemplateTask.setUserId(loggedIn.getEmail());
+        createReviewTemplateTask.setUserId(loggedIn.getId());
         createReviewTemplateTask.setDocumentId(id);
         createReviewTemplateTask.setFinished(true);
 
