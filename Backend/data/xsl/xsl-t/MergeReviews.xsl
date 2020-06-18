@@ -3,7 +3,8 @@
                 xmlns="https://github.com/XML-TIM4/ScientificPublications">
 
     <xsl:output method="xml" indent="yes"/>
-    <xsl:param name="reviewToMerge" select="document(.)"/>
+    <xsl:param name="fileName" select="."/>
+    <xsl:param name="reviewToMerge" select="document($fileName)"/>
 
     <xsl:variable name="newReviewer" select="$reviewToMerge//reviewer"/>
 

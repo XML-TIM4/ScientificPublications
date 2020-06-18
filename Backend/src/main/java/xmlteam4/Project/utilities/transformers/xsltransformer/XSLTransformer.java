@@ -12,10 +12,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 
 @Component
 public class XSLTransformer {
@@ -50,12 +47,17 @@ public class XSLTransformer {
 
             Transformer t = transformerFactory.newTransformer(new StreamSource(tf));
 
+            String fileName = "data/temp/temp.xml";
+            FileWriter fw = new FileWriter(fileName);
+            fw.write(updates);
+            fw.close();
+
             Source s = new StreamSource(src);
             Result r = new StreamResult(out);
-            t.setParameter("reviewToMerge", updates);
+            t.setParameter("fileName", fileName);
             t.transform(s, r);
             return out.toString();
-        } catch (TransformerException e) {
+        } catch (TransformerException | IOException e) {
             throw new TransformationException("Failed to merge reviews");
         }
     }

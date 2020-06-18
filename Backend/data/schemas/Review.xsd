@@ -36,7 +36,7 @@
             <xs:element name="reviewer-comments">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" name="author-comment" type="TComment"
+                        <xs:element maxOccurs="unbounded" name="reviewer-comment" type="TComment"
                             minOccurs="0"/>
                     </xs:sequence>
                 </xs:complexType>

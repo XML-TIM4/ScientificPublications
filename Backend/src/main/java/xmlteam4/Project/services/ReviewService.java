@@ -180,7 +180,7 @@ public class ReviewService {
 
         // check if phase is review and task hasn't been completed
         if (!(activePhase.getTitle().equals(PhaseTitle.REVIEW.toString())
-                && businessProcessService.getTaskByDocumentTypeAndUserId(activePhase, DocumentType.REVIEW,
+                && !businessProcessService.getTaskByDocumentTypeAndUserId(activePhase, DocumentType.REVIEW,
                 loggedIn.getId()).isFinished())) {
             throw new BusinessProcessException("Wrong review cycle phase or task is already completed");
         }
@@ -188,7 +188,7 @@ public class ReviewService {
         if (businessProcessService.getTaskByDocumentTypeAndDifferentUserId(activePhase, DocumentType.REVIEW,
                 loggedIn.getId()).isFinished()) {
             // load temp
-            String temp = reviewRepository.findOne(reviewTemplateId + "-temp");
+            String temp = reviewRepository.findOneWithReviwer(reviewTemplateId);
 
             // merge
             String merged = xslTransformer.mergeReviews(temp, xml, mergeReviewsXslt);

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<review xmlns="https://github.com/XML-TIM4/ScientificPublications" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="2pgUTygIJxi2E8QFTU2ZD2" language="en" xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/data/schemas/Review.xsd">
+    <review-metadata>
+        <reviewer>
+            <name>
+                <first-name>first-name0</first-name>
+                <last-name>last-name0</last-name>
+            </name>
+            <email>admin2@admin.com</email>
+            <affiliation>
+                <university>university0</university>
+                <city>city0</city>
+                <state>state0</state>
+                <country>country0</country>
+            </affiliation>
+        </reviewer>
+        <date>2006-05-04</date>
+        <recommendation>accept</recommendation>
+        <scientific-paper-id>4C1G8zaEDcR6YyQlt148AM</scientific-paper-id>
+    </review-metadata>
+    <questionnaire>
+        <question>
+            <question-text>question-text0</question-text>
+        </question>
+        <question>
+            <question-text>question-text1</question-text>
+        </question>
+    </questionnaire>
+    <reviewer-comments>
+    </reviewer-comments>
+    <editor-comments>
+    </editor-comments>
+</review>
