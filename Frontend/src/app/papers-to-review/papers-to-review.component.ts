@@ -46,31 +46,47 @@ export class PapersToReviewComponent implements OnInit {
       keywords: [],
     };
 
-    this.paperService.searchEditor(searchParams).subscribe((resData => {
+    this.reviewService.searchPapersFinishedReviews().subscribe((rewData => {
 
-      this.papers = [];
-      for (let i = 0; i < resData.otherPaperIds.length; i++) {
 
-        this.letterService.findByPaper(resData.otherPaperIds[i]).subscribe(( letterId => {
-          if (letterId !== '') {
+      this.paperService.searchEditor(searchParams).subscribe((resData => {
 
-            this.paperService.findOne(resData.otherPaperIds[i].toString(), 'application/xml').subscribe((resPaper => {
-              const parser = new DOMParser();
-              const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
+        this.papers = [];
+        for (let i = 0; i < resData.otherPaperIds.length; i++) {
 
-              this.papers.push({
-                id: resData.otherPaperIds[i],
-                title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
-                category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
-                date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,
-                author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue
-              });
-            }));
-          }
-        }));
+          let pass = true;
+          this.letterService.findByPaper(resData.otherPaperIds[i]).subscribe(( letterId => {
 
-      }
+            if (letterId !== '') {
 
+              if (!rewData.resultIds.length) {
+                for(let l = 0; l < rewData.resultIds.length; l++) {
+                  if (rewData[l] === resData.otherPaperIds[i]) {
+                    pass = false;
+                  }
+                }
+              }
+
+              if (pass) {
+                this.paperService.findOne(resData.otherPaperIds[i].toString(), 'application/xml').subscribe((resPaper => {
+                  const parser = new DOMParser();
+                  const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
+
+                  this.papers.push({
+                    id: resData.otherPaperIds[i],
+                    title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
+                    category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
+                    date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,
+                    author: xmlDoc.getElementsByTagName('first-name')[0].childNodes[0].nodeValue + ' ' + xmlDoc.getElementsByTagName('last-name')[0].childNodes[0].nodeValue
+                  });
+                }));
+              }
+            }
+          }));
+
+        }
+
+      }));
 
     }));
 
@@ -93,7 +109,7 @@ export class PapersToReviewComponent implements OnInit {
       keywords: keywordz,
     };
 
-    this.reviewService.searchPapersWReviews().subscribe((rewData => {
+    this.reviewService.searchPapersFinishedReviews().subscribe((rewData => {
 
 
       this.paperService.searchEditor(searchParams).subscribe((resData => {
@@ -104,11 +120,13 @@ export class PapersToReviewComponent implements OnInit {
         let pass = true;
         this.letterService.findByPaper(resData.otherPaperIds[i]).subscribe(( letterId => {
 
+          console.log(rewData, '   LETERZID');
+
           if (letterId !== '') {
 
-            if (rewData.reviewPaperIds.length !== null) {
-              for(let l = 0; l < rewData.reviewPaperIds.length; l++) {
-                if (rewData.reviewPaperIds[l] === resData.otherPaperIds[i]) {
+            if (!rewData.resultIds.length) {
+              for(let l = 0; l < rewData.resultIds.length; l++) {
+                if (rewData[l] === resData.otherPaperIds[i]) {
                   pass = false;
                 }
               }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 export interface IRequestPapers {
-  reviewPaperIds: [];
+  resultIds: [];
 }
 
 
@@ -13,8 +13,8 @@ export class ReviewService {
 
   constructor(private http: HttpClient) { }
 
-  findOne(letterId: string, type: string) {
-    return this.http.get('http://localhost:8080/api/reviews/' + letterId, {headers: new HttpHeaders({'Content-Type': type, 'Accept': type, 'Response-Type': 'text'}), responseType: 'text'});
+  findOne(reviewId: string, type: string) {
+    return this.http.get('http://localhost:8080/api/reviews/' + reviewId, {headers: new HttpHeaders({'Content-Type': type, 'Accept': type, 'Response-Type': 'text'}), responseType: 'text'});
 
   }
 
@@ -23,7 +23,11 @@ export class ReviewService {
   }
 
   searchPapersWReviews() {
-    return this.http.get<IRequestPapers>('http://localhost:8080/api/business-process');
+    return this.http.get<IRequestPapers>('http://localhost:8080/api/business-process/own');
+  }
+
+  searchPapersFinishedReviews() {
+    return this.http.get<IRequestPapers>('http://localhost:8080/api/business-process/finished');
   }
 
 }

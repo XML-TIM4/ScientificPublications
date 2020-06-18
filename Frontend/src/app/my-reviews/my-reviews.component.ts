@@ -11,8 +11,6 @@ import {ReviewService} from "../services/review.service";
 })
 export class MyReviewsComponent implements OnInit {
 
-
-  searchForm: FormGroup;
   papers: Paper[] = [];
   theHtmlString: any;
 
@@ -22,14 +20,14 @@ export class MyReviewsComponent implements OnInit {
     this.reviewService.searchPapersWReviews().subscribe((resData => {
 
       this.papers = [];
-      if(resData.reviewPaperIds.length !== null) {
-      for (let i = 0; i < resData.reviewPaperIds.length; i++) {
-        this.paperService.findOne(resData.reviewPaperIds[i], 'application/xml').subscribe((resPaper => {
+      if (!resData.resultIds.length) {
+      for (let i = 0; i < resData.resultIds.length; i++) {
+        this.paperService.findOne(resData[i], 'application/xml').subscribe((resPaper => {
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
 
           this.papers.push({
-            id: resData.reviewPaperIds[i],
+            id: resData[i],
             title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
             category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
             date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,
@@ -43,6 +41,7 @@ export class MyReviewsComponent implements OnInit {
   view(id: string) {
     this.paperService.findOne(id, 'text/html').subscribe((resData => {
       this.theHtmlString = resData;
+      setTimeout(function() { document.getElementsByTagName('table')[0].remove(); }, 1000);
     }));
   }
 }
