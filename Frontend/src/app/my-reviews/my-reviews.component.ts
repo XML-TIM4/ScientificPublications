@@ -21,13 +21,14 @@ export class MyReviewsComponent implements OnInit {
 
       this.papers = [];
       if (!resData.resultIds.length) {
+      } else {
       for (let i = 0; i < resData.resultIds.length; i++) {
-        this.paperService.findOne(resData[i], 'application/xml').subscribe((resPaper => {
+        this.paperService.findOne(resData.resultIds[i], 'application/xml').subscribe((resPaper => {
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
 
           this.papers.push({
-            id: resData[i],
+            id: resData.resultIds[i],
             title: xmlDoc.getElementsByTagName('title')[0].childNodes[0].nodeValue,
             category: xmlDoc.getElementsByTagName('category')[0].childNodes[0].nodeValue,
             date: xmlDoc.getElementsByTagName('received')[0].childNodes[0].nodeValue,

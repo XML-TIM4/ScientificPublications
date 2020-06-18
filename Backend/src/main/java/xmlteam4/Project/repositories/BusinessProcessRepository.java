@@ -187,7 +187,7 @@ public class BusinessProcessRepository {
 
             while (i.hasMoreResources()) {
                 res = (XMLResource) i.nextResource();
-                retVal.add(res.getContentAsDOM().getTextContent());
+                retVal.add(res.getContent().toString());
             }
 
             if (res != null)
@@ -204,8 +204,7 @@ public class BusinessProcessRepository {
     }
 
     public List<String> getFinishedReviewsIds() {
-        String xPathExp = "data(//business-process[.//review-cycle[last() and ./@status = 'pending' and .//phase[last()" +
-                " and ./@title = 'review' and ./@can-advance = 'true']]]/@scientific-paper-id)";
+        String xPathExp = "data(//business-process[.//review-cycle[last() and ./@status = 'reviewed']]/@scientific-paper-id)";
         try {
             ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
 
@@ -218,7 +217,7 @@ public class BusinessProcessRepository {
 
             while (i.hasMoreResources()) {
                 res = (XMLResource) i.nextResource();
-                retVal.add(res.getContentAsDOM().getTextContent());
+                retVal.add(res.getContent().toString());
             }
 
             if (res != null)

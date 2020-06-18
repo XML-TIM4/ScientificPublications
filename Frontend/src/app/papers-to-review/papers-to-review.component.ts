@@ -58,10 +58,11 @@ export class PapersToReviewComponent implements OnInit {
           this.letterService.findByPaper(resData.otherPaperIds[i]).subscribe(( letterId => {
 
             if (letterId !== '') {
-
               if (!rewData.resultIds.length) {
+
+              } else {
                 for(let l = 0; l < rewData.resultIds.length; l++) {
-                  if (rewData[l] === resData.otherPaperIds[i]) {
+                  if (rewData.resultIds[l] === resData.otherPaperIds[i]) {
                     pass = false;
                   }
                 }
@@ -120,13 +121,12 @@ export class PapersToReviewComponent implements OnInit {
         let pass = true;
         this.letterService.findByPaper(resData.otherPaperIds[i]).subscribe(( letterId => {
 
-          console.log(rewData, '   LETERZID');
-
           if (letterId !== '') {
-
             if (!rewData.resultIds.length) {
+
+            } else {
               for(let l = 0; l < rewData.resultIds.length; l++) {
-                if (rewData[l] === resData.otherPaperIds[i]) {
+                if (rewData.resultIds[l] === resData.otherPaperIds[i]) {
                   pass = false;
                 }
               }
