@@ -54,9 +54,6 @@ export class AllPapersComponent implements OnInit {
     };
 
     this.paperService.search(searchParams).subscribe((resData => {
-      console.log(resData.ownPaperIds);
-      console.log(resData.otherPaperIds);
-
 
       this.papers = [];
       for (let i = 0; i < resData.ownPaperIds.length; i++) {
