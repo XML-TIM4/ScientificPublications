@@ -18,13 +18,13 @@ public class BusinessProcessControler {
     private BusinessProcessService businessProcessService;
 
     @Secured("ROLE_AUTHOR")
-    @GetMapping
+    @GetMapping("/own")
     public ResponseEntity<List<String>> getOwnReviewsIds() {
         return new ResponseEntity<>(businessProcessService.getOwnReviewsIds(), HttpStatus.OK);
     }
 
     @Secured("ROLE_EDITOR")
-    @GetMapping
+    @GetMapping("/finished")
     public ResponseEntity<List<String>> getFinishedReviewsIds() {
         return new ResponseEntity<>(businessProcessService.getFinishedReviewsIds(), HttpStatus.OK);
     }

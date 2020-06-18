@@ -34,6 +34,7 @@ import { EditPaperComponent } from './xonomy/edit-paper/edit-paper.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditCoverLetterComponent } from './xonomy/edit-cover-letter/edit-cover-letter.component';
 import { EditReviewComponent } from './xonomy/edit-review/edit-review.component';
+import { CreateReviewTemplateComponent } from './xonomy/create-review-template/create-review-template.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { EditReviewComponent } from './xonomy/edit-review/edit-review.component'
     HeaderComponent,
     EditPaperComponent,
     EditCoverLetterComponent,
-    EditReviewComponent
+    EditReviewComponent,
+    CreateReviewTemplateComponent
   ],
   imports: [
     HttpClientModule,
