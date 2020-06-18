@@ -26,4 +26,4 @@ Clone the repository:
 - **BACKEND**: Open terminal in Backend root directory and run `mvnw spring-boot:run`
 - **exist-db**: Install as service and run on port 8081
 - **Apache Jena Fuseki**: Download and extract .zip, open terminal in root directory and run `fuseki-server.bat`, it should be available at port 3030
-- **Angular**: Open terminal in Frontend root directory and run `npm install` and `npm run start`, it should be available at port 4200
+- **FRONTEND**: Open terminal in Frontend root directory and run `npm install` and `npm run start`, it should be available at port 4200
