@@ -54,7 +54,7 @@ public class XSLTransformer {
 
             Source s = new StreamSource(src);
             Result r = new StreamResult(out);
-            t.setParameter("fileName", fileName);
+            t.setParameter("fileName", "../../temp/temp.xml");
             t.transform(s, r);
             return out.toString();
         } catch (TransformerException | IOException e) {
