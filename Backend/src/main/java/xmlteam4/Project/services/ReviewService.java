@@ -16,7 +16,6 @@ import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.ReviewRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
-import xmlteam4.Project.utilities.sparql.SparqlService;
 import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
 import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
@@ -24,8 +23,6 @@ import javax.mail.MessagingException;
 import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
 import java.util.List;
-
-import static xmlteam4.Project.utilities.exist.XUpdateTemplate.TARGET_NAMESPACE;
 
 @Service
 public class ReviewService {
@@ -46,9 +43,6 @@ public class ReviewService {
     private IDGenerator idGenerator;
 
     @Autowired
-    private SparqlService sparqlService;
-
-    @Autowired
     private BusinessProcessService businessProcessService;
 
     @Autowired
@@ -65,12 +59,6 @@ public class ReviewService {
 
     @Value("${scientific-paper-schema-path}")
     private String scientificPaperSchemaPath;
-
-    @Value("${grddl-xslt}")
-    private String grddl;
-
-    @Value("data/xsl/xsl-t/ReviewToRDFa.xsl")
-    private String reviewToRDFa;
 
     @Value("data/xsl/xsl-t/ReviewToHTML.xsl")
     private String reviewToHTML;
@@ -135,8 +123,8 @@ public class ReviewService {
                 requiredData.getValue());
 
         // make review phase
-        TPhase reviewPhase = businessProcessService.createReviewPhase(chosenReviewers.getKey().getEmail(),
-                chosenReviewers.getValue().getEmail());
+        TPhase reviewPhase = businessProcessService.createReviewPhase(chosenReviewers.getKey().getId(),
+                chosenReviewers.getValue().getId());
 
         // finish all tasks in submitted phase and set can advance true
         activePhase.setCanAdvance(true);
@@ -158,11 +146,7 @@ public class ReviewService {
         notificationService.notifyUser(chosenReviewers.getValue(), id, DocumentType.REVIEW,
                 "Your review has been requested.");
 
-        // make rdfa and save to exist base
-        // metadata will not be saved until reviewers finish
-        String rdfa = xslTransformer.generateXML(documentXMLTransformer.toXMLString(document), reviewToRDFa);
-
-        return reviewRepository.create(id, rdfa);
+        return reviewRepository.create(id, documentXMLTransformer.toXMLString(document));
     }
 
     public String createReview(String templateId, String xml) {

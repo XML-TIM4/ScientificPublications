@@ -23,4 +23,10 @@ public class BusinessProcessControler {
         return new ResponseEntity<>(businessProcessService.getOwnReviewsIds(), HttpStatus.OK);
     }
 
+    @Secured("ROLE_EDITOR")
+    @GetMapping
+    public ResponseEntity<List<String>> getFinishedReviewsIds() {
+        return new ResponseEntity<>(businessProcessService.getFinishedReviewsIds(), HttpStatus.OK);
+    }
+
 }

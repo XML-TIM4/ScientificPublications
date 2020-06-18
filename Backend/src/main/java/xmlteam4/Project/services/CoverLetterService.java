@@ -17,7 +17,6 @@ import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.CoverLetterRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
-import xmlteam4.Project.utilities.sparql.SparqlService;
 import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
 import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
@@ -25,9 +24,6 @@ import java.io.ByteArrayInputStream;
 
 @Service
 public class CoverLetterService {
-    @Autowired
-    private SparqlService sparqlService;
-
     @Autowired
     private CoverLetterRepository coverLetterRepository;
 
@@ -48,15 +44,6 @@ public class CoverLetterService {
 
     @Value("${cover-letter-schema-path}")
     private String coverLetterSchemaPath;
-
-    @Value("${scientific-paper-schema-path}")
-    private String scientificPaperSchemaPath;
-
-    @Value("${grddl-xslt}")
-    private String grddl;
-
-    @Value("data/xsl/xsl-t/CoverLetterToRDFa.xsl")
-    private String coverLetterToRDFa;
 
     @Value("data/xsl/xsl-t/CoverLetterToHTML.xsl")
     private String coverLetterToHTML;
@@ -146,12 +133,7 @@ public class CoverLetterService {
         NodeList authors = document.getElementsByTagName("author");
         idGenerator.generateUserIDs(authors);
 
-        // deal with rdf
-        String rdfa = xslTransformer.generateXML(documentXMLTransformer.toXMLString(document), coverLetterToRDFa);
-        String rdf = xslTransformer.generateXML(rdfa, grddl);
-        sparqlService.createGraph("/cover-letters/" + id, rdf);
-
-        return coverLetterRepository.create(id, rdfa);
+        return coverLetterRepository.create(id, documentXMLTransformer.toXMLString(document));
     }
 
     public String getCoverLetterId(String scientificPaperId) throws RepositoryException {
