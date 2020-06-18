@@ -42,6 +42,24 @@ public class XSLTransformer {
         }
     }
 
+    public String mergeReviews(String source, String updates, String xsltTemplatePath) throws TransformationException {
+        try {
+            File tf = new File(xsltTemplatePath);
+            StringWriter out = new StringWriter();
+            StringReader src = new StringReader(source);
+
+            Transformer t = transformerFactory.newTransformer(new StreamSource(tf));
+
+            Source s = new StreamSource(src);
+            Result r = new StreamResult(out);
+            t.setParameter("reviewToMerge", updates);
+            t.transform(s, r);
+            return out.toString();
+        } catch (TransformerException e) {
+            throw new TransformationException("Failed to merge reviews");
+        }
+    }
+
     public ByteArrayOutputStream generatePDF(String sourceStr, String xslt_fo_TemplatePath) throws TransformationException {
         try {
             File xslFile = new File(xslt_fo_TemplatePath);

@@ -56,11 +56,10 @@ public class ReviewController {
     }
 
     @Secured("ROLE_AUTHOR")
-    @PutMapping(value = "/{template-id}", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<String> createReview(@PathVariable("template-id") String templateId,
-                                               @RequestBody String xml) {
+    @PutMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> createReview(@RequestBody String xml) {
         try {
-            return new ResponseEntity<>(reviewService.createReview(templateId, xml), HttpStatus.OK);
+            return new ResponseEntity<>(reviewService.createReview(xml), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

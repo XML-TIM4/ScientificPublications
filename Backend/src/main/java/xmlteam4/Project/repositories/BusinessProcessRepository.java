@@ -176,7 +176,7 @@ public class BusinessProcessRepository {
                         " and ./@title = 'review' and ./@can-advance = 'false' and .//actor-task/@user-id = " +
                         "'%s']]]/@scientific-paper-id)", userId);
         try {
-            ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
+                ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
 
             if (resultSet == null)
                 return null;
