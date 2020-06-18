@@ -33,7 +33,7 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="author-comments">
+            <xs:element name="reviewer-comments">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element maxOccurs="unbounded" name="author-comment" type="TComment"
