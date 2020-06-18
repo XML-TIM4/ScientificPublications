@@ -202,4 +202,35 @@ public class BusinessProcessRepository {
             return new ArrayList<>();
         }
     }
+
+    public List<String> getFinishedReviewsIds() {
+        String xPathExp = "data(//business-process[.//review-cycle[last() and ./@status = 'pending' and .//phase[last()" +
+                " and ./@title = 'review' and ./@can-advance = 'true']]]/@scientific-paper-id)";
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            ResourceIterator i = resultSet.getIterator();
+            XMLResource res = null;
+            List<String> retVal = new ArrayList<>();
+
+            while (i.hasMoreResources()) {
+                res = (XMLResource) i.nextResource();
+                retVal.add(res.getContentAsDOM().getTextContent());
+            }
+
+            if (res != null)
+                try {
+                    ((EXistResource) res).freeResources();
+                } catch (XMLDBException exception) {
+                    exception.printStackTrace();
+                }
+
+            return retVal;
+        } catch (XMLDBException e) {
+            return new ArrayList<>();
+        }
+    }
 }

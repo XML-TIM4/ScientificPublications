@@ -105,4 +105,8 @@ public class BusinessProcessService {
 
         return businessProcessRepository.getOwnReviewsIds(loggedInUser.getId());
     }
+
+    public List<String> getFinishedReviewsIds() {
+        return businessProcessRepository.getFinishedReviewsIds();
+    }
 }
