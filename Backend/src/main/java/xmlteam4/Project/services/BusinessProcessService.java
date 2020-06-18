@@ -60,12 +60,19 @@ public class BusinessProcessService {
                 .filter(at -> at.getDocumentType().equals(documentType.toString())).collect(Collectors.toList()).get(0);
     }
 
-    public TActorTask getTaskByDocumentTypeAndUserTypeAndUserEmail(TPhase activePhase, DocumentType documentType,
-                                                                   UserType userType, String userEmail) {
+    public TActorTask getTaskByDocumentTypeAndUserId(TPhase activePhase, DocumentType documentType, String userId) {
         return activePhase.getActorTasks().getActorTask().stream()
                 .filter(at -> at.getDocumentType().equals(documentType.toString())
-                        && at.getUserType().equals(userType.toString())
-                        && at.getUserId().equals(userEmail))
+                        && at.getUserId().equals(userId))
+                .collect(Collectors.toList())
+                .get(0);
+    }
+
+    public TActorTask getTaskByDocumentTypeAndDifferentUserId(TPhase activePhase, DocumentType documentType,
+                                                              String userId) {
+        return activePhase.getActorTasks().getActorTask().stream()
+                .filter(at -> at.getDocumentType().equals(documentType.toString())
+                        && !at.getUserId().equals(userId))
                 .collect(Collectors.toList())
                 .get(0);
     }
