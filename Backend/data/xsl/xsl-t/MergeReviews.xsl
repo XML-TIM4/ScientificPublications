@@ -16,28 +16,27 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="review-metadata">
-        <xsl:apply-templates select="@* | node()[not(self::reviewer)] |
-                                   reviewer[not(email = $newReviewer/email)]"/>
-        <xsl:apply-templates select="$newReviewer"/>
+    <xsl:template match="//reviewer[last()]">
+        <xsl:copy-of select="."/>
+        <xsl:copy-of select="$newReviewer"/>
     </xsl:template>
 
     <xsl:template match="//recommendation">
         <xsl:copy-of select="."/>
-        <xsl:apply-templates select="$newRecommendation"/>
+        <xsl:copy-of select="$newRecommendation"/>
     </xsl:template>
 
     <xsl:variable name="newReviewComments" select="$reviewToMerge//reviewer-comments"/>
 
     <xsl:template match="//reviewer-commments[last()]">
         <xsl:copy-of select="."/>
-        <xsl:apply-templates select="$newReviewComments"/>
+        <xsl:copy-of select="$newReviewComments"/>
     </xsl:template>
 
     <xsl:variable name="newQuestions" select="$reviewToMerge//question"/>
 
     <xsl:template match="//questionnaire/question[last()]">
         <xsl:copy-of select="."/>
-        <xsl:apply-templates select="$newQuestions"/>
+        <xsl:copy-of select="$newQuestions"/>
     </xsl:template>
 </xsl:stylesheet>
