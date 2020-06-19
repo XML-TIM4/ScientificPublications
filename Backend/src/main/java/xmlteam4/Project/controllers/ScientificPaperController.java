@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import xmlteam4.Project.DTOs.SearchDTO;
 import xmlteam4.Project.DTOs.SearchResultDTO;
 import xmlteam4.Project.exceptions.RepositoryException;
+import xmlteam4.Project.model.ScientificPaperStatus;
 import xmlteam4.Project.services.ScientificPaperService;
 
 
@@ -34,6 +35,28 @@ public class ScientificPaperController {
                 return new ResponseEntity<>(scientificPaperService.getScientificPaperPDF(id), HttpStatus.OK);
             }
             return new ResponseEntity<>("Invalid content media type", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Secured({"ROLE_AUTHOR", "ROLE_EDITOR"})
+    @GetMapping(value = "/{id}/nt", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getScientificPaperMetadataAsTurtle(@PathVariable("id") String id) {
+        try {
+            return new ResponseEntity<>(scientificPaperService.getScientificPaperMetadataAsTurtle(id),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Secured({"ROLE_AUTHOR", "ROLE_EDITOR"})
+    @GetMapping(value = "/{id}/json-ld", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getScientificPaperMetadataAsJSONLD(@PathVariable("id") String id) {
+        try {
+            return new ResponseEntity<>(scientificPaperService.getScientificPaperMetadataAsJSONLD(id),
+                    HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -97,6 +120,17 @@ public class ScientificPaperController {
 
             return new ResponseEntity<>(searchResultDTO, HttpStatus.OK);
         } catch (RepositoryException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Secured("ROLE_EDITOR")
+    @PostMapping(value = "/{id}")
+    public ResponseEntity<Object> decideForPaper(@PathVariable String id,
+                                                 @RequestParam ScientificPaperStatus decision) {
+        try {
+            return new ResponseEntity<>(scientificPaperService.decideForPaper(id, decision), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

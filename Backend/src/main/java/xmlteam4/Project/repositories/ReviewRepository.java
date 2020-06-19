@@ -12,6 +12,8 @@ import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.utilities.exist.CRUDService;
 import xmlteam4.Project.utilities.exist.QueryService;
 
+import java.net.Proxy;
+
 
 @Repository
 public class ReviewRepository {
@@ -33,6 +35,7 @@ public class ReviewRepository {
                 return null;
 
             XMLResource res = queryService.extractSingleResource(resultSet);
+            System.out.println(res.getContent());
             String retVal = res.getContent().toString();
             ((EXistResource) res).freeResources();
             return retVal;
@@ -40,6 +43,27 @@ public class ReviewRepository {
             throw new RepositoryException("Failed to find review");
         }
     }
+
+
+    public String findOneWithReviwer(String id) throws RepositoryException {
+        String xPathExp = String.format("//review[@id='%s' and boolean(.//reviewer)]", id);
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(reviewCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            XMLResource res = queryService.extractSingleResource(resultSet);
+            System.out.println(res.getContent());
+            String retVal = res.getContent().toString();
+            ((EXistResource) res).freeResources();
+            return retVal;
+        } catch (XMLDBException e) {
+            throw new RepositoryException("Failed to find review");
+        }
+    }
+
+
 
     public String create(String id, String review) throws RepositoryException {
         try {

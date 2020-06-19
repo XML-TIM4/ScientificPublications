@@ -8,7 +8,6 @@ export class AuthInterceptorService implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    console.log('prvo auth');
     return this.authService.user.pipe(
       take(1),
       exhaustMap(user => {
@@ -16,7 +15,12 @@ export class AuthInterceptorService implements HttpInterceptor {
           return next.handle(req);
         }
         let headersModified = req.headers;
-        headersModified = headersModified.append('Authorization', 'Bearer ' + user.token);
+
+        if (req.headers.get('skip')) {
+          headersModified.delete('skip');
+        } else {
+          headersModified = headersModified.append('Authorization', 'Bearer ' + user.token);
+        }
         const modifiedReq = req.clone({
           headers: headersModified
         });

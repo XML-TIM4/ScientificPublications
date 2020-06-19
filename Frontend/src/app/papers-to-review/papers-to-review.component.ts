@@ -4,6 +4,7 @@ import {Paper} from '../model/paper.model';
 import {IPaperSearch, PaperService} from '../services/paper.service';
 import {LetterService} from '../services/letter.service';
 import {ReviewService} from '../services/review.service';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-papers-to-review',
@@ -17,7 +18,9 @@ export class PapersToReviewComponent implements OnInit {
   paperStatus: string[] = ['ACCEPTED', 'REJECTED', 'REVISION', 'WITHDRAWN', 'UPLOADED'];
   paperCategory: string[] = ['RESEARCH_PAPER', 'VIEWPOINT', 'TECHNICAL_PAPER', 'CONCEPTUAL_PAPER', 'CASE_STUDY', 'LITERATURE_REVIEW', 'GENERAL_REVIEW'];
   theHtmlString: any;
-
+  downloadForm: FormGroup;
+  paperTypes: string[] = ['html', 'pdf'];
+  paperToletter: Map<string, string>;
 
   constructor(private paperService: PaperService, private letterService: LetterService, private reviewService: ReviewService) { }
 
@@ -34,6 +37,11 @@ export class PapersToReviewComponent implements OnInit {
       accepted: new FormControl(null),
     });
 
+    this.downloadForm = new FormGroup({
+      id: new FormControl(''),
+      paperType: new FormControl(''),
+    });
+
     const searchParams: IPaperSearch = {
       basic: true,
       text: '',
@@ -45,6 +53,8 @@ export class PapersToReviewComponent implements OnInit {
       category: 'RESEARCH_PAPER',
       keywords: [],
     };
+
+    this.paperToletter = new Map<string, string>();
 
     this.reviewService.searchPapersFinishedReviews().subscribe((rewData => {
 
@@ -58,16 +68,18 @@ export class PapersToReviewComponent implements OnInit {
           this.letterService.findByPaper(resData.otherPaperIds[i]).subscribe(( letterId => {
 
             if (letterId !== '') {
-
               if (!rewData.resultIds.length) {
-                for(let l = 0; l < rewData.resultIds.length; l++) {
-                  if (rewData[l] === resData.otherPaperIds[i]) {
+
+              } else {
+                for (let l = 0; l < rewData.resultIds.length; l++) {
+                  if (rewData.resultIds[l] === resData.otherPaperIds[i]) {
                     pass = false;
                   }
                 }
               }
 
               if (pass) {
+                this.paperToletter.set(resData.otherPaperIds[i].toString(), letterId);
                 this.paperService.findOne(resData.otherPaperIds[i].toString(), 'application/xml').subscribe((resPaper => {
                   const parser = new DOMParser();
                   const xmlDoc = parser.parseFromString(resPaper, 'application/xml');
@@ -98,15 +110,15 @@ export class PapersToReviewComponent implements OnInit {
     const keywordz = this.searchForm.get('keywords').value.toString().split(',');
     console.log(this.searchForm.get('basic').value, ' BAZIK');
     const searchParams: IPaperSearch = {
-      basic: this.searchForm.get('basic').value,
-      text: this.searchForm.get('text').value !== null ? this.searchForm.get('text').value : '',
+      basic: this.searchForm.get('basic').value !== null ? this.searchForm.get('basic').value : false,
+      text: this.searchForm.get('text').value,
       revised: this.searchForm.get('revised').value !== null ? this.searchForm.get('revised').value.getTime() : null,
       received: this.searchForm.get('received').value !== null ? this.searchForm.get('received').value.getTime() : null,
       accepted: this.searchForm.get('accepted').value !== null ? this.searchForm.get('accepted').value.getTime() : null,
-      version: this.searchForm.get('version').value !== null ? this.searchForm.get('version').value : '',
-      status: this.searchForm.get('status').value !== '' ? this.searchForm.get('status').value : 'ACCEPTED',
-      category: this.searchForm.get('category').value !== '' ? this.searchForm.get('category').value : 'RESEARCH_PAPER',
-      keywords: keywordz,
+      version: this.searchForm.get('version').value !== '' ? this.searchForm.get('version').value : null,
+      status: this.searchForm.get('status').value !== '' ? this.searchForm.get('status').value : null,
+      category: this.searchForm.get('category').value !== '' ? this.searchForm.get('category').value : null,
+      keywords: keywordz[0] !== '' ? keywordz : [],
     };
 
     this.reviewService.searchPapersFinishedReviews().subscribe((rewData => {
@@ -120,13 +132,12 @@ export class PapersToReviewComponent implements OnInit {
         let pass = true;
         this.letterService.findByPaper(resData.otherPaperIds[i]).subscribe(( letterId => {
 
-          console.log(rewData, '   LETERZID');
-
           if (letterId !== '') {
-
             if (!rewData.resultIds.length) {
-              for(let l = 0; l < rewData.resultIds.length; l++) {
-                if (rewData[l] === resData.otherPaperIds[i]) {
+
+            } else {
+              for (let l = 0; l < rewData.resultIds.length; l++) {
+                if (rewData.resultIds[l] === resData.otherPaperIds[i]) {
                   pass = false;
                 }
               }
@@ -171,4 +182,20 @@ export class PapersToReviewComponent implements OnInit {
         }));
       }));
   }
+
+  onSubmitDownload() {
+    if (this.downloadForm.get('paperType').value === 'html') {
+      this.letterService.findOneBlob(this.paperToletter.get(this.downloadForm.get('id').value), 'text/html').subscribe((resBlob => {
+        const filename = 'filename.html';
+        FileSaver.saveAs(resBlob, filename);
+      }));
+    } else {
+      this.letterService.findOneBlob(this.paperToletter.get(this.downloadForm.get('id').value), 'application/pdf').subscribe((resBlob => {
+        const filename = 'filename.pdf';
+        FileSaver.saveAs(resBlob, filename);
+      }));
+    }
+  }
+
+
 }

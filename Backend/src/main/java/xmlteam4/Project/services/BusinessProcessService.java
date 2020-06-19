@@ -47,10 +47,6 @@ public class BusinessProcessService {
                 .get(businessProcess.getReviewCycles().getReviewCycle().size() - 1);
     }
 
-    public TPhase getActivePhase(TBusinessProcess businessProcess) {
-        return getActivePhase(getActiveCycle(businessProcess));
-    }
-
     public TPhase getActivePhase(TReviewCycle activeCycle) {
         return activeCycle.getPhases().getPhase().get(activeCycle.getPhases().getPhase().size() - 1);
     }
@@ -115,5 +111,9 @@ public class BusinessProcessService {
 
     public List<String> getFinishedReviewsIds() {
         return businessProcessRepository.getFinishedReviewsIds();
+    }
+
+    public String getPaperCreatorId(String scientificPaperId) throws RepositoryException {
+        return businessProcessRepository.getPaperCreatorId(scientificPaperId);
     }
 }
