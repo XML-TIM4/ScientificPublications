@@ -83,6 +83,36 @@
 
 </div>
 
+<div class="mat-elevation-z3" fxLayout="row" fxHide.sm fxHide.xs fxLayoutAlign="center bottom">
+  <form [formGroup]="downloadForm" (ngSubmit)="onSubmitDownload()">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Paper ID</mat-label>
+      <mat-select formControlName="id">
+        <mat-option *ngFor="let paper of papers" [value]="paper.id">
+          {{paper.title}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Paper type</mat-label>
+      <mat-select formControlName="paperType">
+        <mat-option *ngFor="let type of paperTypes" [value]="type">
+          {{type}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-button color="primary" type="submit">
+      <mat-icon>download</mat-icon>
+      <span>Download</span>
+    </button>
+
+  </form>
+</div>
+
+
 <div fxLayout="column" fxLayoutAlign="center center">
   <mat-card class="mat-card-flat card-deck-container" id="loaded-events-list" style="height: 680px;">
     <mat-card-header>

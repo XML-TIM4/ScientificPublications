@@ -17,6 +17,7 @@ export class PapersToReviewComponent implements OnInit {
   paperStatus: string[] = ['ACCEPTED', 'REJECTED', 'REVISION', 'WITHDRAWN', 'UPLOADED'];
   paperCategory: string[] = ['RESEARCH_PAPER', 'VIEWPOINT', 'TECHNICAL_PAPER', 'CONCEPTUAL_PAPER', 'CASE_STUDY', 'LITERATURE_REVIEW', 'GENERAL_REVIEW'];
   theHtmlString: any;
+  downloadForm: any;
 
 
   constructor(private paperService: PaperService, private letterService: LetterService, private reviewService: ReviewService) { }
@@ -170,5 +171,9 @@ export class PapersToReviewComponent implements OnInit {
           this.theHtmlString = resData;
         }));
       }));
+  }
+
+  onSubmitDownload() {
+
   }
 }

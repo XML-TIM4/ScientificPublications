@@ -120,9 +120,9 @@ export class AllPapersComponent implements OnInit {
 }
 
   onSubmitMeta() {
-    this.paperService.findOne(this.downloadForm.get('id').value, 'application/xml').subscribe((resData => {
+    this.paperService.findOne(this.metaForm.get('id').value, 'application/xml').subscribe((resData => {
       console.log('RAD ', resData);
-      this.metadataService.extractMetadata(this.downloadForm.get('paperMeta').value, resData).subscribe((metaData => {
+      this.metadataService.extractMetadata(this.metaForm.get('paperMeta').value, resData).subscribe((metaData => {
         console.log('META ', metaData);
         const metaname = 'metaname.txt';
         // const blob = new Blob([metaData], { type: 'text/plain' });
