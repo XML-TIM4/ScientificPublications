@@ -40,6 +40,7 @@ public class ScientificPaperController {
         }
     }
 
+    @Secured({"ROLE_AUTHOR", "ROLE_EDITOR"})
     @GetMapping(value = "/{id}/nt", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> getScientificPaperMetadataAsTurtle(@PathVariable("id") String id) {
         try {
@@ -50,6 +51,7 @@ public class ScientificPaperController {
         }
     }
 
+    @Secured({"ROLE_AUTHOR", "ROLE_EDITOR"})
     @GetMapping(value = "/{id}/json-ld", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> getScientificPaperMetadataAsJSONLD(@PathVariable("id") String id) {
         try {
