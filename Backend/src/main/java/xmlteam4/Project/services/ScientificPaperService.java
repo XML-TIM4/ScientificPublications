@@ -4,9 +4,15 @@ import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -321,6 +327,42 @@ public class ScientificPaperService {
     public SearchResultDTO advancedScientificPaperSearchEditor(SearchDTO searchDTO) {
 
         return scientificPaperRepository.advancedSearchEditor(searchDTO);
+    }
+
+    public String getScientificPaperMetadataAsJSONLD(String id) throws RepositoryException {
+        String paper = scientificPaperRepository.findOne(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("content", paper);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        String url = "http://rdf-translator.appspot.com/convert/rdfa/json-ld/content";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.postForEntity(url, request, String.class).getBody();
+    }
+
+    public String getScientificPaperMetadataAsTurtle(String id) throws RepositoryException {
+        String paper = scientificPaperRepository.findOne(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("content", paper);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        String url = "http://rdf-translator.appspot.com/convert/rdfa/nt/content";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.postForEntity(url, request, String.class).getBody();
     }
 
     private void setIDs(String id, Document document) throws BadParametersException {
