@@ -45,7 +45,7 @@ public class ScientificPaperController {
     public ResponseEntity<String> getScientificPaperMetadataAsTurtle(@PathVariable("id") String id) {
         try {
             return new ResponseEntity<>(scientificPaperService.getScientificPaperMetadataAsTurtle(id),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -56,7 +56,7 @@ public class ScientificPaperController {
     public ResponseEntity<String> getScientificPaperMetadataAsJSONLD(@PathVariable("id") String id) {
         try {
             return new ResponseEntity<>(scientificPaperService.getScientificPaperMetadataAsJSONLD(id),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

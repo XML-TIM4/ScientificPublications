@@ -120,15 +120,17 @@ export class AllPapersComponent implements OnInit {
 }
 
   onSubmitMeta() {
-    this.paperService.findOne(this.metaForm.get('id').value, 'application/xml').subscribe((resData => {
-      console.log('RAD ', resData);
-      this.metadataService.extractMetadata(this.metaForm.get('paperMeta').value, resData).subscribe((metaData => {
+      this.metadataService.extractMetadata(this.metaForm.get('id').value, this.metaForm.get('paperMeta').value).subscribe((metaData => {
         console.log('META ', metaData);
-        const metaname = 'metaname.txt';
-        // const blob = new Blob([metaData], { type: 'text/plain' });
-        // FileSaver.saveAs(metaData, metaname);
+        let metaname = '';
+        if (this.metaForm.get('paperMeta').value === 'nt') {
+          metaname = 'metanme.ttl';
+        } else {
+          metaname = 'metanme.jsonld';
+        }
+        const blob = new Blob([metaData], { type: 'text/plain' });
+        FileSaver.saveAs(blob, metaname);
       }));
-    }));
   }
 
 }
