@@ -97,6 +97,7 @@
         <mat-card-actions>
           <button mat-raised-button color="primary" (click)="view(paper.id)">VIEW</button>
           <button mat-raised-button color="primary" (click)="viewLetter(paper.id)">COVER LETTER</button>
+          <button mat-raised-button color="primary" [routerLink]="['/create-review-template/', paper.id]">CREATE TEMPLATE</button>
         </mat-card-actions>
       </div>
     </div>

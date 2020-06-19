@@ -12,14 +12,6 @@
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
-        <xs:attribute name="type">
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:enumeration value="text"/>
-                    <xs:enumeration value="multiple-choice"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
     </xs:complexType>
     <xs:element name="review" type="TReview"/>
     <xs:complexType name="TReview">
@@ -36,7 +28,7 @@
             <xs:element name="reviewer-comments">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" name="author-comment" type="TComment"
+                        <xs:element maxOccurs="unbounded" name="reviewer-comment" type="TComment"
                             minOccurs="0"/>
                     </xs:sequence>
                 </xs:complexType>

@@ -33,9 +33,7 @@ export class EmptyDocuments {
     static emptyReviewTemplate(scientificPaperReference: string) {
         let ret = '<review xmlns="https://github.com/XML-TIM4/ScientificPublications" xmlns:xsi="http://www.w3.org/2001/XMLSchema-insta' +
         'nce" xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/data/schemas/Review.xsd"><review-metadata>' +
-        '<reviewer><name><first-name>John</first-name><last-name>Smith</last-name></name><email>john.smith@example.com</email>' +
-        '<affiliation><university>Smith University</university><city>Washington</city><state>MD</state><country>USA</country>' +
-        '</affiliation></reviewer><date></date><recommendation></recommendation><scientific-paper-id>';
+        '<date></date><recommendation></recommendation><scientific-paper-id>';
         ret += scientificPaperReference;
         ret += '</scientific-paper-id></review-metadata><questionnaire></questionnaire><reviewer-comments></reviewer-comments>' +
         '<editor-comments></editor-comments></review>';

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EmptyDocuments } from '../../../shared/empty-documents';
 import { ActivatedRoute } from '@angular/router';
-import * as uuid from 'uuid';
+import { ReviewService } from 'src/app/services/review.service';
 
 declare var Xonomy: any;
 
@@ -16,79 +16,27 @@ export class EditReviewComponent implements OnInit {
 
   documentSpecification = {
     elements: {
-      received: {
+      'scientific-paper-id': {
         oneliner: true,
         asker(defaultString) {return '<b>Cannot change value</b>'; }
       },
-      revised: {
+      'question-text': {
         oneliner: true,
         asker(defaultString) {return '<b>Cannot change value</b>'; }
       },
-      accepted: {
-        oneliner: true,
-        asker(defaultString) {return '<b>Cannot change value</b>'; }
-      },
-      version: {
-        oneliner: true,
-        asker(defaultString) {return '<b>Cannot change value</b>'; }
-      },
-      status: {
-        oneliner: true,
-        asker(defaultString) {return '<b>Cannot change value</b>'; }
-      },
-      category: {
-        oneliner: true,
-        asker: Xonomy.askPicklist,
-        askerParameter: [
-          'research-paper', 'viewpoint', 'technical-paper', 'conceptual-paper',
-          'case-study', 'literature-review', 'general-review'
-        ]
-      },
-      keywords: {
+      'review-metadata': {
         menu: [{
-          caption: 'Add a <keyword>',
+          caption: 'Add <reviewer> info',
           action: Xonomy.newElementChild,
-          actionParameter: '<keyword>word</keyword>'
-        }]
-      },
-      keyword: {
-        oneliner: true,
-        hasText: true,
-        asker: Xonomy.askString,
-        menu: [{
-          caption: 'Remove keyword',
-          action: Xonomy.deleteElement
-        }]
-      },
-      title: {
-        oneliner: true,
-        hasText: true,
-        asker: Xonomy.askString
-      },
-      authors: {
-        menu: [{
-          caption: 'Add an <author>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<author><name><first-name></first-name><last-name></last-name></name><email></email>' +
-          '<affiliation><university></university><city></city><state></state><country></country></affiliation></author>',
+          actionParameter: '<reviewer><name><first-name></first-name><last-name></last-name></name><email></email>' +
+          '<affiliation><university></university><city></city><state></state><country></country></affiliation></reviewer>',
           hideIf(jsElement) {
-            return jsElement.parent().name === 'reference';
-          }
-        },
-        {
-          caption: 'Add a <name>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<name><first-name></first-name><last-name></last-name></name>',
-          hideIf(jsElement) {
-            return jsElement.parent().name !== 'reference';
+            return jsElement.hasChildElement('reviewer');
           }
         }]
       },
-      author: {
-        menu: [{
-          caption: 'Remove <author>',
-          action: Xonomy.deleteElement
-        }]
+      reviewer: {
+        mustBeBefore: ['date', 'recommendation', 'scientific-paper-id']
       },
       name: {
         menu: [{
@@ -144,526 +92,160 @@ export class EditReviewComponent implements OnInit {
         hasText: true,
         asker: Xonomy.askString
       },
-      abstract: {
-        menu: [{
-          caption: 'Add Purpose',
-          action: Xonomy.newElementChild,
-          actionParameter: '<abstract-item title="Purpose"></abstract-item>',
-          hideIf(jsElement) {
-            let ret = false;
-            jsElement.getChildElements('abstract-item').forEach(element => {
-              if (element.getAttributeValue('title', '') === 'Purpose') {
-                ret = true;
-              }
-            });
-            return ret;
-          }
-        },
-        {
-          caption: 'Add Methodology',
-          action: Xonomy.newElementChild,
-          actionParameter: '<abstract-item title="Methodology"></abstract-item>',
-          hideIf(jsElement) {
-            let ret = false;
-            jsElement.getChildElements('abstract-item').forEach(element => {
-              if (element.getAttributeValue('title', '') === 'Methodology') {
-                ret = true;
-              }
-            });
-            return ret;
-          }
-        },
-        {
-          caption: 'Add Findings',
-          action: Xonomy.newElementChild,
-          actionParameter: '<abstract-item title="Findings"></abstract-item>',
-          hideIf(jsElement) {
-            let ret = false;
-            jsElement.getChildElements('abstract-item').forEach(element => {
-              if (element.getAttributeValue('title', '') === 'Findings') {
-                ret = true;
-              }
-            });
-            return ret;
-          }
-        },
-        {
-          caption: 'Add Implications',
-          action: Xonomy.newElementChild,
-          actionParameter: '<abstract-item title="Implications"></abstract-item>',
-          hideIf(jsElement) {
-            let ret = false;
-            jsElement.getChildElements('abstract-item').forEach(element => {
-              if (element.getAttributeValue('title', '') === 'Implications') {
-                ret = true;
-              }
-            });
-            return ret;
-          }
-        },
-        {
-          caption: 'Add Practical Implications',
-          action: Xonomy.newElementChild,
-          actionParameter: '<abstract-item title="Practical Implications"></abstract-item>',
-          hideIf(jsElement) {
-            let ret = false;
-            jsElement.getChildElements('abstract-item').forEach(element => {
-              if (element.getAttributeValue('title', '') === 'Practical Implications') {
-                ret = true;
-              }
-            });
-            return ret;
-          }
-        },
-        {
-          caption: 'Add Social Implications',
-          action: Xonomy.newElementChild,
-          actionParameter: '<abstract-item title="Social Implications"></abstract-item>',
-          hideIf(jsElement) {
-            let ret = false;
-            jsElement.getChildElements('abstract-item').forEach(element => {
-              if (element.getAttributeValue('title', '') === 'Social Implications') {
-                ret = true;
-              }
-            });
-            return ret;
-          }
-        },
-        {
-          caption: 'Add Originality',
-          action: Xonomy.newElementChild,
-          actionParameter: '<abstract-item title="Originality"></abstract-item>',
-          hideIf(jsElement) {
-            let ret = false;
-            jsElement.getChildElements('abstract-item').forEach(element => {
-              if (element.getAttributeValue('title', '') === 'Originality') {
-                ret = true;
-              }
-            });
-            return ret;
-          }
-        }]
-      },
-      'abstract-item': {
-        hasText: true,
-        menu: [{
-          caption: 'Remove <abstract-item>',
-          action: Xonomy.deleteElement
-        }],
-        canDropTo: ['abstract']
-      },
-      content: {
-        menu: [{
-          caption: 'Add a <section>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<section><title></title></section>'
-        }]
-      },
-      section: {
-        canDropTo: ['content'],
-        menu: [{
-          caption: 'Add a <paragraph>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<paragraph></paragraph>'
-        },
-        {
-          caption: 'Remove <section>',
-          action: Xonomy.deleteElement
-        }]
-      },
-      paragraph: {
-        hasText: true,
-        mustBeAfter: ['title'],
-        canDropTo: ['section'],
-        menu: [{
-          caption: 'Add a <figure>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<figure type="figure"></figure>'
-        },
-        {
-          caption: 'Add a <table>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<table title=""><header></header><body></body></table>'
-        },
-        {
-          caption: 'Add a <list>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<list ordered="false"></list>'
-        },
-        {
-          caption: 'Add a <quote>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<quote><quote-text></quote-text><publication>' +
-          '<title></title><publisher></publisher><place></place><url></url></publication></quote>'
-        },
-        {
-          caption: 'Remove <paragraph>',
-          action: Xonomy.deleteElement
-        }],
-        inlineMenu: [{
-          caption: 'Wrap with <decorator>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<decorator>$</decorator>', placeholder: '$'}
-        }]
-      },
-      figure: {
-        hasText: true,
-        menu: [{
-          caption: 'Add an <image>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<image></image>'
-        },
-        {
-          caption: 'Remove <figure>',
-          action: Xonomy.deleteElement
-        }],
-        attributes: {
-          type: {
-            asker: Xonomy.askPicklist,
-            askerParameter: ['figure', 'box', 'equation', 'chart']
-          }
-        }
-      },
-      image: {
-        hasText: true,
-        asker: Xonomy.askString,
-        menu: [{
-          caption: 'Remove <image>',
-          action: Xonomy.deleteElement
-        }]
-      },
-      table: {
-        hasText: false,
-        attributes: {
-          title: {
-            asker: Xonomy.askString
-          }
-        },
-        menu: [{
-          caption: 'Remove <table>',
-          action: Xonomy.deleteElement
-        }]
-      },
-      header: {
-        menu: [{
-          caption: 'Add a <row>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<row></row>'
-        }]
-      },
-      body: {
-        menu: [{
-          caption: 'Add a <row>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<row></row>'
-        }]
-      },
-      row: {
-        menu: [{
-          caption: 'Add a <column>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<column></column>'
-        },
-        {
-          caption: 'Remove <row>',
-          action: Xonomy.deleteElement
-        }]
-      },
-      column: {
-        hasText: true,
-        oneliner: true,
-        asker: Xonomy.askString,
-        menu: [{
-          caption: 'Remove <column>',
-          action: Xonomy.deleteElement
-        }]
-      },
-      list: {
-        attributes: {
-          ordered: {
-            asker: Xonomy.askPicklist,
-            askerParameter: ['false', 'true']
-          }
-        },
-        menu: [{
-          caption: 'Add a <list-item>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<list-item></list-item>'
-        },
-        {
-          caption: 'Remove <list>',
-          action: Xonomy.deleteElement
-        }]
-      },
-      'list-item': {
-        hasText: true,
-        oneliner: true,
-        asker: Xonomy.askString,
-        menu: [{
-          caption: 'Remove <list-item>',
-          action: Xonomy.deleteElement
-        }]
-      },
-      decorator: {
+      date: {
         oneliner: true,
         hasText: true,
-        asker: Xonomy.askString,
-        menu: [{
-          caption: 'Unwrap <decorator>',
-          action: this.recursiveUnwrapStart,
-          actionParameter: this
-        }],
-        inlineMenu: [{
-          caption: 'Wrap with <bold>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<bold>$</bold>', placeholder: '$'}
-        },
-        {
-          caption: 'Wrap with <italic>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<italic>$</italic>', placeholder: '$'}
-        },
-        {
-          caption: 'Wrap with <underline>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<underline>$</underline>', placeholder: '$'}
-        }]
-      },
-      bold: {
-        oneliner: true,
-        hasText: true,
-        asker: Xonomy.askString,
-        menu: [{
-          caption: 'Unwrap <bold>',
-          action: Xonomy.unwrap
-        }],
-        inlineMenu: [{
-          caption: 'Wrap with <bold>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<bold>$</bold>', placeholder: '$'}
-        },
-        {
-          caption: 'Wrap with <italic>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<italic>$</italic>', placeholder: '$'}
-        },
-        {
-          caption: 'Wrap with <underline>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<underline>$</underline>', placeholder: '$'}
-        }]
-      },
-      italic: {
-        oneliner: true,
-        hasText: true,
-        asker: Xonomy.askString,
-        menu: [{
-          caption: 'Unwrap <italic>',
-          action: Xonomy.unwrap
-        }],
-        inlineMenu: [{
-          caption: 'Wrap with <bold>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<bold>$</bold>', placeholder: '$'}
-        },
-        {
-          caption: 'Wrap with <italic>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<italic>$</italic>', placeholder: '$'}
-        },
-        {
-          caption: 'Wrap with <underline>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<underline>$</underline>', placeholder: '$'}
-        }]
-      },
-      underline: {
-        oneliner: true,
-        hasText: true,
-        asker: Xonomy.askString,
-        menu: [{
-          caption: 'Unwrap <underline>',
-          action: Xonomy.unwrap
-        }],
-        inlineMenu: [{
-          caption: 'Wrap with <bold>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<bold>$</bold>', placeholder: '$'}
-        },
-        {
-          caption: 'Wrap with <italic>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<italic>$</italic>', placeholder: '$'}
-        },
-        {
-          caption: 'Wrap with <underline>',
-          action: Xonomy.wrap,
-          actionParameter: {template: '<underline>$</underline>', placeholder: '$'}
-        }]
-      },
-      quote: {
-        menu: [{
-          caption: 'Remove <quote>',
-          action: Xonomy.deleteElement
-        }]
-      },
-      'quote-text': {
-        hasText: true,
-        oneliner: true,
         asker: Xonomy.askString
       },
-      publisher: {
-        hasText: true,
+      recommendation: {
+        asker: Xonomy.askPicklist,
         oneliner: true,
-        asker: Xonomy.askString
+        askerParameter: [
+          'accept', 'reject', 'revise'
+        ]
       },
-      place: {
-        hasText: true,
+      answer: {
         oneliner: true,
-        asker: Xonomy.askString
-      },
-      url: {
-        hasText: true,
-        oneliner: true,
-        asker: Xonomy.askString
-      },
-      references: {
+        asker(defaultString) {return '<b>Cannot change value</b>'; },
         menu: [{
-          caption: 'Add a <reference>',
-          action: Xonomy.newElementChild,
-          actionParameter: '<reference><authors></authors><publication>' +
-          '<title></title><year>1970</year><publisher></publisher><place></place><url></url></publication></reference>'
+          caption: 'Choose answer',
+          action: this.chooseAnswerAction
         }]
       },
-      reference: {
+      'reviewer-comments': {
         menu: [{
-          caption: 'Remove <reference>',
+          caption: 'Add a <reviewer-comment>',
+          action: Xonomy.newElementChild,
+          actionParameter: '<reviewer-comment><review-reference></review-reference><comment-text></comment-text></reviewer-comment>'
+        }]
+      },
+      'reviewer-comment': {
+        menu: [{
+          caption: 'Remove <reviewer-comment>',
           action: Xonomy.deleteElement
         }]
       },
-      year: {
-        hasText: true,
+      'review-reference': {
         oneliner: true,
-        asker(defaultString) {
-          let html = '';
-          html += '<form onsubmit=\'Xonomy.answer(this.val.value); return false\'>';
-          html += '<input name=\'val\' class=\'focusme\' value=\'1970\' ' +
-          'type="number" min="1800" max="2019"/>';
-          html += ' <input type=\'submit\' value=\'OK\'>';
-          html += '</form>';
-          return html;
-          }
+        hasText: true,
+        asker: Xonomy.askString
+      },
+      'comment-text': {
+        oneliner: true,
+        hasText: true,
+        asker: Xonomy.askString
       }
     }
   };
   xmlString: string;
   paperId: string;
-  imageMapper = {};
+  editorComments: string;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private reviewService: ReviewService) { }
 
   ngOnInit() {
-    // Xonomy.referenceToThis = this;
-    this.xmlString = EmptyDocuments.emptyScientificPaper;
+    this.xmlString = EmptyDocuments.emptyReviewTemplate('');
     this.paperId = '';
     this.xonomyEditor = document.getElementById('xonomy-editor');
-    // this.route.params.subscribe(params => {
-    //   this.paperService.findOne(params.id, 'application/xml').subscribe((resPaper => {
-    //     this.xmlString = resPaper;
-    //     this.paperId = params.id;
-    //     this.renderXonomy();
-    //   }));
-    // });
+    this.route.params.subscribe(params => {
+      this.paperId = params.id;
+      this.reviewService.findByPaper(this.paperId).subscribe(resData => {
+        if (resData !== '') {
+          this.xmlString = resData;
+          this.renderXonomy();
+        }
+      });
+    });
     this.renderXonomy();
   }
 
-  getKeyByValue(object, value) {
-    for (const prop in object) {
-      if (object.hasOwnProperty(prop)) {
-        if (object[prop] === value) {
-          return prop;
-        }
-      }
+  chooseAnswerAction(htmlID, param) {
+    let div = document.getElementById(htmlID);
+    let jsElement = Xonomy.harvestElement(div);
+    for (const element of jsElement.parent().getChildElements('answer')) {
+      Xonomy.deleteAttribute(element.getAttribute('selected').htmlID);
+      Xonomy.newAttribute(element.htmlID, {name: 'selected', value: 'false'});
     }
-    return null;
+    div = document.getElementById(htmlID);
+    jsElement = Xonomy.harvestElement(div);
+    Xonomy.deleteAttribute(jsElement.getAttribute('selected').htmlID);
+    Xonomy.newAttribute(jsElement.htmlID, {name: 'selected', value: 'true'});
   }
 
-  onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
-  replaceImageText(xmlString: string) {
-    const criteria = /<image>([^<]*)<\/image>/g;
+  replaceEditorComments(xmlString: string) {
+    const criteria = /<editor\-comments>([^]*)<\/editor\-comments>/g;
     const matches = xmlString.match(criteria);
+    console.log(matches);
     if (!Array.isArray(matches)) {
       return xmlString;
     }
-    for (const match of matches.filter(this.onlyUnique)) {
-      const clean = match.substring(7, match.length - 8);
-      const imageId = uuid.v4();
-      this.imageMapper[imageId] = clean;
-      xmlString = xmlString.replace(RegExp(clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), imageId);
-    }
+    const clean = matches[0];
+    this.editorComments = clean;
+    xmlString = xmlString.replace(RegExp(clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '<editor-comments></editor-comments>');
     return xmlString;
   }
 
-  replaceImageTextBack(xmlString: string) {
-    const criteria = /<image>([^<]*)<\/image>/g;
-    const matches = xmlString.match(criteria);
-    if (!Array.isArray(matches)) {
-      return xmlString;
-    }
-    for (const match of matches.filter(this.onlyUnique)) {
-      const imageId = match.substring(7, match.length - 8);
-      const clean = this.imageMapper[imageId];
-      if (clean === undefined) {
-        continue;
-      }
-      xmlString = xmlString.replace(RegExp(imageId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), clean);
-    }
+  replaceEditorCommentsBack(xmlString: string) {
+    const clean = '<editor-comments/>';
+    xmlString = xmlString.replace(RegExp(clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), this.editorComments);
     return xmlString;
   }
 
   renderXonomy() {
-    this.xmlString = this.replaceImageText(this.xmlString);
+    this.xmlString = this.replaceEditorComments(this.xmlString);
     Xonomy.render(this.xmlString, this.xonomyEditor, this.documentSpecification);
     Xonomy.changed();
   }
 
-  recursiveUnwrap(jsElement) {
-    jsElement.getChildElements('bold').forEach(element => {
-      this.recursiveUnwrap(element);
-    });
-    jsElement.getChildElements('italic').forEach(element => {
-      this.recursiveUnwrap(element);
-    });
-    jsElement.getChildElements('underline').forEach(element => {
-      this.recursiveUnwrap(element);
-    });
-    Xonomy.unwrap(jsElement.htmlID, null);
-  }
-
-  recursiveUnwrapStart(htmlID, that) {
-    const div = document.getElementById(htmlID);
-    const jsElement = Xonomy.harvestElement(div);
-    that.recursiveUnwrap(jsElement);
-    Xonomy.changed();
-  }
-
-  submitPaper() {
+  submitReview() {
     this.xmlString = Xonomy.harvest();
-    this.xmlString = this.replaceImageTextBack(this.xmlString);
-    console.log(this.xmlString);
-    console.log(this.paperId);
-    // if (this.paperId === '') {
-    //   this.paperService.create(this.xmlString).subscribe(data => {
-    //     console.log(data);
-    //   });
-    // } else {
-    //   this.paperService.create(this.xmlString).subscribe(data => {
-    //     console.log(data);
-    //   });
-    // }
+    this.xmlString = this.replaceEditorCommentsBack(this.xmlString);
+    // console.log(this.xmlString);
+    // console.log(this.paperId);
+    this.reviewService.createTemplate(this.xmlString).subscribe(data => {
+      console.log(data);
+    });
   }
+
+  fileLoad(event) {
+    const file = event.target.files[0];
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      this.xmlString = fileReader.result.toString();
+      this.renderXonomy();
+    };
+    if (file !== undefined) {
+      fileReader.readAsText(file);
+    }
+  }
+
+  saveFile() {
+    this.xmlString = Xonomy.harvest();
+    this.xmlString = this.replaceEditorCommentsBack(this.xmlString);
+    const blob = new Blob([this.xmlString]);
+    const url  = window.URL || window.webkitURL;
+    const link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+    link.href = url.createObjectURL(blob);
+    link.download = 'review_save.xml';
+
+    const event = document.createEvent('MouseEvents');
+    event.initEvent('click', true, false);
+    link.dispatchEvent(event);
+  }
+
+  // testWaters() {
+  // this.xmlString = '<?xml version="1.0" encoding="UTF-8"?><review xmlns="https://github.com/XML-TIM4/ScientificPublications" ' +
+  // 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications' +
+  // ' file:/data/schemas/Review.xsd"><review-metadata><date>2006-05-04</date><recommendation>accept</recommendation><scientific-' +
+  // 'paper-id>asdfqwer</scientific-paper-id></review-metadata><questionnaire><question><question-text>question-text0</question-text>' +
+  // '<answer selected="false">q1a1</answer><answer selected="false">q1a2</answer></question><question><question-text>question-text1' +
+  // '</question-text><answer selected="false">q1a1</answer><answer selected="false">q1a2</answer><answer selected="false">q1a3</answer>' +
+  // '</question></questionnaire><reviewer-comments></reviewer-comments><editor-comments><editor-comment><review-reference>review-' +
+  // 'reference2</review-reference><comment-text>comment-text2</comment-text></editor-comment><editor-comment><review-reference>review' +
+  // '-reference3</review-reference><comment-text>comment-text3</comment-text></editor-comment></editor-comments></review>';
+  //   this.paperId = '';
+  //   this.xonomyEditor = document.getElementById('xonomy-editor');
+  //   this.renderXonomy();
+  // }
 
 }

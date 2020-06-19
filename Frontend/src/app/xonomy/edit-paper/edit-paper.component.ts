@@ -569,11 +569,13 @@ export class EditPaperComponent implements OnInit {
     this.paperId = '';
     this.xonomyEditor = document.getElementById('xonomy-editor');
     this.route.params.subscribe(params => {
-      this.paperService.findOne(params.id, 'application/xml').subscribe((resPaper => {
-        this.xmlString = resPaper;
-        this.paperId = params.id;
-        this.renderXonomy();
-      }));
+      if (params.id !== undefined) {
+        this.paperService.findOne(params.id, 'application/xml').subscribe((resPaper => {
+          this.xmlString = resPaper;
+          this.paperId = params.id;
+          this.renderXonomy();
+        }));
+      }
     });
     this.renderXonomy();
   }
@@ -594,8 +596,9 @@ export class EditPaperComponent implements OnInit {
   }
 
   replaceImageText(xmlString: string) {
-    const criteria = /<image>([^<]*)<\/image>/g;
+    const criteria = /<image( xml:space="preserve")?>([^<]*)<\/image>/g;
     const matches = xmlString.match(criteria);
+    console.log(matches);
     if (!Array.isArray(matches)) {
       return xmlString;
     }
@@ -651,11 +654,37 @@ export class EditPaperComponent implements OnInit {
     Xonomy.changed();
   }
 
+  fileLoad(event) {
+    const file = event.target.files[0];
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      this.xmlString = fileReader.result.toString();
+      this.renderXonomy();
+    };
+    if (file !== undefined) {
+      fileReader.readAsText(file);
+    }
+  }
+
+  saveFile() {
+    this.xmlString = Xonomy.harvest();
+    this.xmlString = this.replaceImageTextBack(this.xmlString);
+    const blob = new Blob([this.xmlString]);
+    const url  = window.URL || window.webkitURL;
+    const link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+    link.href = url.createObjectURL(blob);
+    link.download = 'paper_save.xml';
+
+    const event = document.createEvent('MouseEvents');
+    event.initEvent('click', true, false);
+    link.dispatchEvent(event);
+  }
+
   submitPaper() {
     this.xmlString = Xonomy.harvest();
     this.xmlString = this.replaceImageTextBack(this.xmlString);
-    console.log(this.xmlString);
-    console.log(this.paperId);
+    // console.log(this.xmlString);
+    // console.log(this.paperId);
     if (this.paperId === '') {
       this.paperService.create(this.xmlString).subscribe(data => {
         console.log(data);

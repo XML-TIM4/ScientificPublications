@@ -1,2 +1,7 @@
+<div>
+    <span class="small-margin"><button mat-raised-button color="primary"><label class="small-button" for="loadFile">Load</label></button>
+    <input class="hidden-input" #input id="loadFile" type='file' accept=".xml" (change)="fileLoad($event)"/></span>
+    <span class="small-margin"><button mat-raised-button color="primary" (click)="saveFile()"><span class="small-button">Save</span></button></span>
+</div>
 <div id="xonomy-editor"></div>
-<button mat-raised-button color="primary" (click)="submitPaper()">Submit</button>
+<span class="small-margin"><button mat-raised-button color="primary" (click)="submitPaper()"><span class="small-button">Submit</span></button></span>

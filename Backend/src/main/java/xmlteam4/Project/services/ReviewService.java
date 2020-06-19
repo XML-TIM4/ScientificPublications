@@ -115,8 +115,9 @@ public class ReviewService {
         document.getDocumentElement().setAttribute("id", id);
 
         // choose reviewers
-        Document scientificPaper = domParser.buildDocument(scientificPaperService
-                .getScientificPaperXML(scientificPaperId), scientificPaperSchemaPath);
+
+        String theXML = scientificPaperService.getScientificPaperXML(scientificPaperId);
+        Document scientificPaper = domParser.buildDocument(theXML, scientificPaperSchemaPath);
 
         Pair<List<String>, String> requiredData =
                 scientificPaperService.extractDataForSelectionOfReviewers(scientificPaper);

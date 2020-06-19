@@ -30,4 +30,12 @@ export class ReviewService {
     return this.http.get<IRequestPapers>('http://localhost:8080/api/business-process/finished');
   }
 
+  createTemplate(xmlString: string) {
+    return this.http.post('http://localhost:8080/api/reviews/', xmlString, {headers: new HttpHeaders({'Content-Type': 'text/xml', Accept: 'text/xml', 'Response-Type': 'text'}), responseType: 'text'});
+  }
+
+  createReview(xmlString: string) {
+    return this.http.put('http://localhost:8080/api/reviews/', xmlString, {headers: new HttpHeaders({'Content-Type': 'text/xml', Accept: 'text/xml', 'Response-Type': 'text'}), responseType: 'text'});
+  }
+
 }

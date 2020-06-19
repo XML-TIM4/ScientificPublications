@@ -1,3 +1,4 @@
+import { CreateReviewTemplateComponent } from './xonomy/create-review-template/create-review-template.component';
 import { EditCoverLetterComponent } from './xonomy/edit-cover-letter/edit-cover-letter.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -10,6 +11,7 @@ import {AllReviewsComponent} from './all-reviews/all-reviews.component';
 import {PapersToReviewComponent} from './papers-to-review/papers-to-review.component';
 import {ReviewerSelectionComponent} from './reviewer-selection/reviewer-selection.component';
 import {EditPaperComponent} from './xonomy/edit-paper/edit-paper.component';
+import { EditReviewComponent } from './xonomy/edit-review/edit-review.component';
 
 
 const routes: Routes = [
@@ -24,7 +26,9 @@ const routes: Routes = [
   { path: 'reviewer-selection', component: ReviewerSelectionComponent },
   { path: 'edit-paper', component: EditPaperComponent },
   { path: 'edit-paper/:id', component: EditPaperComponent },
-  { path: 'edit-cover-letter/:id', component: EditCoverLetterComponent }
+  { path: 'edit-cover-letter/:id', component: EditCoverLetterComponent },
+  { path: 'edit-review/:id', component: EditReviewComponent },
+  { path: 'create-review-template/:id', component: CreateReviewTemplateComponent }
 
 
 ];
