@@ -40,6 +40,28 @@ public class ScientificPaperController {
         }
     }
 
+    @Secured({"ROLE_AUTHOR", "ROLE_EDITOR"})
+    @GetMapping(value = "/{id}/nt", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getScientificPaperMetadataAsTurtle(@PathVariable("id") String id) {
+        try {
+            return new ResponseEntity<>(scientificPaperService.getScientificPaperMetadataAsTurtle(id),
+                    HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Secured({"ROLE_AUTHOR", "ROLE_EDITOR"})
+    @GetMapping(value = "/{id}/json-ld", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getScientificPaperMetadataAsJSONLD(@PathVariable("id") String id) {
+        try {
+            return new ResponseEntity<>(scientificPaperService.getScientificPaperMetadataAsJSONLD(id),
+                    HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @Secured("ROLE_AUTHOR")
     @PostMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createScientificPaper(@RequestBody String xml) {
