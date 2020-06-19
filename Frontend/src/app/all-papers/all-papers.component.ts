@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Paper} from '../model/paper.model';
 import {IPaperSearch, PaperService} from '../services/paper.service';
-import * as FileSaver from "file-saver";
+import * as FileSaver from 'file-saver';
+import {MetadataService} from '../services/metadata.service';
 
 @Component({
   selector: 'app-all-papers',
@@ -17,8 +18,12 @@ export class AllPapersComponent implements OnInit {
   isBasic: boolean;
   ownPapers: string[] = [];
   otherPapers: string[] = [];
+  downloadForm: FormGroup;
+  metaForm: FormGroup;
+  paperTypes: string[] = ['html', 'pdf'];
+  paperMetas: string[] = ['nt', 'json-ld'];
 
-  constructor(private paperService: PaperService) { }
+  constructor(private paperService: PaperService, private metadataService: MetadataService) { }
 
   ngOnInit() {
 
@@ -33,6 +38,17 @@ export class AllPapersComponent implements OnInit {
       revised: new FormControl(null),
       received: new FormControl(null),
       accepted: new FormControl(null),
+    });
+
+    this.downloadForm = new FormGroup({
+      id: new FormControl(''),
+      paperType: new FormControl(''),
+    });
+
+
+    this.metaForm = new FormGroup({
+      id: new FormControl(''),
+      paperMeta: new FormControl(''),
     });
 
   }
@@ -97,4 +113,31 @@ export class AllPapersComponent implements OnInit {
     }));
 
   }
+
+  onSubmitDownload() {
+    if (this.downloadForm.get('paperType').value === 'html') {
+        this.paperService.findOneBlob(this.downloadForm.get('id').value, 'text/html').subscribe((resBlob => {
+          const filename = 'filename.html';
+          FileSaver.saveAs(resBlob, filename);
+        }));
+    } else {
+      this.paperService.findOneBlob(this.downloadForm.get('id').value, 'application/pdf').subscribe((resBlob => {
+        const filename = 'filename.pdf';
+        FileSaver.saveAs(resBlob, filename);
+      }));
+  }
+}
+
+  onSubmitMeta() {
+    this.paperService.findOne(this.downloadForm.get('id').value, 'application/xml').subscribe((resData => {
+      console.log('RAD ', resData);
+      this.metadataService.extractMetadata(this.downloadForm.get('paperMeta').value, resData).subscribe((metaData => {
+        console.log('META ', metaData);
+        const metaname = 'metaname.txt';
+        // const blob = new Blob([metaData], { type: 'text/plain' });
+        // FileSaver.saveAs(metaData, metaname);
+      }));
+    }));
+  }
+
 }

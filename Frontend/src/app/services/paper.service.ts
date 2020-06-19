@@ -62,8 +62,8 @@ export class PaperService {
     return this.http.get('http://localhost:8080/api/scientific-papers/' + paperId, {headers: new HttpHeaders({'Content-Type': type, Accept: type, 'Response-Type': 'text'}), responseType: 'text'});
   }
 
-  findOnePdf(paperId: string) {
-    return this.http.get('http://localhost:8080/api/scientific-papers/' + paperId, {headers: new HttpHeaders({'Content-Type': 'application/pdf', Accept: 'application/pdf', 'Response-Type': 'blob'}), responseType: 'blob'});
+  findOneBlob(paperId: string, type: string) {
+    return this.http.get('http://localhost:8080/api/scientific-papers/' + paperId, {headers: new HttpHeaders({'Content-Type': type, Accept: type, 'Response-Type': 'blob'}), responseType: 'blob'});
   }
 
   withdraw(paperId: string) {
