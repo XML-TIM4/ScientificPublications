@@ -176,7 +176,7 @@ public class BusinessProcessRepository {
                         " and ./@title = 'review' and ./@can-advance = 'false' and .//actor-task/@user-id = " +
                         "'%s']]]/@scientific-paper-id)", userId);
         try {
-                ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
+            ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
 
             if (resultSet == null)
                 return null;
@@ -230,6 +230,38 @@ public class BusinessProcessRepository {
             return retVal;
         } catch (XMLDBException e) {
             return new ArrayList<>();
+        }
+    }
+
+    public String getPaperCreatorId(String scientificPaperId) throws RepositoryException {
+        String xPathExp = String
+                .format("data(//business-process[@scientific-paper-id='%s']//review-cycle[last()]//phase[@title = " +
+                        "'submitted']//actor-task[@document-type = 'scientific-paper']/@user-id)", scientificPaperId);
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            ResourceIterator i = resultSet.getIterator();
+            XMLResource res = null;
+            String retVal = null;
+
+            if (i.hasMoreResources()) {
+                res = (XMLResource) i.nextResource();
+                retVal = res.getContent().toString();
+            }
+
+            if (res != null)
+                try {
+                    ((EXistResource) res).freeResources();
+                } catch (XMLDBException exception) {
+                    exception.printStackTrace();
+                }
+
+            return retVal;
+        } catch (XMLDBException e) {
+            throw new RepositoryException("Failed to find scientific paper creator");
         }
     }
 }

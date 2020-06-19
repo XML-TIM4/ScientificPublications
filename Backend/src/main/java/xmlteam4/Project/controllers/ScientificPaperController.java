@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import xmlteam4.Project.DTOs.SearchDTO;
 import xmlteam4.Project.DTOs.SearchResultDTO;
 import xmlteam4.Project.exceptions.RepositoryException;
+import xmlteam4.Project.model.ScientificPaperStatus;
 import xmlteam4.Project.services.ScientificPaperService;
 
 
@@ -97,6 +98,17 @@ public class ScientificPaperController {
 
             return new ResponseEntity<>(searchResultDTO, HttpStatus.OK);
         } catch (RepositoryException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Secured("ROLE_EDITOR")
+    @PostMapping(value = "/{id}")
+    public ResponseEntity<Object> decideForPaper(@PathVariable String id,
+                                                 @RequestParam ScientificPaperStatus decision) {
+        try {
+            return new ResponseEntity<>(scientificPaperService.decideForPaper(id, decision), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
