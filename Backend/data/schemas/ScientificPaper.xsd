@@ -64,6 +64,7 @@
             <xs:element name="affiliation" type="TAffiliation"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string"/>
+        <xs:anyAttribute namespace="##any" processContents="lax"/>
     </xs:complexType>
     <xs:complexType name="TMetadata">
         <xs:sequence>
@@ -326,7 +327,7 @@
             <xs:element name="underline" type="TDecorator"/>
         </xs:choice>
     </xs:complexType>
-    <xs:complexType mixed="true" name="TQuote">
+    <xs:complexType name="TQuote">
         <xs:sequence>
             <xs:element name="quote-text">
                 <xs:simpleType>

@@ -90,4 +90,19 @@ public class SearchDTO {
     public void setBasic(Boolean basic) {
         this.basic = basic;
     }
+
+    @Override
+    public String toString() {
+        return "SearchDTO{" +
+                "basic=" + basic +
+                ", text='" + text + '\'' +
+                ", revised=" + revised +
+                ", received=" + received +
+                ", accepted=" + accepted +
+                ", version='" + version + '\'' +
+                ", status=" + status +
+                ", category=" + category +
+                ", keywords=" + keywords +
+                '}';
+    }
 }

@@ -1,1 +1,78 @@
-<p>all-reviews works!</p>
+<div class="mat-elevation-z3" fxLayout="row" fxHide.sm fxHide.xs fxLayoutAlign="center bottom">
+  <form [formGroup]="downloadForm" (ngSubmit)="onSubmitDownload()">
+    <p>Chose title for review: </p>
+    <mat-form-field appearance="outline">
+      <mat-label>Paper title</mat-label>
+      <mat-select formControlName="id">
+        <mat-option *ngFor="let paper of papers" [value]="paper.id">
+          {{paper.title}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Paper type</mat-label>
+      <mat-select formControlName="paperType">
+        <mat-option *ngFor="let type of paperTypes" [value]="type">
+          {{type}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-button color="primary" type="submit">
+      <mat-icon>download</mat-icon>
+      <span>Download</span>
+    </button>
+
+  </form>
+</div>
+
+<div class="mat-elevation-z3" fxLayout="row" fxHide.sm fxHide.xs fxLayoutAlign="center bottom">
+  <form [formGroup]="decideForm" (ngSubmit)="onSubmitDecide()">
+    <p>Decide on final evaluation of paper: </p>
+    <mat-form-field appearance="outline">
+      <mat-label>Paper title</mat-label>
+      <mat-select formControlName="id">
+        <mat-option *ngFor="let paper of papers" [value]="paper.id">
+          {{paper.title}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Paper type</mat-label>
+      <mat-select formControlName="answerType">
+        <mat-option *ngFor="let answer of answerTypes" [value]="answer">
+          {{answer}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-button color="primary" type="submit">
+      <mat-icon>submit</mat-icon>
+      <span>Submit</span>
+    </button>
+
+  </form>
+
+<div fxLayout="column" fxLayoutAlign="center center">
+  <mat-card class="mat-card-flat card-deck-container" style="height: 680px;">
+    <mat-card-header>
+      <p style="font-weight: bolder;">My papers</p>
+      <span fxFlex></span>
+      <p style="margin-right: 70px; font-weight: lighter" id="number-of-results">Results found: {{papers.length}}</p>
+    </mat-card-header>
+
+    <div fxLayout="row wrap" class="card-deck-container" fxLayout.xs="column wrap">
+      <div fxFlex="24" fxFlex.sm="30" fxFlex.xs="80" class="card-item" *ngFor="let paper of papers">
+        <app-paper-section [paper]="paper"></app-paper-section>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="review(paper.id)">VIEW REVIEW</button>
+        </mat-card-actions>
+      </div>
+    </div>
+  </mat-card>
+
+</div>
+
+<div style="margin-top: 50px;" [innerHTML]="theHtmlString"></div>

@@ -25,6 +25,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class BusinessProcessRepository {
@@ -41,7 +43,7 @@ public class BusinessProcessRepository {
 
 
     public TBusinessProcess findOneById(String id) throws RepositoryException {
-        String xPathExp = String.format("//business-process[id='%s']", id);
+        String xPathExp = String.format("//business-process[@id='%s']", "business-processes/" + id);
         try {
             ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
 
@@ -95,7 +97,8 @@ public class BusinessProcessRepository {
     public void updateBusinessProcess(TBusinessProcess businessProcess) throws RepositoryException {
         try {
             Collection col = crudService.getOrCreateCollection(businessProcessCollectionId, 0);
-            XMLResource resource = (XMLResource) col.getResource(businessProcess.getId() + ".xml");
+            XMLResource resource =
+                    (XMLResource) col.getResource(businessProcess.getId().replace("business-processes/", "") + ".xml");
             resource.setContent(marshallBusinessProcess(businessProcess));
             col.storeResource(resource);
         } catch (XMLDBException | JAXBException e) {
@@ -138,6 +141,8 @@ public class BusinessProcessRepository {
         actorTasks.getActorTask().add(createCoverLetter);
         actorTasks.getActorTask().add(createReviewTemplate);
 
+        firstPhase.setActorTasks(actorTasks);
+
         return cycle;
     }
 
@@ -163,5 +168,100 @@ public class BusinessProcessRepository {
         JAXBContext context = JAXBContext.newInstance(TBusinessProcess.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         return (TBusinessProcess) unmarshaller.unmarshal(node);
+    }
+
+    public List<String> getOwnReviewsIds(String userId) {
+        String xPathExp = String
+                .format("data(//business-process[.//review-cycle[last() and ./@status = 'pending' and .//phase[last()" +
+                        " and ./@title = 'review' and ./@can-advance = 'false' and .//actor-task/@user-id = " +
+                        "'%s']]]/@scientific-paper-id)", userId);
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            ResourceIterator i = resultSet.getIterator();
+            XMLResource res = null;
+            List<String> retVal = new ArrayList<>();
+
+            while (i.hasMoreResources()) {
+                res = (XMLResource) i.nextResource();
+                retVal.add(res.getContent().toString());
+            }
+
+            if (res != null)
+                try {
+                    ((EXistResource) res).freeResources();
+                } catch (XMLDBException exception) {
+                    exception.printStackTrace();
+                }
+
+            return retVal;
+        } catch (XMLDBException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<String> getFinishedReviewsIds() {
+        String xPathExp = "data(//business-process[.//review-cycle[last() and ./@status = 'reviewed']]/@scientific-paper-id)";
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            ResourceIterator i = resultSet.getIterator();
+            XMLResource res = null;
+            List<String> retVal = new ArrayList<>();
+
+            while (i.hasMoreResources()) {
+                res = (XMLResource) i.nextResource();
+                retVal.add(res.getContent().toString());
+            }
+
+            if (res != null)
+                try {
+                    ((EXistResource) res).freeResources();
+                } catch (XMLDBException exception) {
+                    exception.printStackTrace();
+                }
+
+            return retVal;
+        } catch (XMLDBException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public String getPaperCreatorId(String scientificPaperId) throws RepositoryException {
+        String xPathExp = String
+                .format("data(//business-process[@scientific-paper-id='%s']//review-cycle[last()]//phase[@title = " +
+                        "'submitted']//actor-task[@document-type = 'scientific-paper']/@user-id)", scientificPaperId);
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(businessProcessCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            ResourceIterator i = resultSet.getIterator();
+            XMLResource res = null;
+            String retVal = null;
+
+            if (i.hasMoreResources()) {
+                res = (XMLResource) i.nextResource();
+                retVal = res.getContent().toString();
+            }
+
+            if (res != null)
+                try {
+                    ((EXistResource) res).freeResources();
+                } catch (XMLDBException exception) {
+                    exception.printStackTrace();
+                }
+
+            return retVal;
+        } catch (XMLDBException e) {
+            throw new RepositoryException("Failed to find scientific paper creator");
+        }
     }
 }

@@ -1,4 +1,3 @@
-<p>my-reviews works!</p>
 <div fxLayout="column" fxLayoutAlign="center center">
   <mat-card class="mat-card-flat card-deck-container" id="loaded-events-list" style="height: 680px;">
     <mat-card-header>
@@ -10,8 +9,15 @@
     <div fxLayout="row wrap" class="card-deck-container" fxLayout.xs="column wrap">
       <div fxFlex="24" fxFlex.sm="30" fxFlex.xs="80" class="card-item" *ngFor="let paper of papers">
         <app-paper-section [paper]="paper"></app-paper-section>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="view(paper.id)">VIEW</button>
+          <button mat-raised-button color="primary" [routerLink]="['/edit-review', paper.id]">REVIEW</button>
+        </mat-card-actions>/
       </div>
     </div>
   </mat-card>
 
 </div>
+
+<div style="margin-top: 50px;" [innerHTML]="theHtmlString"></div>
+

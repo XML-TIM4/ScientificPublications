@@ -3,19 +3,6 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="https://github.com/XML-TIM4/ScientificPublications file:/data/schemas/Review.xsd">
     <review-metadata>
-        <reviewer>
-            <name>
-                <first-name>first-name0</first-name>
-                <last-name>last-name0</last-name>
-            </name>
-            <email>admin@admin.com</email>
-            <affiliation>
-                <university>university0</university>
-                <city>city0</city>
-                <state>state0</state>
-                <country>country0</country>
-            </affiliation>
-        </reviewer>
         <date>2006-05-04</date>
         <recommendation>accept</recommendation>
         <scientific-paper-id>asdfqwer</scientific-paper-id>
@@ -23,21 +10,18 @@
     <questionnaire>
         <question>
             <question-text>question-text0</question-text>
+            <answer selected="false">q1a1</answer>
+            <answer selected="false">q1a2</answer>
         </question>
         <question>
             <question-text>question-text1</question-text>
+            <answer selected="false">q1a1</answer>
+            <answer selected="false">q1a2</answer>
+            <answer selected="false">q1a3</answer>
         </question>
     </questionnaire>
-    <author-comments>
-        <author-comment>
-            <review-reference>review-reference0</review-reference>
-            <comment-text>comment-text0</comment-text>
-        </author-comment>
-        <author-comment>
-            <review-reference>review-reference1</review-reference>
-            <comment-text>comment-text1</comment-text>
-        </author-comment>
-    </author-comments>
+    <reviewer-comments>
+    </reviewer-comments>
     <editor-comments>
         <editor-comment>
             <review-reference>review-reference2</review-reference>

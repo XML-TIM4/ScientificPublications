@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import xmlteam4.Project.DTOs.SearchDTO;
 import xmlteam4.Project.DTOs.SearchResultDTO;
 import xmlteam4.Project.exceptions.RepositoryException;
+import xmlteam4.Project.model.ScientificPaperStatus;
 import xmlteam4.Project.services.ScientificPaperService;
 
 
@@ -39,9 +40,32 @@ public class ScientificPaperController {
         }
     }
 
+    @Secured({"ROLE_AUTHOR", "ROLE_EDITOR"})
+    @GetMapping(value = "/{id}/nt", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getScientificPaperMetadataAsTurtle(@PathVariable("id") String id) {
+        try {
+            return new ResponseEntity<>(scientificPaperService.getScientificPaperMetadataAsTurtle(id),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Secured({"ROLE_AUTHOR", "ROLE_EDITOR"})
+    @GetMapping(value = "/{id}/json-ld", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getScientificPaperMetadataAsJSONLD(@PathVariable("id") String id) {
+        try {
+            return new ResponseEntity<>(scientificPaperService.getScientificPaperMetadataAsJSONLD(id),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @Secured("ROLE_AUTHOR")
-    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
+    @PostMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createScientificPaper(@RequestBody String xml) {
+        System.out.println("JOJO\n" + xml);
         try {
             return new ResponseEntity<>(scientificPaperService.createScientificPaper(xml), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -50,8 +74,9 @@ public class ScientificPaperController {
     }
 
     @Secured("ROLE_AUTHOR")
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_XML_VALUE)
+    @PutMapping(value = "/{id}")
     public ResponseEntity<String> reviseScientificPaper(@PathVariable("id") String id, @RequestBody String xml) {
+        System.out.println("JOJO\n" + xml);
         try {
             return new ResponseEntity<>(scientificPaperService.reviseScientificPaper(id, xml), HttpStatus.OK);
         } catch (Exception e) {
@@ -83,4 +108,31 @@ public class ScientificPaperController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping(value = "/search-editor")
+    public ResponseEntity<Object> searchScientificPapersEditor(@RequestBody SearchDTO searchDTO) {
+        try {
+            SearchResultDTO searchResultDTO;
+            if (searchDTO.getBasic())
+                searchResultDTO = scientificPaperService.basicScientificPaperSearchEditor(searchDTO);
+            else
+                searchResultDTO = scientificPaperService.advancedScientificPaperSearchEditor(searchDTO);
+
+            return new ResponseEntity<>(searchResultDTO, HttpStatus.OK);
+        } catch (RepositoryException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Secured("ROLE_EDITOR")
+    @PostMapping(value = "/{id}")
+    public ResponseEntity<Object> decideForPaper(@PathVariable String id,
+                                                 @RequestParam ScientificPaperStatus decision) {
+        try {
+            return new ResponseEntity<>(scientificPaperService.decideForPaper(id, decision), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

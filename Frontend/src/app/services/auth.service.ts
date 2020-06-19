@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject} from 'rxjs';
 import {User} from '../model/user.model';
 import {tap} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 export interface IUserRegister {
   password: string;
@@ -13,10 +14,10 @@ export interface IUserRegister {
 
 interface IFullToken {
   sub: string;
-  audience: string;
-  created: number;
+  iss: string;
+  iat: number;
   exp: number;
-  authorities: string;
+  roles: string;
 }
 
 export interface IToken {
@@ -29,10 +30,11 @@ export class AuthService {
   user = new BehaviorSubject<User>(null);
   private tokenExpirationTimer: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   private handleAuthentication(token: string) {
     const parsedToken: IToken = this.parseJwt(token);
+    console.log('jwt ', parsedToken);
     const expirationDate = new Date(parsedToken.expiration * 1000);
     const user = new User(
       token,
@@ -40,7 +42,7 @@ export class AuthService {
       parsedToken.authority
     );
     this.user.next(user);
-    localStorage.setItem('userToken', token);
+    localStorage.setItem('token', token);
   }
 
   signup(registerUser: IUserRegister) {
@@ -64,6 +66,7 @@ export class AuthService {
       }
     ).pipe(
       tap(resData => {
+        console.log(resData.token, ' PIPE LOGINA');
         this.handleAuthentication(resData.token);
       })
     );
@@ -71,11 +74,13 @@ export class AuthService {
 
   logout() {
     this.user.next(null);
-    localStorage.removeItem('userToken');
+    localStorage.removeItem('token');
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
+    this.router.navigate(['/login']);
   }
+
 
   parseJwt = (token: string): IToken => {
     const base64Url = token.split('.')[1];
@@ -85,11 +90,17 @@ export class AuthService {
     }).join(''));
 
     const fullToken: IFullToken = JSON.parse(jsonPayload);
-
-    return {
-      authority: fullToken.authorities.split(',')[0],
-      expiration: fullToken.exp
-    };
+    if (fullToken.roles.split(',').length > 1) {
+      return {
+        authority: fullToken.roles.split(',')[1],
+        expiration: fullToken.exp
+      };
+    } else {
+      return {
+        authority: fullToken.roles,
+        expiration: fullToken.exp
+      };
+    }
   }
 
 }

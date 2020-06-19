@@ -9,6 +9,7 @@ import xmlteam4.Project.exceptions.RepositoryException;
 import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.BusinessProcessRepository;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,12 +43,8 @@ public class BusinessProcessService {
     }
 
     public TReviewCycle getActiveCycle(TBusinessProcess businessProcess) {
-        return (TReviewCycle) businessProcess.getReviewCycles().getReviewCycle()
+        return businessProcess.getReviewCycles().getReviewCycle()
                 .get(businessProcess.getReviewCycles().getReviewCycle().size() - 1);
-    }
-
-    public TPhase getActivePhase(TBusinessProcess businessProcess) {
-        return getActivePhase(getActiveCycle(businessProcess));
     }
 
     public TPhase getActivePhase(TReviewCycle activeCycle) {
@@ -59,12 +56,19 @@ public class BusinessProcessService {
                 .filter(at -> at.getDocumentType().equals(documentType.toString())).collect(Collectors.toList()).get(0);
     }
 
-    public TActorTask getTaskByDocumentTypeAndUserTypeAndUserEmail(TPhase activePhase, DocumentType documentType,
-                                                                   UserType userType, String userEmail) {
+    public TActorTask getTaskByDocumentTypeAndUserId(TPhase activePhase, DocumentType documentType, String userId) {
         return activePhase.getActorTasks().getActorTask().stream()
                 .filter(at -> at.getDocumentType().equals(documentType.toString())
-                        && at.getUserType().equals(userType.toString())
-                        && at.getUserId().equals(userEmail))
+                        && at.getUserId().equals(userId))
+                .collect(Collectors.toList())
+                .get(0);
+    }
+
+    public TActorTask getTaskByDocumentTypeAndDifferentUserId(TPhase activePhase, DocumentType documentType,
+                                                              String userId) {
+        return activePhase.getActorTasks().getActorTask().stream()
+                .filter(at -> at.getDocumentType().equals(documentType.toString())
+                        && !at.getUserId().equals(userId))
                 .collect(Collectors.toList())
                 .get(0);
     }
@@ -88,8 +92,8 @@ public class BusinessProcessService {
         secondReview.setFinished(false);
         secondReview.setDocumentId("");
         secondReview.setUserId(secondReviewer);
-        firstReview.setUserType(UserType.REVIEWER.toString());
-        firstReview.setDocumentType(DocumentType.REVIEW.toString());
+        secondReview.setUserType(UserType.REVIEWER.toString());
+        secondReview.setDocumentType(DocumentType.REVIEW.toString());
 
         reviewTasks.getActorTask().add(firstReview);
         reviewTasks.getActorTask().add(secondReview);
@@ -97,5 +101,19 @@ public class BusinessProcessService {
         reviewPhase.setActorTasks(reviewTasks);
 
         return reviewPhase;
+    }
+
+    public List<String> getOwnReviewsIds() {
+        TUser loggedInUser = (TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return businessProcessRepository.getOwnReviewsIds(loggedInUser.getId());
+    }
+
+    public List<String> getFinishedReviewsIds() {
+        return businessProcessRepository.getFinishedReviewsIds();
+    }
+
+    public String getPaperCreatorId(String scientificPaperId) throws RepositoryException {
+        return businessProcessRepository.getPaperCreatorId(scientificPaperId);
     }
 }

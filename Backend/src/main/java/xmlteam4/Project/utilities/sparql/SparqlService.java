@@ -48,6 +48,7 @@ public class SparqlService {
 
     public ArrayList<String> queryAll(String condition) {
         String query = SparqlUtil.selectFromAllGraphs(condition);
+        System.out.println(query);
         QueryExecution execution = QueryExecutionFactory.sparqlService(FusekiAuthenticationUtilities.queryEndpoint,
                 query);
 
@@ -55,8 +56,10 @@ public class SparqlService {
 
         ArrayList<String> results = new ArrayList<>();
 
+        String id;
         while (resultSet.hasNext()) {
-            results.add(resultSet.next().getLiteral("g").getString());
+            id = resultSet.next().get("g").toString().replace("3030/ScientificPaperDataset", "8080");
+            results.add(id);
         }
 
         return results;

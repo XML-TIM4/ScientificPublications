@@ -16,7 +16,6 @@ import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.ReviewRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
-import xmlteam4.Project.utilities.sparql.SparqlService;
 import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
 import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
@@ -27,7 +26,6 @@ import java.util.List;
 
 @Service
 public class ReviewService {
-
     @Autowired
     private ReviewRepository reviewRepository;
 
@@ -42,9 +40,6 @@ public class ReviewService {
 
     @Autowired
     private IDGenerator idGenerator;
-
-    @Autowired
-    private SparqlService sparqlService;
 
     @Autowired
     private BusinessProcessService businessProcessService;
@@ -64,17 +59,14 @@ public class ReviewService {
     @Value("${scientific-paper-schema-path}")
     private String scientificPaperSchemaPath;
 
-    @Value("${grddl-xslt}")
-    private String grddl;
-
-    @Value("data/xsl/xsl-t/ReviewToRDFa.xsl")
-    private String reviewToRDFa;
-
-    @Value("data/xsl/xsl-t/ReviewToHTML.xsl")
+    @Value("${review-to-html-xslt}")
     private String reviewToHTML;
 
-    @Value("data/xsl/xsl-fo/ReviewToPDF.xsl")
+    @Value("${review-to-pdf-xslfo}")
     private String reviewToPDF;
+
+    @Value("${merge-reviews-xslt}")
+    private String mergeReviewsXslt;
 
 
     public String getReviewXML(String id) throws RepositoryException {
@@ -105,7 +97,7 @@ public class ReviewService {
         TReviewCycle activeCycle = businessProcessService.getActiveCycle(businessProcess);
 
         // check if cycle is active
-        if (activeCycle.getStatus().equals(ReviewCycleStatus.PENDING.toString()))
+        if (!activeCycle.getStatus().equals(ReviewCycleStatus.PENDING.toString()))
             throw new BusinessProcessException("Review can be created only if review cycle is still active");
 
         TPhase activePhase = businessProcessService.getActivePhase(activeCycle);
@@ -123,8 +115,9 @@ public class ReviewService {
         document.getDocumentElement().setAttribute("id", id);
 
         // choose reviewers
-        Document scientificPaper = domParser.buildDocument(scientificPaperService
-                .getScientificPaperXML(scientificPaperId), scientificPaperSchemaPath);
+
+        String theXML = scientificPaperService.getScientificPaperXML(scientificPaperId);
+        Document scientificPaper = domParser.buildDocument(theXML, scientificPaperSchemaPath);
 
         Pair<List<String>, String> requiredData =
                 scientificPaperService.extractDataForSelectionOfReviewers(scientificPaper);
@@ -133,15 +126,15 @@ public class ReviewService {
                 requiredData.getValue());
 
         // make review phase
-        TPhase reviewPhase = businessProcessService.createReviewPhase(chosenReviewers.getKey().getEmail(),
-                chosenReviewers.getValue().getEmail());
+        TPhase reviewPhase = businessProcessService.createReviewPhase(chosenReviewers.getKey().getId(),
+                chosenReviewers.getValue().getId());
 
         // finish all tasks in submitted phase and set can advance true
         activePhase.setCanAdvance(true);
 
         TActorTask createReviewTemplateTask = businessProcessService.getTaskByDocumentType(activePhase,
                 DocumentType.REVIEW);
-        createReviewTemplateTask.setUserId(loggedIn.getEmail());
+        createReviewTemplateTask.setUserId(loggedIn.getId());
         createReviewTemplateTask.setDocumentId(id);
         createReviewTemplateTask.setFinished(true);
 
@@ -156,14 +149,82 @@ public class ReviewService {
         notificationService.notifyUser(chosenReviewers.getValue(), id, DocumentType.REVIEW,
                 "Your review has been requested.");
 
-        // make rdfa and save to exist base
-        // metadata will not be saved until reviewers finish
-        String rdfa = xslTransformer.generateXML(documentXMLTransformer.toXMLString(document), reviewToRDFa);
-
-        return reviewRepository.create(id, rdfa);
+        return reviewRepository.create(id, documentXMLTransformer.toXMLString(document));
     }
 
-    public String createReview(String templateId, String xml) {
-        return null;
+    public String createReview(String xml) throws DocumentParsingFailedException, RepositoryException, BusinessProcessException, TransformationException, TransformerException, MessagingException {
+        Document document = domParser.buildDocument(xml, reviewSchemaPath);
+
+        // extract template id
+        String reviewTemplateId =
+                document.getElementsByTagName("review").item(0).getAttributes().getNamedItem("id").getTextContent();
+
+        if (reviewTemplateId == null)
+            throw new DocumentParsingFailedException("Review is missing template id");
+
+        // extract paper id
+        String scientificPaperId = document.getElementsByTagName("scientific-paper-id").item(0).getTextContent();
+
+        if (scientificPaperId == null)
+            throw new DocumentParsingFailedException("Review is missing scientific paper id");
+
+        TBusinessProcess businessProcess = businessProcessService.findById(scientificPaperId);
+
+        TReviewCycle activeCycle = businessProcessService.getActiveCycle(businessProcess);
+
+        // check if cycle is active
+        if (!activeCycle.getStatus().equals(ReviewCycleStatus.PENDING.toString()))
+            throw new BusinessProcessException("Review can be created only if review cycle is still active");
+
+        TPhase activePhase = businessProcessService.getActivePhase(activeCycle);
+        TUser loggedIn = (TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // check if phase is review and task hasn't been completed
+        if (!(activePhase.getTitle().equals(PhaseTitle.REVIEW.toString())
+                && !businessProcessService.getTaskByDocumentTypeAndUserId(activePhase, DocumentType.REVIEW,
+                loggedIn.getId()).isFinished())) {
+            throw new BusinessProcessException("Wrong review cycle phase or task is already completed");
+        }
+
+        if (businessProcessService.getTaskByDocumentTypeAndDifferentUserId(activePhase, DocumentType.REVIEW,
+                loggedIn.getId()).isFinished()) {
+            // load temp
+            String temp = reviewRepository.findOneWithReviwer(reviewTemplateId);
+
+            // merge
+            String merged = xslTransformer.mergeReviews(temp, xml, mergeReviewsXslt);
+
+            // update template as completed review
+            reviewRepository.update(reviewTemplateId, merged);
+
+            // can advance to next phase
+            activePhase.setCanAdvance(true);
+
+            // status is reviewed
+            activeCycle.setStatus(ReviewCycleStatus.REVIEWED.toString());
+        } else {
+            // create temp
+            reviewRepository.create(reviewTemplateId + "-temp", xml);
+        }
+
+        // complete task
+        TActorTask createReview = businessProcessService
+                .getTaskByDocumentTypeAndUserId(activePhase, DocumentType.REVIEW,
+                        loggedIn.getId());
+        createReview.setFinished(true);
+        createReview.setDocumentId(reviewTemplateId);
+
+        // save business process
+        businessProcessService.updateBusinessProcess(businessProcess);
+
+        // notify reviewer
+        notificationService
+                .notifyUser(loggedIn, reviewTemplateId, DocumentType.REVIEW, "Thank you for submitted review!");
+
+        return reviewTemplateId;
+    }
+
+    public String getReviewId(String scientificPaperId) throws RepositoryException {
+        return reviewRepository.findOneByPaperId(scientificPaperId);
     }
 }

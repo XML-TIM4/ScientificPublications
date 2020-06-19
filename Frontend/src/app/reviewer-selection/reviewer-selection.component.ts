@@ -9,16 +9,12 @@ import {Paper} from '../model/paper.model';
 })
 export class ReviewerSelectionComponent implements OnInit {
 
-  searchForm: FormGroup;
   reviewers: Paper[] = [];
 
   constructor() { }
 
   ngOnInit() {
-    this.searchForm = new FormGroup({
-      title: new FormControl(''),
-      category: new FormControl('')
-    });
+
   }
 
   onSubmit() {

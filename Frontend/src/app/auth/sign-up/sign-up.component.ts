@@ -13,7 +13,7 @@ export class SignUpComponent implements OnInit {
   signupForm: FormGroup;
   errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
     this.signupForm = new FormGroup({
@@ -49,10 +49,12 @@ export class SignUpComponent implements OnInit {
         if (error.status === 400) {
           this.errorMessage = error.error.message;
         } else {
+          console.log(error);
           this.errorMessage = 'Error';
         }
       }
     );
+
   }
 
 

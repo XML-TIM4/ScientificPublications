@@ -34,7 +34,15 @@ public class ReviewController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
 
+    @GetMapping(value = "/paper/{id}", produces = "text/plain")
+    public ResponseEntity<Object> getReviewId(@PathVariable("id") String scientificPaperId) {
+        try {
+            return new ResponseEntity<>(reviewService.getReviewId(scientificPaperId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
     }
 
     @Secured("ROLE_EDITOR")
@@ -48,11 +56,10 @@ public class ReviewController {
     }
 
     @Secured("ROLE_AUTHOR")
-    @PutMapping(value = "/{template-id}", consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
-    public ResponseEntity<String> createReview(@PathVariable("template-id") String templateId,
-                                               @RequestBody String xml) {
+    @PutMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
+    public ResponseEntity<String> createReview(@RequestBody String xml) {
         try {
-            return new ResponseEntity<>(reviewService.createReview(templateId, xml), HttpStatus.OK);
+            return new ResponseEntity<>(reviewService.createReview(xml), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

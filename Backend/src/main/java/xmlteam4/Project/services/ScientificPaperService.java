@@ -4,12 +4,18 @@ import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import xmlteam4.Project.DTOs.SearchDTO;
 import xmlteam4.Project.DTOs.SearchResultDTO;
 import xmlteam4.Project.businessprocess.DocumentType;
@@ -28,10 +34,8 @@ import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXM
 import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
 import javax.mail.MessagingException;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -65,6 +69,9 @@ public class ScientificPaperService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private UserService userService;
+
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Value("${scientific-paper-schema-path}")
@@ -96,12 +103,12 @@ public class ScientificPaperService {
                 scientificPaperToPDF).toByteArray()));
     }
 
-    public String createScientificPaper(String xml) throws DocumentParsingFailedException, UnauthorizedException, BadParametersException, TransformerException, TransformationException, RepositoryException, EntityAlreadyExistsException, MessagingException, SAXException, ParserConfigurationException, IOException {
+    public String createScientificPaper(String xml) throws DocumentParsingFailedException, UnauthorizedException, BadParametersException, TransformerException, TransformationException, RepositoryException, EntityAlreadyExistsException, MessagingException {
         Document document = domParser.buildDocument(xml, scientificPaperSchemaPath);
 
         if (!checkAbstract(document))
             throw new DocumentParsingFailedException("Invalid abstract titles");
-        else if (!checkIfCreatorIsAuthor(document))
+        else if (!checkIfCreatorIsAuthor(xml))
             throw new UnauthorizedException("In order to create a scientific paper you have to be an author");
 
         // set ids
@@ -135,7 +142,7 @@ public class ScientificPaperService {
         return scientificPaperRepository.create(id, rdfa);
     }
 
-    public String reviseScientificPaper(String id, String xml) throws RepositoryException, BusinessProcessException, DocumentParsingFailedException, UnauthorizedException, BadParametersException, TransformerException, TransformationException {
+    public String reviseScientificPaper(String id, String xml) throws RepositoryException, BusinessProcessException, DocumentParsingFailedException, UnauthorizedException, BadParametersException, TransformerException, TransformationException, MessagingException {
         // check if scientific paper can be revised
         TBusinessProcess businessProcess = businessProcessService.findById(id);
 
@@ -149,7 +156,7 @@ public class ScientificPaperService {
 
         if (!checkAbstract(document))
             throw new DocumentParsingFailedException("Invalid abstract titles");
-        else if (!checkIfCreatorIsAuthor(document))
+        else if (!checkIfCreatorIsAuthor(xml))
             throw new UnauthorizedException("In order to revise a scientific paper you have to be an author");
 
         // set new id's and metadata
@@ -176,71 +183,188 @@ public class ScientificPaperService {
         sparqlService.deleteGraph(graphName);
         sparqlService.createGraph(graphName, rdf);
 
+        // notify user via email
+        TUser loggedIn = (TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        notificationService.notifyUser(loggedIn, id, DocumentType.SCIENTIFIC_PAPER, "Your scientific paper has been " +
+                "successfully revised.");
+
         return scientificPaperRepository.update(id, newXml);
     }
 
-    public Boolean withdrawScientificPaper(String id) throws RepositoryException, BusinessProcessException, DocumentParsingFailedException, TransformerException, TransformationException {
+    public Boolean withdrawScientificPaper(String id) throws RepositoryException, BusinessProcessException, DocumentParsingFailedException, TransformerException, TransformationException, MessagingException {
         String paper = getScientificPaperXML(id);
 
         TBusinessProcess businessProcess = businessProcessService.findById(id);
 
+        // cycle has to be in progress in order to withdraw
         if (!businessProcessService.getActiveCycle(businessProcess).getStatus()
                 .equals(ReviewCycleStatus.PENDING.toString()))
             throw new BusinessProcessException("Cannot withdraw scientific paper if review cycle is finished");
 
         Document document = domParser.buildDocument(paper, scientificPaperSchemaPath);
 
+        // set status to withdrawn
         document.getElementsByTagName("status").item(0)
                 .setTextContent(ScientificPaperStatus.WITHDRAWN.toString());
         String rdfa = documentXMLTransformer.toXMLString(document);
         String rdf = xslTransformer.generateXML(rdfa, grddl);
 
+        // delete old metadata and create new
         String graphName = "/scientific-papers/" + id;
         sparqlService.deleteGraph(graphName);
         sparqlService.createGraph(graphName, rdf);
 
+        // update active cycle
         TReviewCycle activeCycle = businessProcessService.getActiveCycle(businessProcess);
         activeCycle.setStatus(ReviewCycleStatus.WITHDRAWN.toString());
         businessProcessService.updateBusinessProcess(businessProcess);
 
+        // notify user via email
+        TUser loggedIn = (TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        notificationService.notifyUser(loggedIn, id, DocumentType.SCIENTIFIC_PAPER, "Your scientific paper has been " +
+                "successfully withdrawn.");
+
+        // save rdfa in exist
         scientificPaperRepository.update(id, documentXMLTransformer.toXMLString(document));
+        return true;
+    }
+
+    public Boolean decideForPaper(String scientificPaperId, ScientificPaperStatus decision) throws RepositoryException,
+            BusinessProcessException, DocumentParsingFailedException, TransformerException, TransformationException, MessagingException {
+        String paper = getScientificPaperXML(scientificPaperId);
+
+        TBusinessProcess businessProcess = businessProcessService.findById(scientificPaperId);
+
+        // decision can only be made after reviewers have finished their task
+        if (!businessProcessService.getActiveCycle(businessProcess).getStatus()
+                .equals(ReviewCycleStatus.REVIEWED.toString()))
+            throw new BusinessProcessException("Cannot decide on scientific paper if reviews are not done");
+
+        Document document = domParser.buildDocument(paper, scientificPaperSchemaPath);
+
+        // set status accordingly
+        document.getElementsByTagName("status").item(0)
+                .setTextContent(decision.toString());
+        document.getElementsByTagName("status").item(0)
+                .getAttributes().getNamedItem("content").setTextContent(decision.toString());
+
+        // extract paper creator in order to send notifications
+        String paperCreatorId = businessProcessService.getPaperCreatorId(scientificPaperId);
+        TUser creator = userService.findOneById(paperCreatorId);
+
+        // send notification
+        if (decision.equals(ScientificPaperStatus.ACCEPTED)) {
+            // set accepted date
+            document.getElementsByTagName("accepted").item(0)
+                    .setTextContent(dateTimeFormatter.format(LocalDateTime.now()));
+            notificationService.notifyUser(creator, scientificPaperId, DocumentType.SCIENTIFIC_PAPER, "Your " +
+                    "scientific paper has been accepted.");
+        } else if (decision.equals(ScientificPaperStatus.REJECTED)) {
+            notificationService.notifyUser(creator, scientificPaperId, DocumentType.SCIENTIFIC_PAPER, "Your " +
+                    "scientific paper has been rejected.");
+        } else {
+            notificationService.notifyUser(creator, scientificPaperId, DocumentType.SCIENTIFIC_PAPER, "Your " +
+                    "scientific paper has been requested for revision.");
+        }
+
+        String rdfa = documentXMLTransformer.toXMLString(document);
+        String rdf = xslTransformer.generateXML(rdfa, grddl);
+
+        // create new metadata
+        String graphName = "/scientific-papers/" + scientificPaperId;
+        sparqlService.deleteGraph(graphName);
+        sparqlService.createGraph(graphName, rdf);
+
+        // update business process
+        TReviewCycle activeCycle = businessProcessService.getActiveCycle(businessProcess);
+        activeCycle.setStatus(decision.toString());
+        businessProcessService.updateBusinessProcess(businessProcess);
+
+        // save rdfa to exist
+        scientificPaperRepository.update(scientificPaperId, documentXMLTransformer.toXMLString(document));
+
         return true;
     }
 
     public Pair<List<String>, String> extractDataForSelectionOfReviewers(Document scientificPaper) {
         List<String> authorIds = new ArrayList<>();
 
-        NodeList authors = scientificPaper.getElementsByTagName("authors").item(0).getChildNodes();
+        NodeList authors = scientificPaper.getElementsByTagName("author");
 
         for (int i = 0; i < authors.getLength(); i++) {
-            authorIds.add(authors.item(i).getChildNodes().item(1).getTextContent());
+            authorIds.add(authors.item(i).getChildNodes().item(3).getTextContent());
         }
 
-        List<String> keywords = new ArrayList<>();
+        String keywords =
+                scientificPaper.getElementsByTagName("keywords").item(0).getAttributes().getNamedItem("content")
+                        .getTextContent();
 
-        NodeList keywordNodes = scientificPaper.getElementsByTagName("keywords").item(0).getChildNodes();
-
-        for (int i = 0; i < keywordNodes.getLength(); i++) {
-            keywords.add(keywordNodes.item(i).getTextContent());
-        }
-
-        return new Pair<>(authorIds, String.join(",", keywords));
+        return new Pair<>(authorIds, keywords);
     }
 
     public SearchResultDTO basicScientificPaperSearch(SearchDTO searchDTO) throws RepositoryException {
-        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated())
             return scientificPaperRepository.basicSearch(searchDTO.getText(),
                     ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         else
             return scientificPaperRepository.basicSearch(searchDTO.getText());
     }
 
+    public SearchResultDTO basicScientificPaperSearchEditor(SearchDTO searchDTO) throws RepositoryException {
+        return scientificPaperRepository.basicSearchEditor(searchDTO.getText());
+    }
+
     public SearchResultDTO advancedScientificPaperSearch(SearchDTO searchDTO) {
-        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
             return scientificPaperRepository.advancedSearch(searchDTO,
                     ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
-        else
+        } else
             return scientificPaperRepository.advancedSearch(searchDTO);
+    }
+
+    public SearchResultDTO advancedScientificPaperSearchEditor(SearchDTO searchDTO) {
+
+        return scientificPaperRepository.advancedSearchEditor(searchDTO);
+    }
+
+    public String getScientificPaperMetadataAsJSONLD(String id) throws RepositoryException {
+        String paper = scientificPaperRepository.findOne(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("content", paper);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        String url = "http://rdf-translator.appspot.com/convert/rdfa/json-ld/content";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.postForEntity(url, request, String.class).getBody();
+    }
+
+    public String getScientificPaperMetadataAsTurtle(String id) throws RepositoryException {
+        String paper = scientificPaperRepository.findOne(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("content", paper);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        String url = "http://rdf-translator.appspot.com/convert/rdfa/nt/content";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.postForEntity(url, request, String.class).getBody();
     }
 
     private void setIDs(String id, Document document) throws BadParametersException {
@@ -283,17 +407,9 @@ public class ScientificPaperService {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean checkIfCreatorIsAuthor(Document document) {
-        NodeList authors = document.getElementsByTagName("author");
+    private boolean checkIfCreatorIsAuthor(String xml) {
         String creatorEmail = ((TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getEmail();
-
-        for (int i = 0; i < authors.getLength(); i++) {
-            // check if author's email equals creator's email
-            if (authors.item(i).getChildNodes().item(1).getTextContent().equals(creatorEmail))
-                return true;
-        }
-
-        return false;
+        return xml.contains(creatorEmail);
     }
 }

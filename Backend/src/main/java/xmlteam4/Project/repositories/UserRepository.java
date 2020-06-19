@@ -72,13 +72,43 @@ public class UserRepository {
         }
     }
 
+    public TUser findOneById(String id) throws RepositoryException {
+        String xPathExp = String.format("//user[id='%s']", id);
+        try {
+            ResourceSet resultSet = queryService.executeXPathQuery(userCollectionId, xPathExp);
+
+            if (resultSet == null)
+                return null;
+
+            ResourceIterator i = resultSet.getIterator();
+            XMLResource res = null;
+            TUser retVal = null;
+
+            if (i.hasMoreResources()) {
+                res = (XMLResource) i.nextResource();
+                retVal = unmarshallUser(res.getContentAsDOM());
+            }
+
+            if (res != null)
+                try {
+                    ((EXistResource) res).freeResources();
+                } catch (XMLDBException exception) {
+                    exception.printStackTrace();
+                }
+
+            return retVal;
+        } catch (XMLDBException | JAXBException e) {
+            throw new RepositoryException("Failed to find user");
+        }
+    }
+
     public TUser save(TUser user) throws RepositoryException {
         try {
             String userXml = marshallUser(user);
 
             Collection col = crudService.getOrCreateCollection(userCollectionId, 0);
 
-            queryService.append(col, userCollectionId, "/users", userXml);
+            queryService.append(col, "users.xml", "/users", userXml);
 
             return user;
         } catch (XMLDBException | JAXBException e) {

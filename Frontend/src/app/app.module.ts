@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AllPapersComponent } from './all-papers/all-papers.component';
 import { MyPapersComponent } from './my-papers/my-papers.component';
 import { MyReviewsComponent } from './my-reviews/my-reviews.component';
@@ -25,6 +25,16 @@ import {
 import { ReviewerSectionComponent } from './reviewer-section/reviewer-section.component';
 import { HeaderComponent } from './header/header.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {AuthInterceptorService} from './services/auth-interceptor.service';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {DatePipe} from '@angular/common';
+import {MatSelectModule} from '@angular/material/select';
+import {MatRadioModule} from '@angular/material/radio';
+import { EditPaperComponent } from './xonomy/edit-paper/edit-paper.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EditCoverLetterComponent } from './xonomy/edit-cover-letter/edit-cover-letter.component';
+import { EditReviewComponent } from './xonomy/edit-review/edit-review.component';
+import { CreateReviewTemplateComponent } from './xonomy/create-review-template/create-review-template.component';
 
 @NgModule({
   declarations: [
@@ -39,12 +49,18 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
     AllReviewsComponent,
     PaperSectionComponent,
     ReviewerSectionComponent,
-    HeaderComponent
+    HeaderComponent,
+    EditPaperComponent,
+    EditCoverLetterComponent,
+    EditReviewComponent,
+    CreateReviewTemplateComponent
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
     MatCardModule,
     MatFormFieldModule,
     MatButtonModule,
@@ -54,9 +70,13 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
     MatToolbarModule,
     MatNativeDateModule,
     NoopAnimationsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    HttpClientModule,
+    MatSelectModule,
+    MatRadioModule,
+    FormsModule
   ],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }, DatePipe ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -17,7 +17,6 @@ import xmlteam4.Project.model.TUser;
 import xmlteam4.Project.repositories.CoverLetterRepository;
 import xmlteam4.Project.utilities.dom.DOMParser;
 import xmlteam4.Project.utilities.idgenerator.IDGenerator;
-import xmlteam4.Project.utilities.sparql.SparqlService;
 import xmlteam4.Project.utilities.transformers.documentxmltransformer.DocumentXMLTransformer;
 import xmlteam4.Project.utilities.transformers.xsltransformer.XSLTransformer;
 
@@ -25,9 +24,6 @@ import java.io.ByteArrayInputStream;
 
 @Service
 public class CoverLetterService {
-    @Autowired
-    private SparqlService sparqlService;
-
     @Autowired
     private CoverLetterRepository coverLetterRepository;
 
@@ -48,15 +44,6 @@ public class CoverLetterService {
 
     @Value("${cover-letter-schema-path}")
     private String coverLetterSchemaPath;
-
-    @Value("${scientific-paper-schema-path}")
-    private String scientificPaperSchemaPath;
-
-    @Value("${grddl-xslt}")
-    private String grddl;
-
-    @Value("data/xsl/xsl-t/CoverLetterToRDFa.xsl")
-    private String coverLetterToRDFa;
 
     @Value("data/xsl/xsl-t/CoverLetterToHTML.xsl")
     private String coverLetterToHTML;
@@ -110,7 +97,7 @@ public class CoverLetterService {
         TPhase activePhase = businessProcessService.getActivePhase(reviewCycle);
 
         // phase has to be submitted
-        if (activePhase.getTitle().equals(PhaseTitle.SUBMITTED.toString()))
+        if (!activePhase.getTitle().equals(PhaseTitle.SUBMITTED.toString()))
             throw new BusinessProcessException("Cannot create cover letter at this phase of review cycle");
 
         TActorTask createCoverLetterTask = businessProcessService.getTaskByDocumentType(activePhase,
@@ -123,7 +110,7 @@ public class CoverLetterService {
         TUser loggedInUser = (TUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // cannot create cover letter if user is not also the creator of scientific paper
-        if (!createCoverLetterTask.getUserId().equals(loggedInUser.getEmail()))
+        if (!createCoverLetterTask.getUserId().equals(loggedInUser.getId()))
             throw new BusinessProcessException("Only user that uploaded scientific paper can upload cover letter");
 
         String id = idGenerator.createID();
@@ -146,14 +133,10 @@ public class CoverLetterService {
         NodeList authors = document.getElementsByTagName("author");
         idGenerator.generateUserIDs(authors);
 
-        NodeList editors = document.getElementsByTagName("editor");
-        idGenerator.generateUserIDs(editors);
+        return coverLetterRepository.create(id, documentXMLTransformer.toXMLString(document));
+    }
 
-        // deal with rdf
-        String rdfa = xslTransformer.generateXML(documentXMLTransformer.toXMLString(document), coverLetterToRDFa);
-        String rdf = xslTransformer.generateXML(rdfa, grddl);
-        sparqlService.createGraph("/cover-letters/" + id, rdf);
-
-        return coverLetterRepository.create(id, rdfa);
+    public String getCoverLetterId(String scientificPaperId) throws RepositoryException {
+        return coverLetterRepository.findOneByPaperId(scientificPaperId);
     }
 }

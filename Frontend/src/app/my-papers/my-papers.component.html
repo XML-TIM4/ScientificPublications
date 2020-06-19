@@ -1,5 +1,4 @@
-<p>my-papers works!</p>
-<div fxlayoutalign="center center"><button mat-raised-button color="accent">PUBLISH</button></div>
+<div fxlayoutalign="center center"><button mat-raised-button color="accent" [routerLink]="['/edit-paper']">PUBLISH</button></div>
 <div fxLayout="column" fxLayoutAlign="center center">
   <mat-card class="mat-card-flat card-deck-container" style="height: 680px;">
     <mat-card-header>
@@ -12,8 +11,9 @@
       <div fxFlex="24" fxFlex.sm="30" fxFlex.xs="80" class="card-item" *ngFor="let paper of papers">
         <app-paper-section [paper]="paper"></app-paper-section>
         <mat-card-actions>
-          <button mat-raised-button color="primary" >EDIT</button>
-          <button mat-raised-button color="warn" >CANCEL</button>
+          <button mat-raised-button color="primary" [routerLink]="['/edit-paper', paper.id]">EDIT</button>
+          <button mat-raised-button color="primary" [routerLink]="['/edit-cover-letter', paper.id]">LETTER</button>
+          <button mat-raised-button color="warn" (click)="cancel(paper.id)">CANCEL</button>
         </mat-card-actions>
       </div>
     </div>
