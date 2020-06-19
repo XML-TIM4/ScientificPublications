@@ -115,10 +115,10 @@ export class CreateReviewTemplateComponent implements OnInit {
   saveFile() {
     this.xmlString = Xonomy.harvest();
     const blob = new Blob([this.xmlString]);
-    const url  = window.URL || window.webkitURL;
+    const url  = (window as any).URL || (window as any).webkitURL;
     const link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
-    link.href = url.createObjectURL(blob);
-    link.download = 'review_save.xml';
+    (link as any).href = url.createObjectURL(blob);
+    (link as any).download = 'review_save.xml';
 
     const event = document.createEvent('MouseEvents');
     event.initEvent('click', true, false);

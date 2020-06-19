@@ -670,10 +670,10 @@ export class EditPaperComponent implements OnInit {
     this.xmlString = Xonomy.harvest();
     this.xmlString = this.replaceImageTextBack(this.xmlString);
     const blob = new Blob([this.xmlString]);
-    const url  = window.URL || window.webkitURL;
+    const url  = (window as any).URL || (window as any).webkitURL;
     const link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
-    link.href = url.createObjectURL(blob);
-    link.download = 'paper_save.xml';
+    (link as any).href = url.createObjectURL(blob);
+    (link as any).download = 'paper_save.xml';
 
     const event = document.createEvent('MouseEvents');
     event.initEvent('click', true, false);

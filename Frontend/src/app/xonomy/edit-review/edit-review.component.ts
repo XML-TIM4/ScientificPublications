@@ -100,6 +100,7 @@ export class EditReviewComponent implements OnInit {
       recommendation: {
         asker: Xonomy.askPicklist,
         oneliner: true,
+        hasText: true,
         askerParameter: [
           'accept', 'reject', 'revise'
         ]
@@ -151,8 +152,10 @@ export class EditReviewComponent implements OnInit {
       this.paperId = params.id;
       this.reviewService.findByPaper(this.paperId).subscribe(resData => {
         if (resData !== '') {
-          this.xmlString = resData;
-          this.renderXonomy();
+          this.reviewService.findOne(resData, 'application/xml').subscribe(xmlData => {
+            this.xmlString = xmlData;
+            this.renderXonomy();
+          });
         }
       });
     });
@@ -202,7 +205,7 @@ export class EditReviewComponent implements OnInit {
     this.xmlString = this.replaceEditorCommentsBack(this.xmlString);
     // console.log(this.xmlString);
     // console.log(this.paperId);
-    this.reviewService.createTemplate(this.xmlString).subscribe(data => {
+    this.reviewService.createReview(this.xmlString).subscribe(data => {
       console.log(data);
     });
   }
@@ -223,10 +226,10 @@ export class EditReviewComponent implements OnInit {
     this.xmlString = Xonomy.harvest();
     this.xmlString = this.replaceEditorCommentsBack(this.xmlString);
     const blob = new Blob([this.xmlString]);
-    const url  = window.URL || window.webkitURL;
+    const url  = (window as any).URL || (window as any).webkitURL;
     const link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
-    link.href = url.createObjectURL(blob);
-    link.download = 'review_save.xml';
+    (link as any).href = url.createObjectURL(blob);
+    (link as any).download = 'review_save.xml';
 
     const event = document.createEvent('MouseEvents');
     event.initEvent('click', true, false);

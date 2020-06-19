@@ -26,9 +26,9 @@
         <xsl:copy-of select="$newRecommendation"/>
     </xsl:template>
 
-    <xsl:variable name="newReviewComments" select="$reviewToMerge//reviewer-comments"/>
+    <xsl:variable name="newReviewComments" select="$reviewToMerge//reviewer-comment"/>
 
-    <xsl:template match="//reviewer-commments[last()]">
+    <xsl:template match="//reviewer-commment[last()]">
         <xsl:copy-of select="."/>
         <xsl:copy-of select="$newReviewComments"/>
     </xsl:template>

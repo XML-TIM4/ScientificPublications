@@ -245,6 +245,8 @@ public class ScientificPaperService {
         // set status accordingly
         document.getElementsByTagName("status").item(0)
                 .setTextContent(decision.toString());
+        document.getElementsByTagName("status").item(0)
+                .getAttributes().getNamedItem("content").setTextContent(decision.toString());
 
         // extract paper creator in order to send notifications
         String paperCreatorId = businessProcessService.getPaperCreatorId(scientificPaperId);

@@ -46,7 +46,7 @@ public class ReviewController {
     }
 
     @Secured("ROLE_EDITOR")
-    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createReviewTemplate(@RequestBody String xml) {
         try {
             return new ResponseEntity<>(reviewService.createReviewTemplate(xml), HttpStatus.OK);
@@ -56,7 +56,7 @@ public class ReviewController {
     }
 
     @Secured("ROLE_AUTHOR")
-    @PutMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    @PutMapping(consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     public ResponseEntity<String> createReview(@RequestBody String xml) {
         try {
             return new ResponseEntity<>(reviewService.createReview(xml), HttpStatus.OK);
