@@ -10,8 +10,11 @@ export class LetterService {
   constructor(private http: HttpClient ) { }
 
   findOne(letterId: string, type: string) {
-    return this.http.get('http://localhost:8080/api/cover-letters/' + letterId, {headers: new HttpHeaders({'Content-Type': type, 'Accept': type, 'Response-Type': 'text'}), responseType: 'text'});
+    return this.http.get('http://localhost:8080/api/cover-letters/' + letterId, {headers: new HttpHeaders({'Content-Type': type, Accept: type, 'Response-Type': 'text'}), responseType: 'text'});
+  }
 
+  findOneBlob(letterId: string, type: string) {
+    return this.http.get('http://localhost:8080/api/cover-letters/' + letterId, {headers: new HttpHeaders({'Content-Type': type, Accept: type, 'Response-Type': 'blob'}), responseType: 'blob'});
   }
 
   findByPaper(paperId: string) {

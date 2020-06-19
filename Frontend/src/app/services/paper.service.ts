@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaderResponse, HttpHeaders, HttpRequest} from "@angular/common/http";
+import {HttpClient, HttpHeaderResponse, HttpHeaders, HttpParams, HttpRequest} from "@angular/common/http";
 
 export interface IPaperSearch {
   basic: boolean;
@@ -76,6 +76,12 @@ export class PaperService {
 
   create(xmlString: string) {
     return this.http.post('http://localhost:8080/api/scientific-papers', xmlString, {headers: new HttpHeaders({'Content-Type': 'text/xml', Accept: 'text/xml', 'Response-Type': 'text'}), responseType: 'text'});
+  }
+
+  decideForPaper(id: string, decision: string) {
+    const fd = new FormData();
+    fd.append('decision', decision);
+    return this.http.post('http://localhost:8080/api/scientific-papers/' + id, fd);
   }
 
 }

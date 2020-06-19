@@ -85,9 +85,9 @@
 
 <div class="mat-elevation-z3" fxLayout="row" fxHide.sm fxHide.xs fxLayoutAlign="center bottom">
   <form [formGroup]="downloadForm" (ngSubmit)="onSubmitDownload()">
-
+    <p>Chose title for cover letter: </p>
     <mat-form-field appearance="outline">
-      <mat-label>Paper ID</mat-label>
+      <mat-label>Paper title</mat-label>
       <mat-select formControlName="id">
         <mat-option *ngFor="let paper of papers" [value]="paper.id">
           {{paper.title}}
