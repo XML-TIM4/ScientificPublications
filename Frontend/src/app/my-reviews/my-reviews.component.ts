@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Paper} from '../model/paper.model';
-import {PaperService} from "../services/paper.service";
-import {ReviewService} from "../services/review.service";
+import {PaperService} from '../services/paper.service';
+import {ReviewService} from '../services/review.service';
 
 @Component({
   selector: 'app-my-reviews',

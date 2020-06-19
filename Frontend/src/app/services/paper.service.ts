@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaderResponse, HttpHeaders, HttpParams, HttpRequest} from "@angular/common/http";
+import {HttpClient, HttpHeaderResponse, HttpHeaders, HttpParams, HttpRequest} from '@angular/common/http';
 
 export interface IPaperSearch {
   basic: boolean;
@@ -71,7 +71,7 @@ export class PaperService {
   }
 
   revise(paperId: string, xmlString: string) {
-    return this.http.put('http://localhost:8080/api/scientific-papers/' + paperId, xmlString,{headers: new HttpHeaders({'Response-Type': 'text'}), responseType: 'text'});
+    return this.http.put('http://localhost:8080/api/scientific-papers/' + paperId, xmlString, {headers: new HttpHeaders({'Response-Type': 'text'}), responseType: 'text'});
   }
 
   create(xmlString: string) {

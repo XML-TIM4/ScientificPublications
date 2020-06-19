@@ -4,7 +4,7 @@ import {Paper} from '../model/paper.model';
 import {IPaperSearch, PaperService} from '../services/paper.service';
 import {LetterService} from '../services/letter.service';
 import {ReviewService} from '../services/review.service';
-import * as FileSaver from "file-saver";
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-papers-to-review',
@@ -71,7 +71,7 @@ export class PapersToReviewComponent implements OnInit {
               if (!rewData.resultIds.length) {
 
               } else {
-                for(let l = 0; l < rewData.resultIds.length; l++) {
+                for (let l = 0; l < rewData.resultIds.length; l++) {
                   if (rewData.resultIds[l] === resData.otherPaperIds[i]) {
                     pass = false;
                   }
@@ -110,15 +110,15 @@ export class PapersToReviewComponent implements OnInit {
     const keywordz = this.searchForm.get('keywords').value.toString().split(',');
     console.log(this.searchForm.get('basic').value, ' BAZIK');
     const searchParams: IPaperSearch = {
-      basic: this.searchForm.get('basic').value,
-      text: this.searchForm.get('text').value !== null ? this.searchForm.get('text').value : '',
+      basic: this.searchForm.get('basic').value !== null ? this.searchForm.get('basic').value : false,
+      text: this.searchForm.get('text').value,
       revised: this.searchForm.get('revised').value !== null ? this.searchForm.get('revised').value.getTime() : null,
       received: this.searchForm.get('received').value !== null ? this.searchForm.get('received').value.getTime() : null,
       accepted: this.searchForm.get('accepted').value !== null ? this.searchForm.get('accepted').value.getTime() : null,
-      version: this.searchForm.get('version').value !== null ? this.searchForm.get('version').value : '',
-      status: this.searchForm.get('status').value !== '' ? this.searchForm.get('status').value : 'ACCEPTED',
-      category: this.searchForm.get('category').value !== '' ? this.searchForm.get('category').value : 'RESEARCH_PAPER',
-      keywords: keywordz,
+      version: this.searchForm.get('version').value !== '' ? this.searchForm.get('version').value : null,
+      status: this.searchForm.get('status').value !== '' ? this.searchForm.get('status').value : null,
+      category: this.searchForm.get('category').value !== '' ? this.searchForm.get('category').value : null,
+      keywords: keywordz[0] !== '' ? keywordz : [],
     };
 
     this.reviewService.searchPapersFinishedReviews().subscribe((rewData => {
@@ -136,7 +136,7 @@ export class PapersToReviewComponent implements OnInit {
             if (!rewData.resultIds.length) {
 
             } else {
-              for(let l = 0; l < rewData.resultIds.length; l++) {
+              for (let l = 0; l < rewData.resultIds.length; l++) {
                 if (rewData.resultIds[l] === resData.otherPaperIds[i]) {
                   pass = false;
                 }

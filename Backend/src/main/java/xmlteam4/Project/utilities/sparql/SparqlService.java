@@ -48,6 +48,7 @@ public class SparqlService {
 
     public ArrayList<String> queryAll(String condition) {
         String query = SparqlUtil.selectFromAllGraphs(condition);
+        System.out.println(query);
         QueryExecution execution = QueryExecutionFactory.sparqlService(FusekiAuthenticationUtilities.queryEndpoint,
                 query);
 

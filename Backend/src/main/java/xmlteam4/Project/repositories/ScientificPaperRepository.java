@@ -220,6 +220,15 @@ public class ScientificPaperRepository {
         SearchResultDTO searchResult = new SearchResultDTO();
         searchResult.setOtherPaperIds(graphNames);
 
+        for(int i = 0; i < searchResult.getOwnPaperIds().size(); i++){
+            searchResult.getOwnPaperIds().set(i,searchResult.getOwnPaperIds().get(i).replace("http://localhost:8080/scientific-papers/",""));
+        }
+
+        for(int i = 0; i < searchResult.getOtherPaperIds().size(); i++){
+            searchResult.getOtherPaperIds().set(i,searchResult.getOtherPaperIds().get(i).replace("http://localhost:8080/scientific-papers/",""));
+        }
+
+
         return searchResult;
     }
 
@@ -254,6 +263,15 @@ public class ScientificPaperRepository {
         ArrayList<String> graphNames = sparqlService.queryAll(substitutor.replace(condition));
         SearchResultDTO searchResult = new SearchResultDTO();
         searchResult.setOtherPaperIds(graphNames);
+
+        for(int i = 0; i < searchResult.getOwnPaperIds().size(); i++){
+            searchResult.getOwnPaperIds().set(i,searchResult.getOwnPaperIds().get(i).replace("http://localhost:8080/scientific-papers/",""));
+        }
+
+        for(int i = 0; i < searchResult.getOtherPaperIds().size(); i++){
+            searchResult.getOtherPaperIds().set(i,searchResult.getOtherPaperIds().get(i).replace("http://localhost:8080/scientific-papers/",""));
+        }
+
 
         return searchResult;
     }
@@ -312,6 +330,15 @@ public class ScientificPaperRepository {
         substitutor = new StringSubstitutor(substitutionMap);
         graphNames = sparqlService.queryAll(substitutor.replace(condition));
         searchResult.setOtherPaperIds(graphNames);
+
+        for(int i = 0; i < searchResult.getOwnPaperIds().size(); i++){
+            searchResult.getOwnPaperIds().set(i,searchResult.getOwnPaperIds().get(i).replace("http://localhost:8080/scientific-papers/",""));
+        }
+
+        for(int i = 0; i < searchResult.getOtherPaperIds().size(); i++){
+            searchResult.getOtherPaperIds().set(i,searchResult.getOtherPaperIds().get(i).replace("http://localhost:8080/scientific-papers/",""));
+        }
+
 
         return searchResult;
     }
