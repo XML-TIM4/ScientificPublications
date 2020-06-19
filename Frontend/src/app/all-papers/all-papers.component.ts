@@ -101,15 +101,6 @@ export class AllPapersComponent implements OnInit {
         }));
       }
 
-    //
-    //   for (let i = 0; i < resData.ownPaperIds.length; i++) {
-    //     this.paperService.findOnePdf(resData.ownPaperIds[i]).subscribe((resPaper => {
-    //
-    //       const filename = 'filename.pdf';
-    //       FileSaver.saveAs(resPaper, filename);
-    //     }));
-    //   }
-
     }));
 
   }
